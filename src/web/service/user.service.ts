@@ -17,6 +17,6 @@ export class UserService {
 
   save() {
     // this.userRepository.createQueryBuilder().orWhere()
-    return this.userRepository.save(new UserEntity("NORMAL"))
+    return this.userRepository.save(new UserEntity("123", "456"))
   }
 }
