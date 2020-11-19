@@ -1,1 +1,4 @@
-export type UserState = "NORMAL" | "DISABLE"
+export enum UserState {
+  NORMAL,
+  DISABLE
+}

@@ -17,7 +17,9 @@ export class ValidationPipe implements PipeTransform<any> {
     const errors = await validate(object)
     if (errors.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      throw new BadRequestException(errors.map((it) => Object.values(it.constraints!)[0]))
+      throw new BadRequestException(
+        errors.map((it) => Object.values(it.constraints!)[0])
+      )
     }
     return value
   }

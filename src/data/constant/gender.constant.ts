@@ -1,1 +1,6 @@
-export type Gender = "MALE" | "FEMALE" | "UNKNOWN" | "INCONVENIENT"
+export enum Gender {
+  MALE,
+  FEMALE,
+  UNKNOWN,
+  INCONVENIENT
+}

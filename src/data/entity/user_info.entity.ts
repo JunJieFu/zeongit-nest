@@ -2,49 +2,59 @@ import { BaseEntity } from "../../share/entity/base.entity"
 import { Column, Entity } from "typeorm"
 import { UserState } from "../constant/user_state.constant"
 import { Gender } from "../constant/gender.constant"
+import {
+  UserInitState
+} from "../constant/user_info_state.constant"
 
 @Entity("user_info")
 export class UserInfoEntity extends BaseEntity {
-  @Column()
+  @Column({ name: "user_id", unique: true })
   userId: number
 
   @Column({
+    name: "gender",
     type: "enum",
-    enum: ["MALE", "FEMALE", "UNKNOWN", "INCONVENIENT"],
-    default: "INCONVENIENT"
+    enum: Gender
   })
-  gender: Gender = "INCONVENIENT"
+  gender: Gender = Gender.INCONVENIENT
 
-  @Column()
+  @Column({ name: "birthday" })
   birthday: Date = new Date()
 
-  @Column()
+  @Column({ name: "nickname" })
   nickname: string
 
-  @Column()
+  @Column({ name: "introduction" })
   introduction: string
 
-  @Column({ nullable: true })
+  @Column({ name: "country", nullable: true })
   country?: string
 
-  @Column({ nullable: true })
+  @Column({ name: "province", nullable: true })
   province?: string
 
-  @Column({ nullable: true })
+  @Column({ name: "city", nullable: true })
   city?: string
 
-  @Column({ nullable: true })
+  @Column({ name: "avatarUrl", nullable: true })
   avatarUrl?: string
 
-  @Column({ nullable: true })
+  @Column({ name: "background", nullable: true })
   background?: string
 
   @Column({
+    name: "state",
     type: "enum",
-    enum: ["NORMAL", "DISABLE"],
-    default: "NORMAL"
+    enum: UserInitState
   })
-  state: UserState = "NORMAL"
+  state: UserInitState = UserInitState.WAIT
+
+  @Column({
+    name: "user_state",
+    type: "enum",
+    enum: UserState
+  })
+  userState: UserState = UserState.NORMAL
 
   constructor(userId: number, nickname: string, introduction: string) {
     super()

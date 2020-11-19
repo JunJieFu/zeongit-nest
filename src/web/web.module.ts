@@ -10,5 +10,4 @@ import { UserService } from "./service/user.service"
   providers: [UserService],
   exports: []
 })
-export class WebModule {
-}
+export class WebModule {}

@@ -23,6 +23,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       new Result(status, (exception as HttpException).message || "服务器错误", {
         timestamp: new Date().toISOString(),
         path: request.url
-      }))
+      })
+    )
   }
 }

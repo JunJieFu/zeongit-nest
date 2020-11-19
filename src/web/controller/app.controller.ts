@@ -18,12 +18,11 @@ class SignUpDto {
 
 @Controller()
 export class AppController {
-  constructor(private readonly authService: AuthService
-  ) {
+  constructor(private readonly authService: AuthService) {
   }
 
   @Post("signIn")
-  signIn(@Body()dto: SignUpDto): Promise<string> {
+  signIn(@Body() dto: SignUpDto): Promise<string> {
     return this.authService.signIn(dto.phone, dto.password)
   }
 

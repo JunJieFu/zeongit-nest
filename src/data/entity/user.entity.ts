@@ -4,19 +4,18 @@ import { UserState } from "../constant/user_state.constant"
 
 @Entity("user")
 export class UserEntity extends BaseEntity {
-
-  @Column({ type: "varchar", length: 20 })
+  @Column({ name: "phone", type: "varchar", length: 20, unique: true })
   phone: string
 
   @Column({ type: "varchar", length: 16 })
   password: string
 
   @Column({
+    name: "state",
     type: "enum",
-    enum: ["NORMAL", "DISABLE"],
-    default: "NORMAL"
+    enum: UserState
   })
-  state: UserState = "NORMAL"
+  state: UserState = UserState.NORMAL
 
   constructor(phone: string, password: string) {
     super()

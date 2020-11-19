@@ -1,1 +1,4 @@
-export type UserInitState = "WAIT" | "INIT"
+export enum UserInitState {
+  WAIT,
+  INIT
+}

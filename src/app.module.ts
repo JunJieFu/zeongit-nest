@@ -6,5 +6,4 @@ import { WebModule } from "./web/web.module"
   controllers: [],
   providers: []
 })
-export class AppModule {
-}
+export class AppModule {}

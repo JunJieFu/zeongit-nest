@@ -9,10 +9,12 @@ import { UserInfoEntity } from "../../data/entity/user_info.entity"
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(UserInfoEntity) private readonly userInfoRepository: Repository<UserInfoEntity>
-  ) {
-  }
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(UserInfoEntity)
+    private readonly userInfoRepository: Repository<UserInfoEntity>
+  ) {}
+
   private async getUserByPhone(phone: string) {
     const user = await this.userRepository.findOne({
       phone: phone
@@ -38,8 +40,13 @@ export class AuthService {
   }
 
   async signUp(phone: string, password: string) {
+    if (await this.userRepository.count({ phone })) {
+      throw new HttpException("手机号码已存在", HttpStatus.FORBIDDEN)
+    }
     const user = await this.userRepository.save(new UserEntity(phone, password))
-    const info = await this.saveInfo(new UserInfoEntity(user.id!, "镜花水月", "简介"))
+    const info = await this.saveInfo(
+      new UserInfoEntity(user.id!, "镜花水月", "简介")
+    )
     return this.sign(info.id!)
   }
 
