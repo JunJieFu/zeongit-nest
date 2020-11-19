@@ -5,7 +5,7 @@ import {
   HttpException,
   HttpStatus
 } from "@nestjs/common"
-import { ResultModel } from "../model/result.model"
+import { Result } from "../model/result.model"
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -20,7 +20,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR
 
     response.status(status).json(
-      new ResultModel(status, (exception as HttpException).message || "服务器错误", {
+      new Result(status, (exception as HttpException).message || "服务器错误", {
         timestamp: new Date().toISOString(),
         path: request.url
       }))

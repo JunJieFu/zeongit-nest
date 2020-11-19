@@ -1,6 +1,6 @@
 import { HttpStatus } from "@nestjs/common"
 
-export class ResultModel<T> {
+export class Result<T> {
   status: HttpStatus = HttpStatus.OK
   message?: string
   data?: T
