@@ -5,13 +5,13 @@ import { UserEntity } from "../../data/entity/user.entity"
 import { Repository } from "typeorm"
 import { UserInfoEntity } from "../../data/entity/user_info.entity"
 import { ConfigService, ConfigType } from "@nestjs/config"
-import jwtConfigAs from "../config/jwt.config"
+import { jwtConfigType } from "../config"
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(jwtConfigAs.KEY)
-    private jwtConfig: ConfigType<typeof jwtConfigAs>,
+    @Inject(jwtConfigType.KEY)
+    private jwtConfig: ConfigType<typeof jwtConfigType>,
     private configService: ConfigService,
     private readonly jwtService: JwtService,
     @InjectRepository(UserEntity)

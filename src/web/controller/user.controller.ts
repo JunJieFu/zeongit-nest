@@ -3,6 +3,7 @@ import { AuthService } from "../../auth/service/auth.service"
 import { IsEnum, IsOptional, IsString } from "class-validator"
 import { CodeTypeConstant } from "../constant/code_type.constant"
 import { Expose } from "class-transformer"
+import { JwtAuth } from "../../auth/decorator/JwtAuth"
 
 
 class SendCodeDto {
@@ -16,19 +17,12 @@ class SendCodeDto {
 }
 
 class SignUpDto {
+  @Expose()
   @IsString()
   phone!: string
-
-  #password!: string
-
-  get password() {
-    return this.#password
-  }
-
+  @Expose()
   @IsString()
-  set password(value) {
-    this.#password = value
-  }
+  password!: string
 }
 
 @Controller("user")
@@ -52,11 +46,13 @@ export class UserController {
     return this.authService.signUp(dto.phone, dto.password)
   }
 
+  @JwtAuth()
   @Post("test")
-  test(@Body() dto: SendCodeDto) {
-    return dto.type === CodeTypeConstant.FORGET
+  test() {
+    return 123
   }
 
+  // @JwtAuth()
   // @Post("getByPhone")
   // getByPhone():
   //   NestResponse<any> {
