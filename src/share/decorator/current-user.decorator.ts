@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common"
 import { Request } from "express"
-import { UserInfoEntity } from "../../data/entity/user_info.entity"
+import { UserInfoEntity } from "../../data/entity/user-info.entity"
 import { plainToClass } from "class-transformer"
 
 export const CurrentUser = createParamDecorator(

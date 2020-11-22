@@ -1,9 +1,9 @@
 import { Body, Controller, Post } from "@nestjs/common"
 import { AuthService } from "../../auth/service/auth.service"
 import { IsEnum, IsOptional, IsString } from "class-validator"
-import { CodeTypeConstant } from "../constant/code_type.constant"
+import { CodeTypeConstant } from "../constant/code-type.constant"
 import { Expose } from "class-transformer"
-import { JwtAuth } from "../../auth/decorator/JwtAuth"
+import { JwtAuthDecorator } from "../../auth/decorator/jwt-auth.decorator"
 
 
 class SendCodeDto {
@@ -31,6 +31,7 @@ export class UserController {
   }
 
   @Post("sendCode")
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   sendCode(@Body() dto: SendCodeDto) {
     //TODO
     // return this.authService.signIn(dto.phone, dto.password)
@@ -46,7 +47,7 @@ export class UserController {
     return this.authService.signUp(dto.phone, dto.password)
   }
 
-  @JwtAuth()
+  @JwtAuthDecorator()
   @Post("test")
   test() {
     return 123

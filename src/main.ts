@@ -1,6 +1,6 @@
 import { NestFactory } from "@nestjs/core"
 import { AppModule } from "./app.module"
-import { AllExceptionsFilter } from "./share/filter/http_exception.filter"
+import { AllExceptionsFilter } from "./share/filter/http-exception.filter"
 import { AdviceInterceptor } from "./share/interceptor/advice.interceptor"
 import { ValidationPipe } from "@nestjs/common"
 

@@ -3,7 +3,7 @@ import { JwtService } from "@nestjs/jwt"
 import { InjectRepository } from "@nestjs/typeorm"
 import { UserEntity } from "../../data/entity/user.entity"
 import { Repository } from "typeorm"
-import { UserInfoEntity } from "../../data/entity/user_info.entity"
+import { UserInfoEntity } from "../../data/entity/user-info.entity"
 import { ConfigService, ConfigType } from "@nestjs/config"
 import { jwtConfigType } from "../config"
 

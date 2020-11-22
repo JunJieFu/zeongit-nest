@@ -1,6 +1,6 @@
 import { Column, Entity } from "typeorm"
 import { BaseEntity } from "../../share/entity/base.entity"
-import { UserState } from "../constant/user_state.constant"
+import { UserState } from "../constant/user-state.constant"
 
 @Entity("user")
 export class UserEntity extends BaseEntity {
