@@ -1,5 +1,5 @@
 import {
-  ArgumentsHost,
+  ArgumentsHost, BadRequestException,
   Catch,
   ExceptionFilter,
   HttpException,
@@ -19,8 +19,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR
 
+    let message = "服务器错误"
+    if (exception instanceof BadRequestException) {
+      message = (exception.getResponse() as any).message[0]
+    }
     response.status(status).json(
-      new Result(status, (exception as HttpException).message || "服务器错误", {
+      new Result(status, message ?? (exception as HttpException).message ?? "服务器错误", {
         timestamp: new Date().toISOString(),
         path: request.url
       })

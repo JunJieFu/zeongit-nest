@@ -1,19 +1,25 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
+import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
 import { InjectRepository } from "@nestjs/typeorm"
 import { UserEntity } from "../../data/entity/user.entity"
 import { Repository } from "typeorm"
 import { UserInfoEntity } from "../../data/entity/user_info.entity"
+import { ConfigService, ConfigType } from "@nestjs/config"
+import jwtConfigAs from "../config/jwt.config"
 
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(jwtConfigAs.KEY)
+    private jwtConfig: ConfigType<typeof jwtConfigAs>,
+    private configService: ConfigService,
     private readonly jwtService: JwtService,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(UserInfoEntity)
     private readonly userInfoRepository: Repository<UserInfoEntity>
-  ) {}
+  ) {
+  }
 
   private async getUserByPhone(phone: string) {
     const user = await this.userRepository.findOne({
@@ -61,5 +67,11 @@ export class AuthService {
 
   private sign(id: number) {
     return this.jwtService.sign({ id })
+  }
+
+  test() {
+    console.log(this.configService.get("SECRET_KEY"))
+    console.log(this.jwtConfig.secretKey)
+    return this.configService.get("SECRET_KEY")
   }
 }
