@@ -7,7 +7,7 @@ import { DataModule } from "../data/data.module"
 import { ConfigModule } from "@nestjs/config"
 import { getEnvPaths } from "../share/fragment/env.function"
 import { authConfigType, jwtConfigType } from "./config"
-import { JwtConfigService } from "./service/jwt-config.service"
+import { JwtConfigService } from "./config-service/jwt-config.service"
 
 const configModule = ConfigModule.forRoot(
   {

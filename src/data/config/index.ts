@@ -8,3 +8,8 @@ export const accountConfigType = registerAs("account_database", () => ({
   password: process.env.ACCOUNT_DATABASE_PASSWORD,
   name: process.env.ACCOUNT_DATABASE_NAME
 }))
+
+export const cacheConfigType = registerAs("cache", () => ({
+  host: process.env.CACHE_HOST,
+  port: process.env.CACHE_PORT
+}))

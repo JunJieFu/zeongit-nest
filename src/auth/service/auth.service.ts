@@ -6,6 +6,10 @@ import { Repository } from "typeorm"
 import { UserInfoEntity } from "../../data/entity/user-info.entity"
 import { ConfigType } from "@nestjs/config"
 import { jwtConfigType } from "../config"
+import { fromPromise } from "rxjs/internal-compatibility"
+import { nullable } from "../../share/fragment/pipe.function"
+import { map, mergeMap } from "rxjs/operators"
+import { UserInfoCache } from "../../data/cache/user-info.cache"
 
 @Injectable()
 export class AuthService {
@@ -13,6 +17,7 @@ export class AuthService {
     @Inject(jwtConfigType.KEY)
     private jwtConfig: ConfigType<typeof jwtConfigType>,
     private readonly jwtService: JwtService,
+    private readonly userInfoCache: UserInfoCache,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(UserInfoEntity)
@@ -20,48 +25,46 @@ export class AuthService {
   ) {
   }
 
-  private async getUserByPhone(phone: string) {
-    const user = await this.userRepository.findOne({
+  private getUserByPhone(phone: string) {
+    return fromPromise(this.userRepository.findOne({
       phone: phone
-    })
-    if (!user) throw new HttpException("为空", HttpStatus.NOT_FOUND)
-    return user
+    })).pipe(map(nullable("用户不存在")))
   }
 
-  async getInfo(id: number) {
-    const info = await this.userInfoRepository.findOne({ id })
-    if (!info) throw new HttpException("为空", HttpStatus.NOT_FOUND)
-    return info
+  getInfo(id: number) {
+    return this.userInfoCache.get(id)
   }
 
-  private async getInfoByUserId(userId: number) {
-    const info = await this.userInfoRepository.findOne({ userId })
-    if (!info) throw new HttpException("为空", HttpStatus.NOT_FOUND)
-    return info
+  private getInfoByUserId(userId: number) {
+    return fromPromise(this.userInfoRepository.findOne({ userId })).pipe(
+      map(nullable("用户不存在"))
+    )
   }
 
   private saveInfo(userInfo: UserInfoEntity) {
     return this.userInfoRepository.save(userInfo)
   }
 
-  async signUp(phone: string, password: string) {
-    if (await this.userRepository.count({ phone })) {
-      throw new HttpException("手机号码已存在", HttpStatus.FORBIDDEN)
-    }
-    const user = await this.userRepository.save(new UserEntity(phone, password))
-    const info = await this.saveInfo(
-      new UserInfoEntity(user.id!, "镜花水月", "简介")
-    )
-    return this.sign(info.id!)
+  signUp(phone: string, password: string) {
+    return fromPromise(this.userRepository.count({ phone })).pipe(
+      mergeMap(count => {
+        if (count) {
+          throw new HttpException("手机号码已存在", HttpStatus.FORBIDDEN)
+        }
+        return fromPromise(this.userRepository.save(new UserEntity(phone, password)))
+      }), mergeMap(user => this.saveInfo(
+        new UserInfoEntity(user.id!, "镜花水月", "简介")
+      )), map(info => this.sign(info.id!)))
   }
 
-  async signIn(phone: string, password: string) {
-    const user = await this.getUserByPhone(phone)
-    if (user.password === password) {
-      const info = await this.getInfoByUserId(user.id!)
-      return this.sign(info.id!)
-    }
-    throw new HttpException("密码错误", HttpStatus.UNAUTHORIZED)
+  signIn(phone: string, password: string) {
+    this.getUserByPhone(phone).pipe(
+      mergeMap(user => {
+        if (user.password === password) {
+          return this.getInfoByUserId(user.id!)
+        }
+        throw new HttpException("密码错误", HttpStatus.UNAUTHORIZED)
+      }), map(info => this.sign(info.id!)))
   }
 
   private sign(id: number) {

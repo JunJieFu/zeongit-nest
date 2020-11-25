@@ -1,8 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
+import { Injectable } from "@nestjs/common"
 import { UserEntity } from "../../data/entity/user.entity"
 import { Repository } from "typeorm"
 import { InjectRepository } from "@nestjs/typeorm"
-import { IPaginationOptions, paginate, Pagination } from "nestjs-typeorm-paginate"
+import { IPaginationOptions, paginate } from "nestjs-typeorm-paginate"
+import { fromPromise } from "rxjs/internal-compatibility"
 
 
 @Injectable()
@@ -13,17 +14,7 @@ export class UserService {
   ) {
   }
 
-  async paginate(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
-    return paginate<UserEntity>(this.userRepository, options)
-  }
-
-  get(id: number) {
-    const user = this.userRepository.findOne({ id })
-    if (user) return user
-    throw new HttpException("为空", HttpStatus.UNAUTHORIZED)
-  }
-
-  save() {
-    return this.userRepository.save(new UserEntity("123", "456"))
+  paginate(options: IPaginationOptions) {
+    return fromPromise(paginate<UserEntity>(this.userRepository, options))
   }
 }

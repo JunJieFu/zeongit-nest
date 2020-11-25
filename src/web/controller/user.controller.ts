@@ -5,7 +5,7 @@ import { CodeTypeConstant } from "../constant/code-type.constant"
 import { Expose, plainToClass } from "class-transformer"
 import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 import { UserInfoEntity } from "../../data/entity/user-info.entity"
-import { CurrentUser } from "../../share/decorator/current-user.decorator"
+import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { UserInfoVo } from "../vo/user-info.vo"
 
 
@@ -41,12 +41,12 @@ export class UserController {
   }
 
   @Post("signIn")
-  signIn(@Body() dto: SignUpDto): Promise<string> {
+  signIn(@Body() dto: SignUpDto) {
     return this.authService.signIn(dto.phone, dto.password)
   }
 
   @Post("signUp")
-  signUp(@Body() dto: SignUpDto): Promise<string> {
+  signUp(@Body() dto: SignUpDto) {
     return this.authService.signUp(dto.phone, dto.password)
   }
 

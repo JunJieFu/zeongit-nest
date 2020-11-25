@@ -7,7 +7,7 @@ import {
 } from "../constant/user-info-state.constant"
 
 @Entity("user_info")
-export class UserInfoEntity extends BaseEntity {
+export class UserInfoEntity extends BaseEntity{
   @Column({ name: "user_id", unique: true })
   userId: number
 

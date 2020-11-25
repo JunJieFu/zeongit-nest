@@ -18,7 +18,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR
 
-    let message = "服务器错误"
+    let message
     if (exception instanceof BadRequestException) {
       message = (exception.getResponse() as any).message[0]
     }
