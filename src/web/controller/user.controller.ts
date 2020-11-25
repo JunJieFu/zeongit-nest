@@ -1,9 +1,12 @@
-import { Body, Controller, Post } from "@nestjs/common"
+import { Body, Controller, Get, Post } from "@nestjs/common"
 import { AuthService } from "../../auth/service/auth.service"
 import { IsEnum, IsOptional, IsString } from "class-validator"
 import { CodeTypeConstant } from "../constant/code-type.constant"
-import { Expose } from "class-transformer"
-import { JwtAuthDecorator } from "../../auth/decorator/jwt-auth.decorator"
+import { Expose, plainToClass } from "class-transformer"
+import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
+import { UserInfoEntity } from "../../data/entity/user-info.entity"
+import { CurrentUser } from "../../share/decorator/current-user.decorator"
+import { UserInfoVo } from "../vo/user-info.vo"
 
 
 class SendCodeDto {
@@ -47,10 +50,10 @@ export class UserController {
     return this.authService.signUp(dto.phone, dto.password)
   }
 
-  @JwtAuthDecorator()
-  @Post("test")
-  test() {
-    return 123
+  @JwtAuth()
+  @Get("get")
+  get(@CurrentUser() userInfo: UserInfoEntity) {
+    return plainToClass(UserInfoVo, userInfo, { excludeExtraneousValues: true })
   }
 
   // @JwtAuth()

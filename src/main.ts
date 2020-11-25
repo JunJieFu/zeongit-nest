@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter())
   app.useGlobalInterceptors(new AdviceInterceptor())
   app.useGlobalPipes(new ValidationPipe({
-    transform: true, validateCustomDecorators: true, transformOptions: { excludeExtraneousValues: true }
+    transform: true, validateCustomDecorators: true
   }))
   await app.listen(9000)
 }

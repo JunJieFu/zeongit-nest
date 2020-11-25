@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { UserEntity } from "../../data/entity/user.entity"
 import { Repository } from "typeorm"
 import { UserInfoEntity } from "../../data/entity/user-info.entity"
-import { ConfigService, ConfigType } from "@nestjs/config"
+import { ConfigType } from "@nestjs/config"
 import { jwtConfigType } from "../config"
 
 @Injectable()
@@ -12,7 +12,6 @@ export class AuthService {
   constructor(
     @Inject(jwtConfigType.KEY)
     private jwtConfig: ConfigType<typeof jwtConfigType>,
-    private configService: ConfigService,
     private readonly jwtService: JwtService,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
@@ -70,8 +69,6 @@ export class AuthService {
   }
 
   test() {
-    console.log(this.configService.get("SECRET_KEY"))
-    console.log(this.jwtConfig.secretKey)
-    return this.configService.get("SECRET_KEY")
+    return this.jwtConfig.secretKey
   }
 }
