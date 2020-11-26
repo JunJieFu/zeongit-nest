@@ -1,59 +1,90 @@
-import { Body, Controller, Get, Post } from "@nestjs/common"
+import { Body, Controller, Post } from "@nestjs/common"
 import { AuthService } from "../../auth/service/auth.service"
-import { IsEnum, IsOptional, IsString } from "class-validator"
+import { IsEnum, IsString } from "class-validator"
 import { CodeTypeConstant } from "../constant/code-type.constant"
-import { Expose, plainToClass } from "class-transformer"
-import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
-import { UserInfoEntity } from "../../data/entity/user-info.entity"
+import { UserService } from "../service/user.service"
+import { VerificationCodeCache } from "../cache/verification-code.cache"
+import { mergeMap } from "rxjs/operators"
 import { CurrentUser } from "../../auth/decorator/current-user.decorator"
-import { UserInfoVo } from "../vo/user-info.vo"
-
+import { UserInfoEntity } from "../../data/entity/user-info.entity"
 
 class SendCodeDto {
   @IsString()
-  @IsOptional()
-  phone?: string
+  phone!: string
 
-  @Expose()
   @IsEnum(CodeTypeConstant)
   type!: CodeTypeConstant
 }
 
 class SignUpDto {
-  @Expose()
   @IsString()
   phone!: string
-  @Expose()
+  @IsString()
+  code!: string
   @IsString()
   password!: string
 }
 
+class SignInDto {
+  @IsString()
+  phone!: string
+  @IsString()
+  password!: string
+}
+
+class ForgotDto {
+  @IsString()
+  phone!: string
+  @IsString()
+  code!: string
+  @IsString()
+  password!: string
+}
+
+class UpdateDto {
+  @IsString()
+  password!: string
+}
+
+
 @Controller("user")
 export class UserController {
-  constructor(private readonly authService: AuthService) {
+  constructor(
+    private readonly userService: UserService,
+    private readonly verificationCodeCache: VerificationCodeCache,
+    private readonly authService: AuthService) {
   }
 
   @Post("sendCode")
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  sendCode(@Body() dto: SendCodeDto) {
-    //TODO
-    // return this.authService.signIn(dto.phone, dto.password)
-  }
-
-  @Post("signIn")
-  signIn(@Body() dto: SignUpDto) {
-    return this.authService.signIn(dto.phone, dto.password)
+  sendCode(@Body() { phone, type }: SendCodeDto) {
+    return this.userService.sendCode(phone, type)
   }
 
   @Post("signUp")
-  signUp(@Body() dto: SignUpDto) {
-    return this.authService.signUp(dto.phone, dto.password)
+  signUp(@Body() { phone, password, code }: SignUpDto) {
+    this.userService.validator(phone, CodeTypeConstant.SIGN_UP, code).pipe(mergeMap(() =>
+      this.authService.signUp(phone, password)
+    ))
   }
 
-  @JwtAuth()
-  @Get("get")
-  get(@CurrentUser() userInfo: UserInfoEntity) {
-    return plainToClass(UserInfoVo, userInfo, { excludeExtraneousValues: true })
+  @Post("signIn")
+  signIn(@Body() { phone, password }: SignInDto) {
+    return this.authService.signIn(phone, password)
+  }
+
+  @Post("forgot")
+  forgot(@Body() { phone, password, code }: ForgotDto) {
+    this.userService.validator(phone, CodeTypeConstant.FORGOT, code).pipe(mergeMap(() =>
+      this.authService.forgot(phone, password)
+    ))
+  }
+
+  @Post("update")
+  update(@CurrentUser() info: UserInfoEntity, @Body() { password }: UpdateDto) {
+    this.userService.get(info.userId).pipe(mergeMap(user => {
+      user.password = password
+      return this.userService.save(user)
+    }))
   }
 
   // @JwtAuth()

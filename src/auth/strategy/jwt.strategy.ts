@@ -4,11 +4,15 @@ import { Inject, Injectable } from "@nestjs/common"
 import { AuthService } from "../service/auth.service"
 import { jwtConfigType } from "../config"
 import { ConfigType } from "@nestjs/config"
+import { Payload } from "../model/payload.model"
+import { mergeMap } from "rxjs/operators"
+import { AuthException } from "../../share/exception/Auth.exception"
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(@Inject(jwtConfigType.KEY)
-              private jwtConfig: ConfigType<typeof jwtConfigType>, private readonly authService: AuthService) {
+              private jwtConfig: ConfigType<typeof jwtConfigType>,
+              private readonly authService: AuthService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -16,7 +20,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     })
   }
 
-  validate(payload: { id: number }) {
-    return this.authService.getInfo(payload.id).toPromise()
+  validate({ id, createdTime }: Payload) {
+    return this.authService.get(id).pipe(
+      mergeMap(user => {
+        if (user.updateDate!.getTime() > createdTime) throw  new AuthException("请重新登录")
+        return this.authService.getInfo(id)
+      })
+    ).toPromise()
   }
 }

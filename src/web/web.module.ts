@@ -4,12 +4,13 @@ import { AuthModule } from "../auth/auth.module"
 import { DataModule } from "../data/data.module"
 import { UserService } from "./service/user.service"
 import { AppController } from "./controller/app.controller"
+import { VerificationCodeCache } from "./cache/verification-code.cache"
 
 @Module({
   imports: [DataModule,
     AuthModule],
   controllers: [AppController, UserController],
-  providers: [UserService],
+  providers: [UserService, VerificationCodeCache],
   exports: []
 })
 export class WebModule {

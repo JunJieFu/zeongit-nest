@@ -10,6 +10,8 @@ import { fromPromise } from "rxjs/internal-compatibility"
 import { nullable } from "../../share/fragment/pipe.function"
 import { map, mergeMap } from "rxjs/operators"
 import { UserInfoCache } from "../../data/cache/user-info.cache"
+import { Payload } from "../model/payload.model"
+import { UserCache } from "../../data/cache/user.cache"
 
 @Injectable()
 export class AuthService {
@@ -17,6 +19,7 @@ export class AuthService {
     @Inject(jwtConfigType.KEY)
     private jwtConfig: ConfigType<typeof jwtConfigType>,
     private readonly jwtService: JwtService,
+    private readonly userCache: UserCache,
     private readonly userInfoCache: UserInfoCache,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
@@ -25,24 +28,12 @@ export class AuthService {
   ) {
   }
 
-  private getUserByPhone(phone: string) {
-    return fromPromise(this.userRepository.findOne({
-      phone: phone
-    })).pipe(map(nullable("用户不存在")))
+  get(id: number) {
+    return this.userCache.get(id)
   }
 
   getInfo(id: number) {
     return this.userInfoCache.get(id)
-  }
-
-  private getInfoByUserId(userId: number) {
-    return fromPromise(this.userInfoRepository.findOne({ userId })).pipe(
-      map(nullable("用户不存在"))
-    )
-  }
-
-  private saveInfo(userInfo: UserInfoEntity) {
-    return this.userInfoRepository.save(userInfo)
   }
 
   signUp(phone: string, password: string) {
@@ -51,7 +42,7 @@ export class AuthService {
         if (count) {
           throw new HttpException("手机号码已存在", HttpStatus.FORBIDDEN)
         }
-        return fromPromise(this.userRepository.save(new UserEntity(phone, password)))
+        return this.save(new UserEntity(phone, password))
       }), mergeMap(user => this.saveInfo(
         new UserInfoEntity(user.id!, "镜花水月", "简介")
       )), map(info => this.sign(info.id!)))
@@ -67,11 +58,35 @@ export class AuthService {
       }), map(info => this.sign(info.id!)))
   }
 
-  private sign(id: number) {
-    return this.jwtService.sign({ id })
+  forgot(phone: string, password: string) {
+    return this.getUserByPhone(phone).pipe(mergeMap(user => {
+        user.password = password
+        return this.save(user)
+      }
+    ))
   }
 
-  test() {
-    return this.jwtConfig.secretKey
+  private save(user: UserEntity){
+    return this.userCache.save(user)
+  }
+
+  private saveInfo(userInfo: UserInfoEntity){
+    return this.userInfoCache.save(userInfo)
+  }
+
+  private getUserByPhone(phone: string) {
+    return fromPromise(this.userRepository.findOne({
+      phone: phone
+    })).pipe(nullable("用户不存在"))
+  }
+
+  private getInfoByUserId(userId: number) {
+    return fromPromise(this.userInfoRepository.findOne({ userId })).pipe(
+      nullable("用户不存在")
+    )
+  }
+
+  private sign(id: number) {
+    return this.jwtService.sign(new Payload(id))
   }
 }
