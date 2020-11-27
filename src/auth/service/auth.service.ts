@@ -12,6 +12,7 @@ import { map, mergeMap } from "rxjs/operators"
 import { UserInfoCache } from "../../data/cache/user-info.cache"
 import { Payload } from "../model/payload.model"
 import { UserCache } from "../../data/cache/user.cache"
+import { classToPlain } from "class-transformer"
 
 @Injectable()
 export class AuthService {
@@ -49,7 +50,7 @@ export class AuthService {
   }
 
   signIn(phone: string, password: string) {
-    this.getUserByPhone(phone).pipe(
+    return this.getUserByPhone(phone).pipe(
       mergeMap(user => {
         if (user.password === password) {
           return this.getInfoByUserId(user.id!)
@@ -87,6 +88,6 @@ export class AuthService {
   }
 
   private sign(id: number) {
-    return this.jwtService.sign(new Payload(id))
+    return this.jwtService.sign(classToPlain(new Payload(id)))
   }
 }
