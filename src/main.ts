@@ -4,11 +4,13 @@ import { AllExceptionsFilter } from "./share/filter/http-exception.filter"
 import { AdviceInterceptor } from "./share/interceptor/advice.interceptor"
 import { ValidationPipe } from "@nestjs/common"
 import { NestExpressApplication } from "@nestjs/platform-express"
-
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const cookieParser = require("cookie-parser")
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true
   })
+  app.use(cookieParser());
   app.useGlobalFilters(new AllExceptionsFilter())
   app.useGlobalInterceptors(new AdviceInterceptor())
   app.useGlobalPipes(new ValidationPipe({

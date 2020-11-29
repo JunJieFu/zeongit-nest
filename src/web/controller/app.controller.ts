@@ -1,6 +1,7 @@
-import { Controller, Get } from "@nestjs/common"
+import { Controller, Get, Req } from "@nestjs/common"
 import { UserInfoCache } from "../../data/cache/user-info.cache"
 import { mergeMap } from "rxjs/operators"
+import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 
 @Controller()
 export class AppController {
@@ -9,8 +10,9 @@ export class AppController {
   ) {
   }
 
+  @JwtAuth()
   @Get()
-  get() {
+  get(@Req() req: any) {
     return "Hello"
   }
 
