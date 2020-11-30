@@ -1,11 +1,13 @@
 import { Body, Controller, Get } from "@nestjs/common"
 import { Type } from "class-transformer"
 import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
-import { UserInfoEntity } from "../../data/entity/user-info.entity"
+import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { UserInfoService } from "../service/user-info.service"
 import { Gender } from "../../data/constant/gender.constant"
 import { IsDate, IsEnum, IsOptional, IsString } from "class-validator"
+import { UserService } from "../service/user.service"
+import { map } from "rxjs/operators"
 
 class UserInfoDto {
   @IsEnum(Gender)
@@ -42,7 +44,9 @@ class UserInfoDto {
 @Controller("userInfo")
 export class UserInfoController {
   constructor(
-    private readonly userInfoService: UserInfoService) {
+    private readonly userInfoService: UserInfoService,
+    private readonly userService: UserService
+  ) {
   }
 
   @JwtAuth()
@@ -74,10 +78,27 @@ export class UserInfoController {
     return this.userInfoService.save(userInfo)
   }
 
-// @JwtAuth()
-// @Post("getByPhone")
-// getByPhone():
-//   NestResponse<any> {
-//   return this.userService.getByPhone("123")
-// }
+  @JwtAuth()
+  @Get("updateAvatar")
+  updateAvatar(@CurrentUser() userInfo: UserInfoEntity,
+               @Body("url") url: string) {
+    //TODO
+    userInfo.avatar = url
+    return this.userInfoService.save(userInfo)
+  }
+
+  @JwtAuth()
+  @Get("updateBackground")
+  updateBackground(@CurrentUser() userInfo: UserInfoEntity,
+                   @Body("url") url: string) {
+    //TODO
+    userInfo.background = url
+    return this.userInfoService.save(userInfo)
+  }
+
+  @JwtAuth()
+  @Get("getUpdatePasswordDate")
+  getUpdatePasswordDate(@CurrentUser() userInfo: UserInfoEntity) {
+    return this.userService.get(userInfo.userId).pipe(map(it => it.updateDate!))
+  }
 }

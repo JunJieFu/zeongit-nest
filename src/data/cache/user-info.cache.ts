@@ -1,7 +1,7 @@
 import { CACHE_MANAGER, CacheStore, Inject, Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
-import { UserInfoEntity } from "../entity/user-info.entity"
+import { UserInfoEntity } from "../entity/account/user-info.entity"
 import { deserialize, serialize } from "class-transformer"
 import { fromPromise } from "rxjs/internal-compatibility"
 import { map, mergeMap } from "rxjs/operators"

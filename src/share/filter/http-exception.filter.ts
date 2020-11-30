@@ -21,9 +21,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
     let message
     if (exception instanceof BadRequestException) {
       message = (exception.getResponse() as any).message[0]
+    } else if (exception instanceof HttpException) {
+      message = exception.message
     }
     response.status(status).json(
-      new Result(status, message ?? (exception as HttpException).message ?? "服务器错误", {
+      new Result(status, message ?? "服务器错误", {
         timestamp: new Date().toISOString(),
         path: request.url
       })

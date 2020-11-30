@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { Repository } from "typeorm"
 import { InjectRepository } from "@nestjs/typeorm"
-import { UserInfoEntity } from "../../data/entity/user-info.entity"
+import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { UserInfoCache } from "../../data/cache/user-info.cache"
 
 

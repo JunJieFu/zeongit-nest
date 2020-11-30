@@ -1,10 +1,10 @@
-import { BaseEntity } from "../../share/entity/base.entity"
+import { BaseEntity } from "../../../share/entity/base.entity"
 import { Column, Entity } from "typeorm"
-import { UserState } from "../constant/user-state.constant"
-import { Gender } from "../constant/gender.constant"
+import { UserState } from "../../constant/user-state.constant"
+import { Gender } from "../../constant/gender.constant"
 import {
   UserInitState
-} from "../constant/user-info-state.constant"
+} from "../../constant/user-info-state.constant"
 
 @Entity("user_info")
 export class UserInfoEntity extends BaseEntity{
@@ -36,8 +36,8 @@ export class UserInfoEntity extends BaseEntity{
   @Column({ name: "city", nullable: true })
   city?: string
 
-  @Column({ name: "avatarUrl", nullable: true })
-  avatarUrl?: string
+  @Column({ name: "avatar", nullable: true })
+  avatar?: string
 
   @Column({ name: "background", nullable: true })
   background?: string

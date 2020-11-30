@@ -20,7 +20,7 @@ export class AccountConfigService implements TypeOrmOptionsFactory {
       username: this.accountConfig.username,
       password: this.accountConfig.password,
       database: this.accountConfig.name,
-      entities: [path.join(__dirname, "..", "/**/*.entity{.ts,.js}")],
+      entities: [path.join(__dirname, "..", "/**/account/*.entity{.ts,.js}")],
       synchronize: true
     }
   }

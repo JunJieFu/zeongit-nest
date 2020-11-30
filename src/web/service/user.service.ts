@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common"
-import { UserEntity } from "../../data/entity/user.entity"
+import { UserEntity } from "../../data/entity/account/user.entity"
 import { Repository } from "typeorm"
 import { InjectRepository } from "@nestjs/typeorm"
 import { IPaginationOptions, paginate } from "nestjs-typeorm-paginate"

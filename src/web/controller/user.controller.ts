@@ -1,15 +1,16 @@
 import { Body, Controller, Post } from "@nestjs/common"
 import { AuthService } from "../../auth/service/auth.service"
-import { IsEnum, IsString } from "class-validator"
+import { IsEnum, IsMobilePhone, IsString } from "class-validator"
 import { CodeTypeConstant } from "../constant/code-type.constant"
 import { UserService } from "../service/user.service"
 import { VerificationCodeCache } from "../cache/verification-code.cache"
 import { mergeMap } from "rxjs/operators"
 import { CurrentUser } from "../../auth/decorator/current-user.decorator"
-import { UserInfoEntity } from "../../data/entity/user-info.entity"
+import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 
 class SendCodeDto {
   @IsString()
+  @IsMobilePhone("zh-CN", { strictMode: false }, { message: "请输入正确的手机号码" })
   phone!: string
 
   @IsEnum(CodeTypeConstant)
@@ -18,6 +19,7 @@ class SendCodeDto {
 
 class SignUpDto {
   @IsString()
+  @IsMobilePhone("zh-CN", { strictMode: false }, { message: "请输入正确的手机号码" })
   phone!: string
   @IsString()
   code!: string
@@ -27,6 +29,7 @@ class SignUpDto {
 
 class SignInDto {
   @IsString()
+  @IsMobilePhone("zh-CN", { strictMode: false }, { message: "请输入正确的手机号码" })
   phone!: string
   @IsString()
   password!: string
@@ -34,6 +37,7 @@ class SignInDto {
 
 class ForgotDto {
   @IsString()
+  @IsMobilePhone("zh-CN", { strictMode: false }, { message: "请输入正确的手机号码" })
   phone!: string
   @IsString()
   code!: string
