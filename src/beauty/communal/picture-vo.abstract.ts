@@ -5,36 +5,23 @@ import { PictureDocument } from "../../data/document/beauty/picture.document"
 import { PictureVo } from "../vo/picture.vo"
 import { PrivacyState } from "../../data/constant/privacy-state.constant"
 import { PermissionException } from "../../share/exception/permission.exception"
-import { map, mergeMap } from "rxjs/operators"
 
 export abstract class PictureVoAbstract extends UserInfoVoAbstract {
   abstract pictureDocumentService: PictureDocumentService
 
   abstract collectionService: CollectionService
 
-  getPictureVoById(pictureId: number, userId?: number) {
-    return this.pictureDocumentService.get(pictureId).pipe(
-      mergeMap((it) => {
-        return this.getPictureVo(it, userId)
-      })
-    )
+  async getPictureVoById(pictureId: number, userId?: number) {
+    return this.getPictureVo(await this.pictureDocumentService.get(pictureId), userId)
   }
 
-  getPictureVo(picture: PictureDocument, userId?: number) {
+  async getPictureVo(picture: PictureDocument, userId?: number) {
     if (picture.privacy == PrivacyState.PRIVATE && picture.createdBy !== userId) {
       throw new PermissionException("你没有权限查看该图片")
     }
     const pictureVo = new PictureVo(picture)
-    return this.collectionService.getCollectState(pictureVo.id!, userId!).pipe(
-      mergeMap(it => {
-          pictureVo.focus = it
-          return this.getUserInfoVoById(picture.createdBy, userId)
-        }
-      ),
-      map(it => {
-        pictureVo.user = it
-        return pictureVo
-      })
-    )
+    pictureVo.focus = await this.collectionService.getCollectState(pictureVo.id!, userId!)
+    pictureVo.user = await this.getUserInfoVoById(picture.createdBy, userId)
+    return pictureVo
   }
 }
