@@ -60,7 +60,7 @@ export class PictureDocumentRepository {
 
   private generateQuery(
     {
-      tagList,
+      tagList = [],
       precise,
       name,
       startDate,

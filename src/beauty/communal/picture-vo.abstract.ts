@@ -25,7 +25,7 @@ export abstract class PictureVoAbstract extends UserInfoVoAbstract {
       throw new PermissionException("你没有权限查看该图片")
     }
     const pictureVo = new PictureVo(picture)
-    return this.collectionService.exists(pictureVo.id!, userId!).pipe(
+    return this.collectionService.getCollectState(pictureVo.id!, userId!).pipe(
       mergeMap(it => {
           pictureVo.focus = it
           return this.getUserInfoVoById(picture.createdBy, userId)
