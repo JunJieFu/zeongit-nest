@@ -8,6 +8,6 @@ export class UserInfoService {
   }
 
   get(id: number) {
-    return fromPromise(this.userInfoRepository.findOne({ id })).pipe(nullable("用户不存在"))
+    return fromPromise(this.userInfoRepository.findOne({ id })).pipe(nullable("用户不存在")).toPromise()
   }
 }

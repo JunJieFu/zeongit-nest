@@ -1,6 +1,5 @@
 import { Controller, Get, Req } from "@nestjs/common"
 import { UserInfoCache } from "../../data/cache/user-info.cache"
-import { mergeMap } from "rxjs/operators"
 import { UserService } from "../service/user.service"
 
 @Controller()
@@ -21,8 +20,8 @@ export class AppController {
   }
 
   @Get("save")
-  save() {
-    return this.userInfoCache.get(1).pipe(
-      mergeMap(userInfo => this.userInfoCache.save(userInfo)))
+  async save() {
+    const info = await this.userInfoCache.get(1)
+    return this.userInfoCache.save(info)
   }
 }

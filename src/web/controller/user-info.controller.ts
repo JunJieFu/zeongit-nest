@@ -7,7 +7,6 @@ import { UserInfoService } from "../service/user-info.service"
 import { Gender } from "../../data/constant/gender.constant"
 import { IsDate, IsEnum, IsOptional, IsString } from "class-validator"
 import { UserService } from "../service/user.service"
-import { map } from "rxjs/operators"
 
 class UserInfoDto {
   @IsEnum(Gender)
@@ -98,7 +97,8 @@ export class UserInfoController {
 
   @JwtAuth()
   @Get("getUpdatePasswordDate")
-  getUpdatePasswordDate(@CurrentUser() userInfo: UserInfoEntity) {
-    return this.userService.get(userInfo.userId).pipe(map(it => it.updateDate!))
+  async getUpdatePasswordDate(@CurrentUser() userInfo: UserInfoEntity) {
+    const user = await this.userService.get(userInfo.userId)
+    return user.updateDate
   }
 }

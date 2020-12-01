@@ -1,6 +1,5 @@
 import { CACHE_MANAGER, CacheStore, Inject, Injectable } from "@nestjs/common"
 import { fromPromise } from "rxjs/internal-compatibility"
-import { map } from "rxjs/operators"
 import { nullable } from "../../share/fragment/pipe.function"
 import { CodeTypeConstant } from "../constant/code-type.constant"
 
@@ -12,17 +11,17 @@ export class VerificationCodeCache {
   }
 
   get(phone: string, type: CodeTypeConstant) {
-    return fromPromise(this.cacheManager.get(GET_KEY + type + ":" + phone) as Promise<string | undefined>).pipe(nullable("验证码不存在"))
+    return fromPromise(this.cacheManager.get(GET_KEY + type + ":" + phone) as Promise<string | undefined>).pipe(nullable("验证码不存在")).toPromise()
   }
 
-  save(phone: string, type: CodeTypeConstant, code: string) {
-    return fromPromise(this.cacheManager.set(GET_KEY + type + ":" + phone, code, {
+  async save(phone: string, type: CodeTypeConstant, code: string) {
+    await this.cacheManager.set(GET_KEY + type + ":" + phone, code, {
       ttl: 600
-    }) as Promise<void>).pipe(
-      map(() => code))
+    })
+    return code
   }
 
   remove(phone: string, type: CodeTypeConstant) {
-    return fromPromise(this.cacheManager.del(GET_KEY + type + ":" + phone) as Promise<void>)
+    return this.cacheManager.del(GET_KEY + type + ":" + phone)
   }
 }

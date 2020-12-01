@@ -9,6 +9,6 @@ export class PictureDocumentService {
   }
 
   get(id: number) {
-    return this.pictureDocumentRepository.get(id).pipe(nullable("图片不存在"))
+    return this.pictureDocumentRepository.get(id).pipe(nullable("图片不存在")).toPromise()
   }
 }

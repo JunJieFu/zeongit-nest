@@ -5,7 +5,6 @@ import { AuthService } from "../service/auth.service"
 import { jwtConfigType } from "../config"
 import { ConfigType } from "@nestjs/config"
 import { Payload } from "../model/payload.model"
-import { mergeMap } from "rxjs/operators"
 import { AuthException } from "../../share/exception/Auth.exception"
 
 @Injectable()
@@ -20,12 +19,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     })
   }
 
-  validate({ id, createdTime }: Payload) {
-    return this.authService.get(id).pipe(
-      mergeMap(user => {
-        if (user.updateDate!.getTime() > createdTime) throw  new AuthException("请重新登录")
-        return this.authService.getInfo(id)
-      })
-    ).toPromise()
+  async validate({ id, createdTime }: Payload) {
+    const user =  await this.authService.get(id)
+    if (user.updateDate!.getTime() > createdTime) throw  new AuthException("请重新登录")
+    return this.authService.getInfo(id)
   }
 }

@@ -4,7 +4,7 @@ import { Repository } from "typeorm"
 import { UserEntity } from "../entity/account/user.entity"
 import { deserialize, serialize } from "class-transformer"
 import { fromPromise } from "rxjs/internal-compatibility"
-import { map, mergeMap } from "rxjs/operators"
+import { mergeMap } from "rxjs/operators"
 import { of } from "rxjs"
 import { nullable } from "../../share/fragment/pipe.function"
 
@@ -25,13 +25,13 @@ export class UserCache {
         } else {
           return fromPromise(this.userRepository.findOne({ id }))
         }
-      }), nullable("用户不存在"))
+      }), nullable("用户不存在")).toPromise()
   }
 
-  save(user: UserEntity) {
-    return fromPromise(this.cacheManager.set(GET_KEY + user.id!, serialize(user), {
+  async save(user: UserEntity) {
+    await this.cacheManager.set(GET_KEY + user.id!, serialize(user), {
       ttl: 360
-    }) as Promise<void>).pipe(
-      map(() => user))
+    })
+    return user
   }
 }

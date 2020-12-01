@@ -8,6 +8,7 @@ import { fromPromise } from "rxjs/internal-compatibility"
 import { map } from "rxjs/operators"
 import { plainToClass } from "class-transformer"
 import { PictureDocument } from "../document/beauty/picture.document"
+import { nullable } from "../../share/fragment/pipe.function"
 
 interface Query {
   tagList: string[]
@@ -33,7 +34,7 @@ export class PictureDocumentRepository {
     return fromPromise(this.elasticsearchService.get({
       id: id.toString(),
       index: ZEONGIT_BEAUTY_PICTURE
-    })).pipe(map(it => plainToClass(PictureDocument, it.body._source as PictureDocument | undefined)))
+    })).pipe(map(it => plainToClass(PictureDocument, it.body._source as PictureDocument | undefined)), nullable("图片不存在")).toPromise()
   }
 
   paging(pageable: Pageable, query: Query) {
@@ -55,7 +56,7 @@ export class PictureDocumentRepository {
           totalPages: Math.ceil(hits.total / pageable.limit),
           currentPage: pageable.page
         })
-    }))
+    })).toPromise()
   }
 
   private generateQuery(

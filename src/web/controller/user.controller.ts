@@ -4,7 +4,6 @@ import { IsEnum, IsMobilePhone, IsString } from "class-validator"
 import { CodeTypeConstant } from "../constant/code-type.constant"
 import { UserService } from "../service/user.service"
 import { VerificationCodeCache } from "../cache/verification-code.cache"
-import { mergeMap } from "rxjs/operators"
 import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 
@@ -65,10 +64,9 @@ export class UserController {
   }
 
   @Post("signUp")
-  signUp(@Body() { phone, password, code }: SignUpDto) {
-    this.userService.validator(phone, CodeTypeConstant.SIGN_UP, code).pipe(mergeMap(() =>
-      this.authService.signUp(phone, password)
-    ))
+  async signUp(@Body() { phone, password, code }: SignUpDto) {
+    await this.userService.validator(phone, CodeTypeConstant.SIGN_UP, code)
+    return this.authService.signUp(phone, password)
   }
 
   @Post("signIn")
@@ -77,18 +75,16 @@ export class UserController {
   }
 
   @Post("forgot")
-  forgot(@Body() { phone, password, code }: ForgotDto) {
-    this.userService.validator(phone, CodeTypeConstant.FORGOT, code).pipe(mergeMap(() =>
-      this.authService.forgot(phone, password)
-    ))
+  async forgot(@Body() { phone, password, code }: ForgotDto) {
+    await this.userService.validator(phone, CodeTypeConstant.FORGOT, code)
+    return this.authService.forgot(phone, password)
   }
 
   @Post("update")
-  update(@CurrentUser() info: UserInfoEntity, @Body() { password }: UpdateDto) {
-    this.userService.get(info.userId).pipe(mergeMap(user => {
-      user.password = password
-      return this.userService.save(user)
-    }))
+  async update(@CurrentUser() info: UserInfoEntity, @Body() { password }: UpdateDto) {
+    const user = await this.userService.get(info.userId)
+    user.password = password
+    return this.userService.save(user)
   }
 
   // @JwtAuth()

@@ -8,7 +8,6 @@ import { ConfigType } from "@nestjs/config"
 import { jwtConfigType } from "../config"
 import { fromPromise } from "rxjs/internal-compatibility"
 import { nullable } from "../../share/fragment/pipe.function"
-import { map, mergeMap } from "rxjs/operators"
 import { UserInfoCache } from "../../data/cache/user-info.cache"
 import { Payload } from "../model/payload.model"
 import { UserCache } from "../../data/cache/user.cache"
@@ -37,34 +36,31 @@ export class AuthService {
     return this.userInfoCache.get(id)
   }
 
-  signUp(phone: string, password: string) {
-    return fromPromise(this.userRepository.count({ phone })).pipe(
-      mergeMap(count => {
-        if (count) {
-          throw new HttpException("手机号码已存在", HttpStatus.FORBIDDEN)
-        }
-        return this.save(new UserEntity(phone, password))
-      }), mergeMap(user => this.saveInfo(
-        new UserInfoEntity(user.id!, "镜花水月", "简介")
-      )), map(info => this.sign(info.id!)))
+  async signUp(phone: string, password: string) {
+    const count  = this.userRepository.count({ phone })
+    if (count) {
+      throw new HttpException("手机号码已存在", HttpStatus.FORBIDDEN)
+    }
+    const user = await  this.save(new UserEntity(phone, password))
+    const info = await this.saveInfo(
+      new UserInfoEntity(user.id!, "镜花水月", "简介")
+    )
+    return this.sign(info.id!)
   }
 
-  signIn(phone: string, password: string) {
-    return this.getUserByPhone(phone).pipe(
-      mergeMap(user => {
-        if (user.password === password) {
-          return this.getInfoByUserId(user.id!)
-        }
-        throw new HttpException("密码错误", HttpStatus.UNAUTHORIZED)
-      }), map(info => this.sign(info.id!)))
+  async signIn(phone: string, password: string) {
+    const user = await this.getUserByPhone(phone)
+    if (user.password === password) {
+      const info = await  this.getInfoByUserId(user.id!)
+      return this.sign(info.id!)
+    }
+    throw new HttpException("密码错误", HttpStatus.UNAUTHORIZED)
   }
 
-  forgot(phone: string, password: string) {
-    return this.getUserByPhone(phone).pipe(mergeMap(user => {
-        user.password = password
-        return this.save(user)
-      }
-    ))
+  async forgot(phone: string, password: string) {
+    const user = await this.getUserByPhone(phone)
+    user.password = password
+    return this.save(user)
   }
 
   private save(user: UserEntity){
@@ -78,13 +74,13 @@ export class AuthService {
   private getUserByPhone(phone: string) {
     return fromPromise(this.userRepository.findOne({
       phone: phone
-    })).pipe(nullable("用户不存在"))
+    })).pipe(nullable("用户不存在")).toPromise()
   }
 
   private getInfoByUserId(userId: number) {
     return fromPromise(this.userInfoRepository.findOne({ userId })).pipe(
       nullable("用户不存在")
-    )
+    ).toPromise()
   }
 
   private sign(id: number) {
