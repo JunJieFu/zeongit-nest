@@ -15,7 +15,11 @@ export class ComplaintEntity extends AskEntity {
   @Column({ name: "content", type: "text" })
   content: string
 
-  @Column({ name: "state", type: "text" })
+  @Column({
+    name: "state",
+    type: "enum",
+    enum: ReadState
+  })
   state: ReadState = ReadState.WAIT
 
   constructor(userInfoId: number, pictureId: number, content: string) {

@@ -21,15 +21,27 @@ export class PictureEntity extends AskEntity {
   introduction: string
 
   //是否公开
-  @Column({ name: "privacy" })
+  @Column({
+    name: "privacy",
+    type: "enum",
+    enum: PrivacyState
+  })
   privacy: PrivacyState = PrivacyState.PUBLIC
 
   //图片状态
-  @Column({ name: "state" })
+  @Column({
+    name: "state",
+    type: "enum",
+    enum: PictureState
+  })
   state: PictureState = PictureState.NORMAL
 
   //是否存在，不存在不建立索引
-  @Column({ name: "life" })
+  @Column({
+    name: "life",
+    type: "enum",
+    enum: PictureLifeState
+  })
   life: PictureLifeState = PictureLifeState.EXIST
 
   //宽度
@@ -41,7 +53,11 @@ export class PictureEntity extends AskEntity {
   height: number
 
   //图片类型
-  @Column({ name: "aspect_ratio" })
+  @Column({
+    name: "aspect_ratio",
+    type: "enum",
+    enum: AspectRatio
+  })
   aspectRatio: AspectRatio
 
   @OneToMany(() => TagEntity, tag => tag.picture)
