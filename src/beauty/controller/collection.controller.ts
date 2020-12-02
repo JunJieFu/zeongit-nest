@@ -26,7 +26,7 @@ class FocusDto {
 
 
 @Controller("collection")
-export class UserInfoController extends PictureVoAbstract {
+export class CollectionController extends PictureVoAbstract {
   constructor(
     readonly collectionService: CollectionService,
     readonly userInfoService: UserInfoService,
