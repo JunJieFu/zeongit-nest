@@ -50,19 +50,16 @@ export class CollectionService {
         page: pageable.page,
         limit: pageable.limit
       }, {
-        where: CollectionService.getQuery(query)
+        where: this.getQuery(query)
       })
   }
 
-  private static getQuery(query: PagingQuery) {
-    const where: Record<string, any> = {}
+  private getQuery(query: PagingQuery) {
+    const where = {} as Record<keyof CollectionEntity, any>
     where.createdBy = query.targetId
-    if (query.startDate) {
-      where.createDate = MoreThanOrEqual(query.startDate)
-    }
-    if (query.endDate) {
-      where.createDate = LessThanOrEqual(query.endDate)
-    }
+    where.pictureId = query.pictureId
+    where.createDate = query.startDate ? MoreThanOrEqual(query.startDate) : undefined
+    where.createDate = query.endDate ? LessThanOrEqual(query.endDate) : undefined
     return where
   }
 }

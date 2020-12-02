@@ -6,7 +6,7 @@ import { Pagination } from "nestjs-typeorm-paginate"
 import { ZEONGIT_BEAUTY_PICTURE } from "../constant/document-index.constant"
 import { fromPromise } from "rxjs/internal-compatibility"
 import { map } from "rxjs/operators"
-import { plainToClass } from "class-transformer"
+import { classToPlain, plainToClass } from "class-transformer"
 import { PictureDocument } from "../document/beauty/picture.document"
 import { nullable } from "../../share/fragment/pipe.function"
 
@@ -30,12 +30,23 @@ export class PictureDocumentRepository {
   constructor(private readonly elasticsearchService: ElasticsearchService) {
   }
 
+  async save(pictureDocument: PictureDocument) {
+    await this.elasticsearchService.index({
+      id: pictureDocument.id.toString(),
+      index: ZEONGIT_BEAUTY_PICTURE,
+      type: "_doc",
+      body: classToPlain(pictureDocument)
+    })
+    return this.get(pictureDocument.id)
+  }
+
   get(id: number) {
     return fromPromise(this.elasticsearchService.get({
       id: id.toString(),
       index: ZEONGIT_BEAUTY_PICTURE
     })).pipe(map(it => plainToClass(PictureDocument, it.body._source as PictureDocument | undefined)), nullable("图片不存在")).toPromise()
   }
+
 
   paging(pageable: Pageable, query: Query) {
     return fromPromise(this.elasticsearchService.search({

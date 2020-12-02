@@ -14,8 +14,8 @@ export class PictureDocumentService {
     return fromPromise(this.pictureDocumentRepository.get(id)).pipe(nullable("图片不存在")).toPromise()
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   saveLikeAmount(picture: PictureDocument, count: number) {
-    //TODO
+    picture.likeAmount = count
+    return this.pictureDocumentRepository.save(picture)
   }
 }

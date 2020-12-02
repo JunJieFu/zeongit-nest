@@ -5,12 +5,12 @@ import {
 } from "typeorm"
 
 export abstract class BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: "id" })
   id?: number
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: "create_date" })
   createDate?: Date
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: "update_date" })
   updateDate?: Date
 }

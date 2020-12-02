@@ -107,4 +107,19 @@ export class UserInfoController extends PictureVoAbstract {
       throw new ProgramException("请传递参数targetId")
     }
   }
+
+  @Get("pagingUser")
+  async pagingUser(@PageableDefault() pageable: Pageable, @Query() query: PagingQuery, @CurrentUser() userInfo?: UserInfoEntity) {
+    if (query.pictureId) {
+      const page = await this.collectionService.paging(pageable, query)
+      const followingList = []
+      for (const it of page.items) {
+        followingList.push(await this.getUserInfoVoById(it.createdBy!, userInfo?.id))
+      }
+      return new Pagination(followingList, page.meta, page.links)
+    } else {
+      throw new ProgramException("请传递参数pictureId")
+    }
+  }
+
 }
