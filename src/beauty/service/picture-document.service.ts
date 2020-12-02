@@ -18,4 +18,9 @@ export class PictureDocumentService {
     picture.likeAmount = count
     return this.pictureDocumentRepository.save(picture)
   }
+
+  saveViewAmount(picture: PictureDocument, count: number) {
+    picture.viewAmount = count
+    return this.pictureDocumentRepository.save(picture)
+  }
 }
