@@ -29,12 +29,12 @@ export class FollowService {
     })) ? FollowState.CONCERNED : FollowState.STRANGE
   }
 
-  save(follower: UserInfoEntity, followingId: number) {
-    return this.followRepository.save(new FollowEntity(follower.id!, followingId))
+  save(followingId: number, { id: followerId }: UserInfoEntity) {
+    return this.followRepository.save(new FollowEntity(followerId!, followingId))
   }
 
-  del(follower: UserInfoEntity, followingId: number) {
-    return this.followRepository.remove({ createdBy: follower.id!, followingId })
+  remove(followingId: number, { id: followerId }: UserInfoEntity) {
+    return this.followRepository.remove({ createdBy: followerId!, followingId })
   }
 
   pagingByFollowerId(pageable: Pageable, followerId: number) {
