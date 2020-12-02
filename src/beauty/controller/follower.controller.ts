@@ -9,7 +9,7 @@ import { UserInfoService } from "../service/user-info.service"
 import { Pagination } from "nestjs-typeorm-paginate"
 
 @Controller("follower")
-export class FollowController extends UserInfoVoAbstract {
+export class FollowerController extends UserInfoVoAbstract {
   constructor(
     readonly userInfoService: UserInfoService,
     readonly followService: FollowService) {
