@@ -1,7 +1,11 @@
 import { InjectRepository } from "@nestjs/typeorm"
-import { Repository } from "typeorm"
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm"
 import { PictureBlackHoleEntity } from "../../data/entity/beauty/picture-black-hole.entity"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
+import { Pageable } from "../../share/model/pageable.model"
+import { PagingQuery } from "../query/picture-black-hole.query"
+import { paginate } from "nestjs-typeorm-paginate"
+import { FootprintEntity } from "../../data/entity/beauty/footprint.entity"
 
 export class PictureBlackHoleService {
   constructor(
@@ -28,4 +32,21 @@ export class PictureBlackHoleService {
     })
   }
 
+  paging(pageable: Pageable, query: PagingQuery) {
+    return paginate(
+      this.pictureBlackHoleRepository, {
+        page: pageable.page,
+        limit: pageable.limit
+      }, {
+        where: this.getQuery(query)
+      })
+  }
+
+  private getQuery(query: PagingQuery) {
+    const where = {} as Record<keyof FootprintEntity, any>
+    where.createdBy = query.userInfoId
+    where.createDate = query.startDate ? MoreThanOrEqual(query.startDate) : undefined
+    where.createDate = query.endDate ? LessThanOrEqual(query.endDate) : undefined
+    return where
+  }
 }

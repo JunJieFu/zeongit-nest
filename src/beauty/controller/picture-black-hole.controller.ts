@@ -19,6 +19,11 @@ import { BlackHoleVo } from "../vo/black-hole.vo"
 import { UserBlackHoleVo } from "../vo/user-black-hole.vo"
 import { TagBlackHoleVo } from "../vo/tag-black-hole.vo"
 import { PictureBlackHoleVo } from "../vo/picture-black-hole.vo"
+import { PageableDefault } from "../../share/decorator/pageable-default.decorator"
+import { Pageable } from "../../share/model/pageable.model"
+import { PagingQuery } from "../query/picture-black-hole.query"
+import { PrivacyState } from "../../data/constant/privacy-state.constant"
+import { Pagination } from "nestjs-typeorm-paginate"
 
 class SaveDto {
   @IsInt()
@@ -97,5 +102,32 @@ export class PictureBlackHoleController extends PictureVoAbstract {
       pictureVo.name
     )
     return new BlackHoleVo(userBlackHoleVo, tagBlackHoleVoList, pictureBlackHoleVo)
+  }
+
+  @JwtAuth()
+  @Get("paging")
+  async paging(@CurrentUser() userInfo: UserInfoEntity, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
+    query.userInfoId = userInfo.id
+    const page = await this.pictureBlackHoleService.paging(pageable, query)
+    const blackList = []
+    for (const pictureBlackHole of page.items) {
+      let pictureBlackHoleVo: PictureBlackHoleVo
+      try {
+        const picture = await this.pictureDocumentService.get(pictureBlackHole.targetId)
+        //图片被隐藏
+        pictureBlackHoleVo = new PictureBlackHoleVo(pictureBlackHole.targetId,
+          BlockState.SHIELD,
+          picture.privacy === PrivacyState.PRIVATE ? undefined : picture.url,
+          picture.name
+        )
+      } catch (e) {
+        if (e instanceof NotFoundException || e instanceof PermissionException) {
+          pictureBlackHoleVo = new PictureBlackHoleVo(pictureBlackHole.targetId, BlockState.SHIELD)
+        }
+        throw e
+      }
+      blackList.push(pictureBlackHoleVo)
+    }
+    return new Pagination(blackList, page.meta, page.links)
   }
 }
