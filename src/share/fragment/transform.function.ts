@@ -1,7 +1,11 @@
-export const parseArrayTransformFn = (value: any) => {
+export const parseArrayTransformFn = (value: unknown) => {
   if (Array.isArray(value)) {
     return value
   } else {
-    return [value]
+    if (value !== undefined) {
+      return [value]
+    } else {
+      return []
+    }
   }
 }

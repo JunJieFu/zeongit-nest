@@ -9,6 +9,7 @@ import { map } from "rxjs/operators"
 import { classToPlain, plainToClass } from "class-transformer"
 import { PictureDocument } from "../document/beauty/picture.document"
 import { nullable } from "../../share/fragment/pipe.function"
+import { PrivacyState } from "../constant/privacy-state.constant"
 
 interface Query {
   tagList: string[]
@@ -17,11 +18,11 @@ interface Query {
   startDate?: Date
   endDate?: Date
   aspectRatio?: AspectRatio
-  privacy: boolean
+  privacy?: PrivacyState
   mustUserList: number[]
   userBlacklist: number[]
   pictureBlacklist: number[]
-  tagBlacklist: number[]
+  tagBlacklist: string[]
 }
 
 
@@ -48,7 +49,7 @@ export class PictureDocumentRepository {
   }
 
 
-  paging(pageable: Pageable, query: Query) {
+  paging(pageable: Pageable, query: Query){
     return fromPromise(this.elasticsearchService.search({
       index: ZEONGIT_BEAUTY_PICTURE,
       body: {
@@ -58,7 +59,7 @@ export class PictureDocumentRepository {
       }
     })).pipe(map(it => {
       const hits = it.body.hit
-      new Pagination(
+      return new Pagination(
         plainToClass(PictureDocument, hits.hits.map((it: any) => it._source)),
         {
           itemCount: hits.hits.length as number,

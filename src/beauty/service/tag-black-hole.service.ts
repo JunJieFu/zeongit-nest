@@ -16,4 +16,13 @@ export class TagBlackHoleService {
     })
   }
 
+  async listBlacklist(userInfoId?: number) {
+    const userBlacklist: string[] = []
+    if (userInfoId) {
+      userBlacklist.push.apply(null, (await this.tagBlackHoleRepository.find({
+        createdBy: userInfoId
+      })).map(it => it.tag))
+    }
+    return userBlacklist
+  }
 }
