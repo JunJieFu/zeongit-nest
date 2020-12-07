@@ -11,17 +11,17 @@ export abstract class PictureVoAbstract extends UserInfoVoAbstract {
 
   abstract collectionService: CollectionService
 
-  async getPictureVoById(pictureId: number, userId?: number) {
-    return this.getPictureVo(await this.pictureDocumentService.get(pictureId), userId)
+  async getPictureVoById(pictureId: number, userInfoId?: number) {
+    return this.getPictureVo(await this.pictureDocumentService.get(pictureId), userInfoId)
   }
 
-  async getPictureVo(picture: PictureDocument, userId?: number) {
-    if (picture.privacy == PrivacyState.PRIVATE && picture.createdBy !== userId) {
+  async getPictureVo(picture: PictureDocument, userInfoId?: number) {
+    if (picture.privacy == PrivacyState.PRIVATE && picture.createdBy !== userInfoId) {
       throw new PermissionException("你没有权限查看该图片")
     }
     const pictureVo = new PictureVo(picture)
-    pictureVo.focus = await this.collectionService.getCollectState(pictureVo.id!, userId!)
-    pictureVo.user = await this.getUserInfoVoById(picture.createdBy, userId)
+    pictureVo.focus = await this.collectionService.getCollectState(pictureVo.id!, userInfoId!)
+    pictureVo.user = await this.getUserInfoVoById(picture.createdBy, userInfoId)
     return pictureVo
   }
 }

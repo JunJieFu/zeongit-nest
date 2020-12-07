@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from "@nestjs/common"
+import { Body, Controller, Get, Inject, ParseIntPipe, Post, Query } from "@nestjs/common"
 import { IsBoolean, IsDate, IsEnum, IsOptional, IsString } from "class-validator"
 import { PictureBlackHoleService } from "../service/picture-black-hole.service"
 import { PictureVoAbstract } from "../communal/picture-vo.abstract"
@@ -17,6 +17,14 @@ import { PageableDefault } from "../../share/decorator/pageable-default.decorato
 import { parseArrayTransformFn } from "../../share/fragment/transform.function"
 import { Pagination } from "nestjs-typeorm-paginate"
 import { PictureDocument } from "../../data/document/beauty/picture.document"
+import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
+import { qiniuConfigType } from "../../qiniu/config"
+import { ConfigType } from "@nestjs/config"
+import { BucketService } from "../../qiniu/service/bucket.service"
+import { PictureEntity } from "../../data/entity/beauty/picture.entity"
+import { PrivacyState } from "../../data/constant/privacy-state.constant"
+import { TagEntity } from "../../data/entity/beauty/tag.entity"
+import { PictureService } from "../service/picture.service"
 
 class PagingDto {
   @IsString()
@@ -48,6 +56,21 @@ class PagingDto {
   aspectRatio?: AspectRatio
 }
 
+class SaveDto {
+  @IsString()
+  url!: string
+  @IsString()
+  name!: string
+  @IsString()
+  introduction!: string
+  @IsEnum(PrivacyState)
+  privacy!: PrivacyState
+  @IsString()
+  @IsOptional()
+  @Transform(parseArrayTransformFn)
+  tagList!: string[]
+}
+
 
 @Controller("picture")
 export class PictureController extends PictureVoAbstract {
@@ -56,8 +79,12 @@ export class PictureController extends PictureVoAbstract {
               private readonly tagBlackHoleService: TagBlackHoleService,
               readonly collectionService: CollectionService,
               readonly userInfoService: UserInfoService,
+              readonly pictureService: PictureService,
               readonly pictureDocumentService: PictureDocumentService,
-              readonly followService: FollowService
+              readonly followService: FollowService,
+              readonly bucketService: BucketService,
+              @Inject(qiniuConfigType.KEY)
+              private qiniuConfig: ConfigType<typeof qiniuConfigType>
   ) {
     super()
   }
@@ -80,8 +107,70 @@ export class PictureController extends PictureVoAbstract {
     return this.getPageVo(page, userInfo?.id)
   }
 
+  @JwtAuth()
+  @Get("pagingByFollowing")
+  pagingByFollowing(@CurrentUser() userInfo: UserInfoEntity, @PageableDefault() pageable: Pageable) {
+    return this.pictureDocumentService.pagingByFollowing(pageable, userInfo.id!)
+  }
 
-  private async getPageVo(page: Pagination<PictureDocument>, userInfoId?: number) {
+  @Get("pagingByRecommend")
+  pagingByRecommend(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable) {
+    return this.pictureDocumentService.pagingByRecommend(pageable, userInfo?.id)
+  }
+
+  @Get("pagingByRecommendById")
+  pagingByRecommendById(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query("id", ParseIntPipe) id: number) {
+    return this.pictureDocumentService.pagingByRecommendById(pageable, id, userInfo?.id)
+  }
+
+  @Get("get")
+  get(@CurrentUser() userInfo: UserInfoEntity | undefined, @Query("id", ParseIntPipe) id: number) {
+    return this.getPictureVoById(id, userInfo?.id)
+  }
+
+  /**
+   * 获取tag第一张
+   * 会移到ES搜索
+   */
+  @Get("getFirstByTag")
+  async getFirstByTag(@CurrentUser() userInfo: UserInfoEntity | undefined, name: string) {
+    return this.getPictureVo(await this.pictureDocumentService.getFirstByTag(name, userInfo?.id), userInfo?.id)
+  }
+
+
+  /**
+   * 按tag统计图片
+   */
+  @Get("countByTag")
+  countByTag(name: string) {
+    return this.pictureDocumentService.countByTag(name)
+  }
+
+  /**
+   * 保存图片
+   */
+  @JwtAuth()
+  @Post("save")
+  async save(@CurrentUser() userInfo: UserInfoEntity, @Body() dto: SaveDto) {
+    await this.bucketService.move(dto.url, this.qiniuConfig.qiniuPictureBucket, this.qiniuConfig.qiniuTemporaryBucket)
+    const
+      imageInfo = await this.bucketService.getImageInfo(
+        dto.url,
+        this.qiniuConfig.qiniuPictureBucketUrl
+      )
+    const
+      picture = new PictureEntity(userInfo.id!, dto.url,
+        imageInfo.width,
+        imageInfo.height,
+        dto.name,
+        dto.introduction,
+        dto.privacy)
+    picture.tagList.push.apply(null, dto.tagList!.map(it => new TagEntity(userInfo.id!, it)))
+    return this.getPictureVo(await this.pictureService.save(picture), userInfo.id)
+  }
+
+  private async getPageVo(page: Pagination<PictureDocument>, userInfoId ?: number
+  ) {
     const voList = []
     for (const pictureDocument of page.items) {
       voList.push(await this.getPictureVo(pictureDocument, userInfoId))

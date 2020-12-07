@@ -49,7 +49,7 @@ export class PictureDocumentRepository {
   }
 
 
-  paging(pageable: Pageable, query: Query){
+  paging(pageable: Pageable, query: Query) {
     return fromPromise(this.elasticsearchService.search({
       index: ZEONGIT_BEAUTY_PICTURE,
       body: {
@@ -69,6 +69,15 @@ export class PictureDocumentRepository {
           currentPage: pageable.page
         })
     })).toPromise()
+  }
+
+  count(query: Query) {
+    return this.elasticsearchService.count({
+      index: ZEONGIT_BEAUTY_PICTURE,
+      body: {
+        query: this.generateQuery(query)
+      }
+    })
   }
 
   private generateQuery(
