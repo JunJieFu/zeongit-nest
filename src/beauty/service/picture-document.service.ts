@@ -186,4 +186,12 @@ export class PictureDocumentService {
   remove(id: number) {
     return this.pictureDocumentRepository.remove(id)
   }
+
+  listTagTop30(userInfoId?: number) {
+    const tagBlacklist = this.tagBlackHoleService.listBlacklist(userInfoId)
+  }
+
+  listTagByUserId(userInfo:number){
+
+  }
 }
