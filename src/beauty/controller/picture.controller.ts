@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Inject, ParseIntPipe, Post, Query } from "@nestjs/common"
-import { IsBoolean, IsDate, IsEnum, IsOptional, IsString } from "class-validator"
+import { IsBoolean, IsDate, IsEnum, IsInt, IsOptional, IsString } from "class-validator"
 import { PictureBlackHoleService } from "../service/picture-black-hole.service"
 import { PictureVoAbstract } from "../communal/picture-vo.abstract"
 import { CollectionService } from "../service/collection.service"
@@ -69,6 +69,23 @@ class SaveDto {
   @IsOptional()
   @Transform(parseArrayTransformFn)
   tagList!: string[]
+}
+
+class UpdateDto {
+  @IsInt()
+  id!: number
+  @IsString()
+  @IsOptional()
+  name?: string
+  @IsString()
+  @IsOptional()
+  introduction?: string
+  @IsEnum(PrivacyState)
+  @IsOptional()
+  privacy?: PrivacyState
+  @IsString()
+  @IsOptional()
+  tagList?: string[]
 }
 
 
@@ -167,6 +184,41 @@ export class PictureController extends PictureVoAbstract {
         dto.privacy)
     picture.tagList.push.apply(null, dto.tagList!.map(it => new TagEntity(userInfo.id!, it)))
     return this.getPictureVo(await this.pictureService.save(picture), userInfo.id)
+  }
+
+  /**
+   * 保存图片
+   */
+  @JwtAuth()
+  @Post("update")
+  async update(@CurrentUser() userInfo: UserInfoEntity, @Body() dto: UpdateDto) {
+    const picture = await this.pictureService.getSelf(dto.id, userInfo.id!)
+    picture.name = dto.name ?? picture.name
+    picture.introduction = dto.introduction ?? picture.introduction
+    picture.privacy = dto.privacy ?? picture.privacy
+    if (dto.tagList) {
+      picture.tagList = dto.tagList.map(it => new TagEntity(userInfo.id!, it))
+    }
+    return this.getPictureVo(await this.pictureService.save(picture), userInfo.id)
+  }
+
+
+  @JwtAuth()
+  @Post("hide")
+  async hide(@CurrentUser() userInfo: UserInfoEntity, @Body("id", ParseIntPipe) id: number) {
+    const picture = await this.pictureService.getSelf(id, userInfo.id!)
+    return this.pictureService.hide(picture)
+  }
+
+
+  /**
+   * 逻辑删除图片
+   */
+  @JwtAuth()
+  @Post("remove")
+  async remove(@CurrentUser() userInfo: UserInfoEntity, @Body("id", ParseIntPipe) id: number) {
+    const picture = await this.pictureService.getSelf(id, userInfo.id!)
+    return this.pictureService.remove(picture)
   }
 
   private async getPageVo(page: Pagination<PictureDocument>, userInfoId ?: number

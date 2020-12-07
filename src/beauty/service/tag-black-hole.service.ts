@@ -1,6 +1,11 @@
 import { InjectRepository } from "@nestjs/typeorm"
-import { Repository } from "typeorm"
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm"
 import { TagBlackHoleEntity } from "../../data/entity/beauty/tag-black-hole.entity"
+import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
+import { Pageable } from "../../share/model/pageable.model"
+import { paginate } from "nestjs-typeorm-paginate"
+import { PagingQuery } from "../query/tag-black-hole.query"
+import { FootprintEntity } from "../../data/entity/beauty/footprint.entity"
 
 export class TagBlackHoleService {
   constructor(
@@ -16,6 +21,17 @@ export class TagBlackHoleService {
     })
   }
 
+  save(tag: string, { id: userInfoId }: UserInfoEntity) {
+    return this.tagBlackHoleRepository.save(new TagBlackHoleEntity(userInfoId!, tag))
+  }
+
+  remove(tag: string, { id: userInfoId }: UserInfoEntity) {
+    return this.tagBlackHoleRepository.delete({
+      createdBy: userInfoId,
+      tag
+    })
+  }
+
   async listBlacklist(userInfoId?: number) {
     const userBlacklist: string[] = []
     if (userInfoId) {
@@ -24,5 +40,23 @@ export class TagBlackHoleService {
       })).map(it => it.tag))
     }
     return userBlacklist
+  }
+
+  paging(pageable: Pageable, query: PagingQuery) {
+    return paginate(
+      this.tagBlackHoleRepository, {
+        page: pageable.page,
+        limit: pageable.limit
+      }, {
+        where: this.getQuery(query)
+      })
+  }
+
+  private getQuery(query: PagingQuery) {
+    const where = {} as Record<keyof FootprintEntity, any>
+    where.createdBy = query.userInfoId
+    where.createDate = query.startDate ? MoreThanOrEqual(query.startDate) : undefined
+    where.createDate = query.endDate ? LessThanOrEqual(query.endDate) : undefined
+    return where
   }
 }

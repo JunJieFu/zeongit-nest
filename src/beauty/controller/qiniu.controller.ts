@@ -12,6 +12,7 @@ class QiniuController {
   @JwtAuth()
   @Get("get")
   get() {
-    return this.qiniuConfig.qiniuAccessKey
+    //TODO
+    return ""
   }
 }

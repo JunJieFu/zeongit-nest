@@ -182,4 +182,8 @@ export class PictureDocumentService {
     picture.viewAmount = count
     return this.pictureDocumentRepository.save(picture)
   }
+
+  remove(id: number) {
+    return this.pictureDocumentRepository.remove(id)
+  }
 }

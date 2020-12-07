@@ -80,6 +80,14 @@ export class PictureDocumentRepository {
     })
   }
 
+  remove(id: number) {
+    return this.elasticsearchService.delete({
+      index: ZEONGIT_BEAUTY_PICTURE,
+      type: "_doc",
+      id: id.toString()
+    })
+  }
+
   private generateQuery(
     {
       tagList = [],
