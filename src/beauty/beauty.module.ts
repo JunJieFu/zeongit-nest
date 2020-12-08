@@ -14,6 +14,17 @@ import { QiniuController } from "./controller/qiniu.controller"
 import { TagController } from "./controller/tag.controller"
 import { TagBlackHoleController } from "./controller/tag-black-hole.controller"
 import { UserInfoController } from "./controller/user-info.controller"
+import { CollectionService } from "./service/collection.service"
+import { ComplaintService } from "./service/complaint.service"
+import { FeedbackService } from "./service/feedback.service"
+import { FollowService } from "./service/follow.service"
+import { FootprintService } from "./service/footprint.service"
+import { PictureService } from "./service/picture.service"
+import { PictureBlackHoleService } from "./service/picture-black-hole.service"
+import { PictureDocumentService } from "./service/picture-document.service"
+import { TagBlackHoleService } from "./service/tag-black-hole.service"
+import { UserBlackHoleService } from "./service/user-black-hole.service"
+import { UserInfoService } from "./service/user-info.service"
 
 @Module({
   imports: [DataModule, AuthModule, QiniuModule],
@@ -30,7 +41,17 @@ import { UserInfoController } from "./controller/user-info.controller"
     TagBlackHoleController,
     PictureBlackHoleController,
     UserInfoController],
-  providers: [],
+  providers: [CollectionService,
+    ComplaintService,
+    FeedbackService,
+    FollowService,
+    FootprintService,
+    PictureService,
+    PictureBlackHoleService,
+    PictureDocumentService,
+    TagBlackHoleService,
+    UserBlackHoleService,
+    UserInfoService],
   exports: []
 })
 export class BeautyModule {

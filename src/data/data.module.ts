@@ -10,6 +10,7 @@ import { CacheConfigService } from "./config-service/cache-config.service"
 import { UserInfoCache } from "./cache/user-info.cache"
 import { UserCache } from "./cache/user.cache"
 import { BeautyConfigService } from "./config-service/beauty-config.service"
+import { PictureDocumentRepository } from "./repository/picture-document.repository"
 
 const configModule = ConfigModule.forRoot(
   {
@@ -37,8 +38,8 @@ const configModule = ConfigModule.forRoot(
     TypeOrmModule.forFeature([UserEntity, UserInfoEntity])
   ],
   controllers: [],
-  providers: [UserCache, UserInfoCache],
-  exports: [TypeOrmModule, CacheModule, UserCache, UserInfoCache]
+  providers: [UserCache, UserInfoCache, PictureDocumentRepository],
+  exports: [TypeOrmModule, CacheModule, UserCache, UserInfoCache, PictureDocumentRepository]
 })
 export class DataModule {
 }
