@@ -29,6 +29,8 @@ interface Query {
   tagBlacklist?: string[]
 }
 
+const TAG_LIST_AGGREGATIONS_KEY = "tag_list_count"
+
 @Injectable()
 export class PictureDocumentService {
   constructor(private readonly pictureDocumentRepository: PictureDocumentRepository,
@@ -190,18 +192,17 @@ export class PictureDocumentService {
   async listTagTop30(userInfoId?: number) {
     const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
     const query = this.generateQuery({ tagBlacklist })
-
     return this.pictureDocumentRepository.aggregations(new Pageable({
       page: 1,
       size: 30,
       sort: [new Sort("likeAmount", SortOrder.DESC)]
     }), query, {
-      terms: {
-        tagListCount: {
+      [TAG_LIST_AGGREGATIONS_KEY]: {
+        terms: {
           field: "tagList"
         }
       }
-    })
+    }).then(it => it.body.aggregations[TAG_LIST_AGGREGATIONS_KEY].buckets as { key: string, doc_count: number }[])
   }
 
   async listTagByUserId(userInfoId: number) {
@@ -213,12 +214,12 @@ export class PictureDocumentService {
       size: 30,
       sort: [new Sort("likeAmount", SortOrder.DESC)]
     }), query, {
-      terms: {
-        tagListCount: {
+      [TAG_LIST_AGGREGATIONS_KEY]: {
+        terms: {
           field: "tagList"
         }
       }
-    })
+    }).then(it => it.body.aggregations[TAG_LIST_AGGREGATIONS_KEY].buckets as { key: string, doc_count: number }[])
   }
 
   private generateQuery(
@@ -245,7 +246,7 @@ export class PictureDocumentService {
         }))
       }
     }
-    if(name){
+    if (name) {
       query.bool.must.push({
         [precise ? "term" : "match_phrase"]: {
           name
@@ -261,14 +262,14 @@ export class PictureDocumentService {
         }
       }
     })
-    if(aspectRatio){
+    if (aspectRatio) {
       query.bool.must.push({
         term: {
           aspectRatio
         }
       })
     }
-    if(privacy){
+    if (privacy) {
       query.bool.must.push({
         term: {
           privacy
