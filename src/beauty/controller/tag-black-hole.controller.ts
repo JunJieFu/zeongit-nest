@@ -8,7 +8,7 @@ import { TagBlackHoleVo } from "../vo/tag-black-hole.vo"
 import { PageableDefault } from "../../share/decorator/pageable-default.decorator"
 import { Pageable } from "../../share/model/pageable.model"
 import { Pagination } from "nestjs-typeorm-paginate"
-import { PagingQuery } from "../query/picture-black-hole.query"
+import { PagingQuery } from "../query/tag-black-hole.query"
 
 @Controller("tagBlackHole")
 export class TagBlackHoleController {

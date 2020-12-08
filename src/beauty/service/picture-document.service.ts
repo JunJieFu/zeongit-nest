@@ -192,7 +192,7 @@ export class PictureDocumentService {
     const query = this.generateQuery({ tagBlacklist })
 
     //TODO 排序
-    this.pictureDocumentRepository.aggregations(new Pageable({ page: 1, size: 30 }), query, {
+    return this.pictureDocumentRepository.aggregations(new Pageable({ page: 1, size: 30 }), query, {
       terms: {
         tagListCount: {
           field: "tagList"
@@ -205,7 +205,7 @@ export class PictureDocumentService {
     const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
     const query = this.generateQuery({ tagBlacklist, mustUserList: [userInfoId] })
     //TODO 排序
-    this.pictureDocumentRepository.aggregations(new Pageable({ page: 1, size: 30 }), query, {
+    return this.pictureDocumentRepository.aggregations(new Pageable({ page: 1, size: 30 }), query, {
       terms: {
         tagListCount: {
           field: "tagList"
