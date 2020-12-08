@@ -245,11 +245,14 @@ export class PictureDocumentService {
         }))
       }
     }
-    query.bool.must.push({
-      [precise ? "term" : "match_phrase"]: {
-        name
-      }
-    })
+    if(name){
+      query.bool.must.push({
+        [precise ? "term" : "match_phrase"]: {
+          name
+        }
+      })
+    }
+    //TODO 开始结束天
     query.bool.must.push({
       range: {
         createDate: {
@@ -258,16 +261,20 @@ export class PictureDocumentService {
         }
       }
     })
-    query.bool.must.push({
-      term: {
-        aspectRatio
-      }
-    })
-    query.bool.must.push({
-      term: {
-        privacy
-      }
-    })
+    if(aspectRatio){
+      query.bool.must.push({
+        term: {
+          aspectRatio
+        }
+      })
+    }
+    if(privacy){
+      query.bool.must.push({
+        term: {
+          privacy
+        }
+      })
+    }
 
     query.bool.must.push({
       bool: {

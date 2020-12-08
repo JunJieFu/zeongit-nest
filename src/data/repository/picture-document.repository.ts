@@ -36,13 +36,12 @@ export class PictureDocumentRepository {
     return fromPromise(this.elasticsearchService.search({
       index: ZEONGIT_BEAUTY_PICTURE,
       body: {
-        size: pageable.page,
-        from: pageable.limit * pageable.page,
-        sort: pageable.sort.map(it => ({ [it.key]: { order: it.order } })),
+        size: pageable.limit,
+        from: pageable.limit * (pageable.page - 1),
         query
       }
     })).pipe(map(it => {
-      const hits = it.body.hit
+      const hits = it.body.hits
       return new Pagination(
         plainToClass(PictureDocument, hits.hits.map((it: any) => it._source)),
         {
