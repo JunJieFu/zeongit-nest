@@ -12,17 +12,20 @@ export class TagController {
   }
 
   @Get("listTagTop30")
-  listTagTop30(@CurrentUser() userInfo?: UserInfoEntity) {
-    return
+  async listTagTop30(@CurrentUser() userInfo?: UserInfoEntity) {
+    //TODO Vo
+    return this.pictureDocumentService.listTagTop30(userInfo?.id)
   }
 
   @Get("listTagAndPictureTop30")
-  listTagAndPictureTop30(@CurrentUser() userInfo?: UserInfoEntity) {
-    return
+  async listTagAndPictureTop30(@CurrentUser() userInfo?: UserInfoEntity) {
+    const tagList = await this.pictureDocumentService.listTagTop30(userInfo?.id)
+    //TODO Vo
   }
 
   @Get("listTagFrequencyByUserId")
   listTagFrequencyByUserId(@CurrentUser() userInfo: UserInfoEntity | undefined, @Query("targetId", ParseIntPipe) targetId: number) {
-    return targetId
+    return this.pictureDocumentService.listTagByUserId(targetId)
+    //TODO vo
   }
 }
