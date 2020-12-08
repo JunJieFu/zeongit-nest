@@ -27,7 +27,7 @@ import { TagEntity } from "../../data/entity/beauty/tag.entity"
 import { PictureService } from "../service/picture.service"
 
 class PagingDto {
-  @IsString()
+  @IsString({ each: true })
   @IsOptional()
   @Transform(parseArrayTransformFn)
   tagList!: string[]
@@ -140,8 +140,7 @@ export class PictureController extends PictureVoAbstract {
 
   @Get("get")
   get(@CurrentUser() userInfo: UserInfoEntity | undefined, @Query("id", ParseIntPipe) id: number) {
-    // return this.getPictureVoById(id, userInfo?.id)
-    return this.pictureService.get(id)
+    return this.getPictureVoById(id, userInfo?.id)
   }
 
   /**
@@ -203,7 +202,7 @@ export class PictureController extends PictureVoAbstract {
 
 
   @Post("del")
-  async del(@Body("id",ParseIntPipe) id: number) {
+  async del(@Body("id", ParseIntPipe) id: number) {
     return await this.pictureService.del(id)
   }
 

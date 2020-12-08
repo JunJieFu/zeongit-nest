@@ -25,19 +25,15 @@ export class PictureVo {
 
   aspectRatio!: AspectRatio
 
-  #tagList: string[]
+  tagList: string[]
 
   focus: CollectState = CollectState.STRANGE
 
   user!: UserInfoVo
 
-  get tagList() {
-    return this.#tagList.filter(it => it !== "")
-  }
-
   constructor(picture: PictureDocument) {
     this.id = picture.id
-    this.#tagList = picture.tagList
+    this.tagList = picture.tagList
     this.name = picture.name
     this.introduction = picture.introduction
     this.privacy = picture.privacy

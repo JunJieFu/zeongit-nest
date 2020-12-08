@@ -35,7 +35,7 @@ export class UserBlackHoleService {
   async listBlacklist(userInfoId?: number) {
     const userBlacklist: number[] = []
     if (userInfoId) {
-      userBlacklist.push.apply(null, (await this.userBlackHoleRepository.find({
+      userBlacklist.push(...(await this.userBlackHoleRepository.find({
         createdBy: userInfoId
       })).map(it => it.targetId))
     }

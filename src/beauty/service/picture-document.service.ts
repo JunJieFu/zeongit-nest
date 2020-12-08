@@ -115,7 +115,7 @@ export class PictureDocumentService {
       for (const collection of collectionList.items) {
         pictureBlacklist.push(collection.pictureId)
         try {
-          tagList.push.apply(null, (await this.get(collection.pictureId)).tagList)
+          tagList.push(...(await this.get(collection.pictureId)).tagList)
         } catch (e) {
         }
       }

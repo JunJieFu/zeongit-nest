@@ -1,4 +1,4 @@
-import { Controller, Get, ParseIntPipe, Query } from "@nestjs/common"
+import { Controller, Get, Query } from "@nestjs/common"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { UserInfoService } from "../service/user-info.service"
@@ -7,7 +7,6 @@ import { FollowService } from "../service/follow.service"
 import { ProgramException } from "../../share/exception/program.exception"
 import { Type } from "class-transformer"
 import { IsOptional } from "class-validator"
-import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 
 class GetDto {
   @Type(() => Number)
@@ -26,7 +25,6 @@ export class UserInfoController extends UserInfoVoAbstract {
 
   @Get("get")
   get(@CurrentUser() userInfo: UserInfoEntity | undefined, @Query() { targetId }: GetDto) {
-    console.log(123)
     if (userInfo || targetId) {
       return this.getUserInfoVoById(targetId ?? userInfo!.id!, userInfo?.id)
     } else {

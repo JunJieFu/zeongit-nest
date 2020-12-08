@@ -33,13 +33,13 @@ export class TagBlackHoleService {
   }
 
   async listBlacklist(userInfoId?: number) {
-    const userBlacklist: string[] = []
+    const tagBlacklist: string[] = []
     if (userInfoId) {
-      userBlacklist.push.apply(null, (await this.tagBlackHoleRepository.find({
+      tagBlacklist.push(...(await this.tagBlackHoleRepository.find({
         createdBy: userInfoId
       })).map(it => it.tag))
     }
-    return userBlacklist
+    return tagBlacklist
   }
 
   paging(pageable: Pageable, query: PagingQuery) {
