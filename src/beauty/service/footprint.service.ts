@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common"
 import { CollectState } from "../../data/constant/collect-state.constant"
-import { InjectRepository } from "@nestjs/typeorm"
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm"
 import { FootprintEntity } from "../../data/entity/beauty/footprint.entity"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
@@ -9,13 +8,14 @@ import { PagingQuery } from "../query/footprint.query"
 import { paginate } from "nestjs-typeorm-paginate"
 import { fromPromise } from "rxjs/internal-compatibility"
 import { nullable } from "../../share/fragment/pipe.function"
+import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
 
 
 @Injectable()
 export class FootprintService {
 
   constructor(
-    @InjectRepository(FootprintEntity)
+    @InjectBeauty(FootprintEntity)
     private readonly footprintRepository: Repository<FootprintEntity>
   ) {
   }

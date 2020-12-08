@@ -18,6 +18,16 @@ import { UserCache } from "./cache/user.cache"
 import { BeautyConfigService } from "./config-service/beauty-config.service"
 import { PictureDocumentRepository } from "./repository/picture-document.repository"
 import { ElasticsearchModule } from "@nestjs/elasticsearch"
+import { CollectionEntity } from "./entity/beauty/collection.entity"
+import { ComplaintEntity } from "./entity/beauty/complaint.entity"
+import { FeedbackEntity } from "./entity/beauty/feedback.entity"
+import { FollowEntity } from "./entity/beauty/follow.entity"
+import { FootprintEntity } from "./entity/beauty/footprint.entity"
+import { PictureEntity } from "./entity/beauty/picture.entity"
+import { PictureBlackHoleEntity } from "./entity/beauty/picture-black-hole.entity"
+import { TagEntity } from "./entity/beauty/tag.entity"
+import { TagBlackHoleEntity } from "./entity/beauty/tag-black-hole.entity"
+import { UserBlackHoleEntity } from "./entity/beauty/user-black-hole.entity"
 
 
 const configModule = ConfigModule.forRoot(
@@ -47,17 +57,17 @@ const configModule = ConfigModule.forRoot(
     }),
     TypeOrmModule.forFeature([UserEntity,
       UserInfoEntity], ACCOUNT_CONNECTION_NAME),
-    // TypeOrmModule.forFeature([
-    //   CollectionEntity,
-    //   ComplaintEntity,
-    //   FeedbackEntity,
-    //   FollowEntity,
-    //   FootprintEntity,
-    //   PictureEntity,
-    //   PictureBlackHoleEntity,
-    //   TagEntity,
-    //   TagBlackHoleEntity,
-    //   UserBlackHoleEntity], "beauty"),
+    TypeOrmModule.forFeature([
+      CollectionEntity,
+      ComplaintEntity,
+      FeedbackEntity,
+      FollowEntity,
+      FootprintEntity,
+      PictureEntity,
+      PictureBlackHoleEntity,
+      TagEntity,
+      TagBlackHoleEntity,
+      UserBlackHoleEntity], BEAUTY_CONNECTION_NAME),
     ElasticsearchModule.register({
       node: "http://localhost:9200"
     })

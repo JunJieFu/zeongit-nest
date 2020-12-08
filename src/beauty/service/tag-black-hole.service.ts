@@ -1,4 +1,3 @@
-import { InjectRepository } from "@nestjs/typeorm"
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm"
 import { TagBlackHoleEntity } from "../../data/entity/beauty/tag-black-hole.entity"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
@@ -6,10 +5,11 @@ import { Pageable } from "../../share/model/pageable.model"
 import { paginate } from "nestjs-typeorm-paginate"
 import { PagingQuery } from "../query/tag-black-hole.query"
 import { FootprintEntity } from "../../data/entity/beauty/footprint.entity"
+import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
 
 export class TagBlackHoleService {
   constructor(
-    @InjectRepository(TagBlackHoleEntity)
+    @InjectBeauty(TagBlackHoleEntity)
     private readonly tagBlackHoleRepository: Repository<TagBlackHoleEntity>
   ) {
   }

@@ -1,14 +1,14 @@
-import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
 import { Injectable } from "@nestjs/common"
 import { ComplaintEntity } from "../../data/entity/beauty/complaint.entity"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
+import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
 
 
 @Injectable()
 export class ComplaintService {
   constructor(
-    @InjectRepository(ComplaintEntity)
+    @InjectBeauty(ComplaintEntity)
     private readonly complaintRepository: Repository<ComplaintEntity>
   ) {
   }

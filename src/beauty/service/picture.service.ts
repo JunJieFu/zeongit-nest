@@ -1,4 +1,3 @@
-import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
 import { PictureEntity } from "../../data/entity/beauty/picture.entity"
 import { PictureLifeState } from "../../data/constant/picture-life-state.constant"
@@ -9,10 +8,11 @@ import { fromPromise } from "rxjs/internal-compatibility"
 import { nullable } from "../../share/fragment/pipe.function"
 import { PermissionException } from "src/share/exception/permission.exception"
 import { PrivacyState } from "../../data/constant/privacy-state.constant"
+import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
 
 export class PictureService {
   constructor(
-    @InjectRepository(PictureEntity)
+    @InjectBeauty(PictureEntity)
     private readonly pictureRepository: Repository<PictureEntity>,
     private readonly pictureDocumentService: PictureDocumentService
   ) {

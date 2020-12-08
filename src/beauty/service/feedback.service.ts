@@ -1,13 +1,13 @@
-import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
 import { Injectable } from "@nestjs/common"
 import { FeedbackEntity } from "../../data/entity/beauty/feedback.entity"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
+import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
 
 @Injectable()
 export class FeedbackService {
   constructor(
-    @InjectRepository(FeedbackEntity)
+    @InjectBeauty(FeedbackEntity)
     private readonly feedbackRepository: Repository<FeedbackEntity>
   ) {
   }

@@ -1,17 +1,17 @@
 import { FollowState } from "../constant/follow-state.constant"
-import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
 import { FollowEntity } from "../../data/entity/beauty/follow.entity"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { Pageable } from "../../share/model/pageable.model"
 import { paginate } from "nestjs-typeorm-paginate"
 import { Injectable } from "@nestjs/common"
+import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
 
 
 @Injectable()
 export class FollowService {
   constructor(
-    @InjectRepository(FollowEntity)
+    @InjectBeauty(FollowEntity)
     private readonly followRepository: Repository<FollowEntity>
   ) {
   }

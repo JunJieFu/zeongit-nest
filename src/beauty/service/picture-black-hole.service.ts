@@ -1,4 +1,3 @@
-import { InjectRepository } from "@nestjs/typeorm"
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm"
 import { PictureBlackHoleEntity } from "../../data/entity/beauty/picture-black-hole.entity"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
@@ -6,10 +5,11 @@ import { Pageable } from "../../share/model/pageable.model"
 import { PagingQuery } from "../query/picture-black-hole.query"
 import { paginate } from "nestjs-typeorm-paginate"
 import { FootprintEntity } from "../../data/entity/beauty/footprint.entity"
+import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
 
 export class PictureBlackHoleService {
   constructor(
-    @InjectRepository(PictureBlackHoleEntity)
+    @InjectBeauty(PictureBlackHoleEntity)
     private readonly pictureBlackHoleRepository: Repository<PictureBlackHoleEntity>
   ) {
   }
