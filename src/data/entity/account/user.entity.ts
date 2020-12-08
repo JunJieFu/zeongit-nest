@@ -12,8 +12,7 @@ export class UserEntity extends BaseEntity {
 
   @Column({
     name: "state",
-    type: "enum",
-    enum: UserState
+    type: "int"
   })
   state: UserState = UserState.NORMAL
 

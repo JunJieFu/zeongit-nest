@@ -17,8 +17,7 @@ export class ComplaintEntity extends AskEntity {
 
   @Column({
     name: "state",
-    type: "enum",
-    enum: ReadState
+    type: "int"
   })
   state: ReadState = ReadState.WAIT
 

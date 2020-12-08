@@ -9,6 +9,7 @@ import { nullable } from "../../share/fragment/pipe.function"
 import { PermissionException } from "src/share/exception/permission.exception"
 import { PrivacyState } from "../../data/constant/privacy-state.constant"
 import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
+import { PictureState } from "../../data/constant/picture-state.constant"
 
 export class PictureService {
   constructor(
@@ -33,8 +34,8 @@ export class PictureService {
     return picture
   }
 
-  getByLife(id: number, life?: PictureLifeState) {
-    return fromPromise(this.pictureRepository.findOne({ id, life })).pipe(nullable("图片不存在")).toPromise()
+  async getByLife(id: number, life: PictureLifeState) {
+    return fromPromise(this.pictureRepository.findOne({ where: { id, life } })).pipe(nullable("图片不存在")).toPromise()
   }
 
   get(id: number) {

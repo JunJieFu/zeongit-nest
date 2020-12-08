@@ -13,8 +13,7 @@ export class UserInfoEntity extends BaseEntity{
 
   @Column({
     name: "gender",
-    type: "enum",
-    enum: Gender
+    type: "int"
   })
   gender: Gender = Gender.INCONVENIENT
 
@@ -44,15 +43,13 @@ export class UserInfoEntity extends BaseEntity{
 
   @Column({
     name: "state",
-    type: "enum",
-    enum: UserInitState
+    type: "int"
   })
   state: UserInitState = UserInitState.WAIT
 
   @Column({
     name: "user_state",
-    type: "enum",
-    enum: UserState
+    type: "int"
   })
   userState: UserState = UserState.NORMAL
 

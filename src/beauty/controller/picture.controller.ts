@@ -65,8 +65,7 @@ class SaveDto {
   introduction!: string
   @IsEnum(PrivacyState)
   privacy!: PrivacyState
-  @IsArray()
-  @IsOptional()
+  @IsString({ each: true })
   tagList!: string[]
 }
 
@@ -82,7 +81,7 @@ class UpdateDto {
   @IsEnum(PrivacyState)
   @IsOptional()
   privacy?: PrivacyState
-  @IsString()
+  @IsString({ each: true })
   @IsOptional()
   tagList?: string[]
 }
@@ -192,6 +191,8 @@ export class PictureController extends PictureVoAbstract {
   @Post("update")
   async update(@CurrentUser() userInfo: UserInfoEntity, @Body() dto: UpdateDto) {
     const picture = await this.pictureService.getSelf(dto.id, userInfo.id!)
+
+    console.log(picture)
     picture.name = dto.name ?? picture.name
     picture.introduction = dto.introduction ?? picture.introduction
     picture.privacy = dto.privacy ?? picture.privacy

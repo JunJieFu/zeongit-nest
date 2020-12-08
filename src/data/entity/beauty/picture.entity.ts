@@ -23,24 +23,21 @@ export class PictureEntity extends AskEntity {
   //是否公开
   @Column({
     name: "privacy",
-    type: "enum",
-    enum: PrivacyState
+    type: "int"
   })
   privacy: PrivacyState = PrivacyState.PUBLIC
 
   //图片状态
   @Column({
     name: "state",
-    type: "enum",
-    enum: PictureState
+    type: "int"
   })
   state: PictureState = PictureState.NORMAL
 
   //是否存在，不存在不建立索引
   @Column({
     name: "life",
-    type: "enum",
-    enum: PictureLifeState
+    type: "int"
   })
   life: PictureLifeState = PictureLifeState.EXIST
 
@@ -55,8 +52,7 @@ export class PictureEntity extends AskEntity {
   //图片类型
   @Column({
     name: "aspect_ratio",
-    type: "enum",
-    enum: AspectRatio
+    type: "int"
   })
   aspectRatio: AspectRatio
 
