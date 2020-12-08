@@ -6,11 +6,13 @@ import { UserService } from "./service/user.service"
 import { AppController } from "./controller/app.controller"
 import { VerificationCodeCache } from "./cache/verification-code.cache"
 import { QiniuModule } from "../qiniu/qiniu.module"
+import { UserInfoController } from "./controller/user-info.controller"
+import { UserInfoService } from "./service/user-info.service"
 
 @Module({
   imports: [DataModule, AuthModule, QiniuModule],
-  controllers: [AppController, UserController],
-  providers: [UserService, VerificationCodeCache],
+  controllers: [AppController, UserController, UserInfoController],
+  providers: [UserService, UserInfoService,VerificationCodeCache],
   exports: []
 })
 export class AccountModule {

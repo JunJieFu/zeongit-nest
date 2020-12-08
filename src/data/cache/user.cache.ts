@@ -29,7 +29,8 @@ export class UserCache {
   }
 
   async save(user: UserEntity) {
-    await this.cacheManager.set(GET_KEY + user.id!, serialize(await this.userRepository.save(user)), {
+    user = await this.userRepository.save(user)
+    await this.cacheManager.set(GET_KEY + user.id!, serialize(user), {
       ttl: 360
     })
     return user

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject } from "@nestjs/common"
+import { Body, Controller, Get, Inject, Post } from "@nestjs/common"
 import { Type } from "class-transformer"
 import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
@@ -61,7 +61,7 @@ export class UserInfoController {
   }
 
   @JwtAuth()
-  @Get("save")
+  @Post("save")
   save(@CurrentUser() userInfo: UserInfoEntity,
        @Body(){
          gender,

@@ -6,6 +6,7 @@ import { UserService } from "../service/user.service"
 import { VerificationCodeCache } from "../cache/verification-code.cache"
 import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
+import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 
 class SendCodeDto {
   @IsString()
@@ -80,9 +81,10 @@ export class UserController {
     return this.authService.forgot(phone, password)
   }
 
+  @JwtAuth()
   @Post("update")
-  async update(@CurrentUser() info: UserInfoEntity, @Body() { password }: UpdateDto) {
-    const user = await this.userService.get(info.userId)
+  async update(@CurrentUser() { userId: id }: UserInfoEntity, @Body() { password }: UpdateDto) {
+    const user = await this.userService.get(id)
     user.password = password
     return this.userService.save(user)
   }
