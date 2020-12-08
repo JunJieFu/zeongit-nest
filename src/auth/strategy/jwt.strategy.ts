@@ -21,7 +21,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate({ id, createdTime }: Payload) {
     const user = await this.authService.get(id)
-    console.log(user)
     if (user.updateDate!.getTime() > createdTime) throw  new AuthException("请重新登录")
     return this.authService.getInfo(id)
   }

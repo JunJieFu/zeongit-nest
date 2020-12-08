@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Inject, ParseIntPipe, Post, Query } from "@nestjs/common"
-import { IsBoolean, IsDate, IsEnum, IsInt, IsOptional, IsString } from "class-validator"
+import { IsArray, IsBoolean, IsDate, IsEnum, IsInt, IsOptional, IsString } from "class-validator"
 import { PictureBlackHoleService } from "../service/picture-black-hole.service"
 import { PictureVoAbstract } from "../communal/picture-vo.abstract"
 import { CollectionService } from "../service/collection.service"
@@ -65,9 +65,8 @@ class SaveDto {
   introduction!: string
   @IsEnum(PrivacyState)
   privacy!: PrivacyState
-  @IsString()
+  @IsArray()
   @IsOptional()
-  @Transform(parseArrayTransformFn)
   tagList!: string[]
 }
 
@@ -182,7 +181,7 @@ export class PictureController extends PictureVoAbstract {
         dto.name,
         dto.introduction,
         dto.privacy)
-    picture.tagList.push.apply(null, dto.tagList!.map(it => new TagEntity(userInfo.id!, it)))
+    picture.tagList = dto.tagList!.map(it => new TagEntity(userInfo.id!, it))
     return this.getPictureVo(await this.pictureService.save(picture), userInfo.id)
   }
 

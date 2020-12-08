@@ -25,7 +25,7 @@ export class PictureDocumentRepository {
     return this.get(pictureDocument.id)
   }
 
-  get(id: number) {
+  async get(id: number) {
     return fromPromise(this.elasticsearchService.get({
       id: id.toString(),
       index: ZEONGIT_BEAUTY_PICTURE

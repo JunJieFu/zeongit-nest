@@ -14,7 +14,6 @@ export class BucketService {
    * @param sourceBucket 源空间
    */
   move(url: string, bucket: string, sourceBucket: string) {
-    console.log(123)
     return url
   }
 
