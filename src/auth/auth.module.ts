@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common"
 import { PassportModule } from "@nestjs/passport"
 import { JwtModule } from "@nestjs/jwt"
-import { JwtStrategy } from "./strategy/jwt.strategy"
 import { AuthService } from "./service/auth.service"
 import { DataModule } from "../data/data.module"
 import { ConfigModule } from "@nestjs/config"
@@ -11,7 +10,8 @@ import { JwtConfigService } from "./config-service/jwt-config.service"
 
 const configModule = ConfigModule.forRoot(
   {
-    envFilePath: [...getEnvPaths()], load: [jwtConfigType, authConfigType]
+    envFilePath: [...getEnvPaths()], load: [jwtConfigType, authConfigType],
+    isGlobal: true
   }
 )
 
@@ -29,8 +29,8 @@ const configModule = ConfigModule.forRoot(
     }),
     DataModule
   ],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService]
+  providers: [AuthService],
+  exports: [AuthService, JwtModule]
 })
 export class AuthModule {
 }

@@ -5,7 +5,15 @@ import { UserInfoService } from "../service/user-info.service"
 import { UserInfoVoAbstract } from "../communal/user-info-vo.abstract"
 import { FollowService } from "../service/follow.service"
 import { ProgramException } from "../../share/exception/program.exception"
+import { Type } from "class-transformer"
+import { IsOptional } from "class-validator"
+import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 
+class GetDto {
+  @Type(() => Number)
+  @IsOptional()
+  targetId?: number
+}
 
 @Controller("userInfo")
 export class UserInfoController extends UserInfoVoAbstract {
@@ -17,7 +25,8 @@ export class UserInfoController extends UserInfoVoAbstract {
   }
 
   @Get("get")
-  get(@CurrentUser() userInfo?: UserInfoEntity, @Query("targetId", ParseIntPipe) targetId?: number) {
+  get(@CurrentUser() userInfo: UserInfoEntity | undefined, @Query() { targetId }: GetDto) {
+    console.log(123)
     if (userInfo || targetId) {
       return this.getUserInfoVoById(targetId ?? userInfo!.id!, userInfo?.id)
     } else {
