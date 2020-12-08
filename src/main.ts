@@ -34,6 +34,5 @@ async function beautyBootstrap() {
   await app.listen(9100)
 }
 
-
 accountBootstrap()
-// beautyBootstrap()
+beautyBootstrap()

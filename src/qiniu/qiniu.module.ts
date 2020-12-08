@@ -6,7 +6,8 @@ import { BucketService } from "./service/bucket.service"
 
 const configModule = ConfigModule.forRoot(
   {
-    envFilePath: [...getEnvPaths()], load: [qiniuConfigType]
+    envFilePath: [...getEnvPaths()], load: [qiniuConfigType],
+    isGlobal: true
   }
 )
 
