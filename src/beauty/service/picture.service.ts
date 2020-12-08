@@ -9,7 +9,6 @@ import { nullable } from "../../share/fragment/pipe.function"
 import { PermissionException } from "src/share/exception/permission.exception"
 import { PrivacyState } from "../../data/constant/privacy-state.constant"
 import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
-import { PictureState } from "../../data/constant/picture-state.constant"
 
 export class PictureService {
   constructor(

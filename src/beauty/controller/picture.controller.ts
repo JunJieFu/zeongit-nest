@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Inject, ParseIntPipe, Post, Query } from "@nestjs/common"
-import { IsArray, IsBoolean, IsDate, IsEnum, IsInt, IsOptional, IsString } from "class-validator"
+import { IsBoolean, IsDate, IsEnum, IsInt, IsOptional, IsString } from "class-validator"
 import { PictureBlackHoleService } from "../service/picture-black-hole.service"
 import { PictureVoAbstract } from "../communal/picture-vo.abstract"
 import { CollectionService } from "../service/collection.service"
@@ -140,7 +140,8 @@ export class PictureController extends PictureVoAbstract {
 
   @Get("get")
   get(@CurrentUser() userInfo: UserInfoEntity | undefined, @Query("id", ParseIntPipe) id: number) {
-    return this.getPictureVoById(id, userInfo?.id)
+    // return this.getPictureVoById(id, userInfo?.id)
+    return this.pictureService.get(id)
   }
 
   /**
@@ -191,8 +192,6 @@ export class PictureController extends PictureVoAbstract {
   @Post("update")
   async update(@CurrentUser() userInfo: UserInfoEntity, @Body() dto: UpdateDto) {
     const picture = await this.pictureService.getSelf(dto.id, userInfo.id!)
-
-    console.log(picture)
     picture.name = dto.name ?? picture.name
     picture.introduction = dto.introduction ?? picture.introduction
     picture.privacy = dto.privacy ?? picture.privacy
