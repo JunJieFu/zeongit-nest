@@ -22,7 +22,7 @@ class SaveDto {
 
 
 @Controller("pictureBlackHole")
-export class PictureBlackHoleController extends UserInfoVoAbstract {
+export class UserBlackHoleController extends UserInfoVoAbstract {
   constructor(private readonly userBlackHoleService: UserBlackHoleService,
               readonly userInfoService: UserInfoService,
               readonly followService: FollowService

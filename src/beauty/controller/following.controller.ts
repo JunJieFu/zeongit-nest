@@ -19,7 +19,7 @@ class FocusDto {
 }
 
 @Controller("following")
-export class FollowerController extends UserInfoVoAbstract {
+export class FollowingController extends UserInfoVoAbstract {
   constructor(
     readonly userInfoService: UserInfoService,
     readonly followService: FollowService) {

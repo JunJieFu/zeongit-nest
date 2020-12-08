@@ -4,7 +4,7 @@ import { ConfigType } from "@nestjs/config"
 import { qiniuConfigType } from "../../qiniu/config"
 
 @Controller("qiniu")
-class QiniuController {
+export class QiniuController {
   constructor(@Inject(qiniuConfigType.KEY)
               private qiniuConfig: ConfigType<typeof qiniuConfigType>) {
   }
