@@ -24,3 +24,6 @@ export const cacheConfigType = registerAs("cache", () => ({
   host: process.env.CACHE_HOST,
   port: process.env.CACHE_PORT
 }))
+
+export const ACCOUNT_CONNECTION_NAME = "account"
+export const BEAUTY_CONNECTION_NAME = "beauty"

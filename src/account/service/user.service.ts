@@ -1,17 +1,17 @@
 import { Injectable, NotFoundException } from "@nestjs/common"
 import { UserEntity } from "../../data/entity/account/user.entity"
 import { Repository } from "typeorm"
-import { InjectRepository } from "@nestjs/typeorm"
 import { IPaginationOptions, paginate } from "nestjs-typeorm-paginate"
 import { CodeTypeConstant } from "../constant/code-type.constant"
 import { VerificationCodeCache } from "../cache/verification-code.cache"
 import { ProgramException } from "../../share/exception/program.exception"
 import { UserCache } from "../../data/cache/user.cache"
+import { InjectAccount } from "../../data/decorator/inject-account.decorator"
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
+    @InjectAccount(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly userCache: UserCache,
     private readonly verificationCodeCache: VerificationCodeCache

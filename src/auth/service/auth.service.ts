@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
-import { InjectRepository } from "@nestjs/typeorm"
 import { UserEntity } from "../../data/entity/account/user.entity"
 import { Repository } from "typeorm"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
@@ -12,6 +11,7 @@ import { UserInfoCache } from "../../data/cache/user-info.cache"
 import { Payload } from "../model/payload.model"
 import { UserCache } from "../../data/cache/user.cache"
 import { classToPlain } from "class-transformer"
+import { InjectAccount } from "../../data/decorator/inject-account.decorator"
 
 @Injectable()
 export class AuthService {
@@ -21,9 +21,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly userCache: UserCache,
     private readonly userInfoCache: UserInfoCache,
-    @InjectRepository(UserEntity)
+    @InjectAccount(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(UserInfoEntity)
+    @InjectAccount(UserInfoEntity)
     private readonly userInfoRepository: Repository<UserInfoEntity>
   ) {
   }
@@ -37,11 +37,11 @@ export class AuthService {
   }
 
   async signUp(phone: string, password: string) {
-    const count  = this.userRepository.count({ phone })
+    const count = this.userRepository.count({ phone })
     if (count) {
       throw new HttpException("手机号码已存在", HttpStatus.FORBIDDEN)
     }
-    const user = await  this.save(new UserEntity(phone, password))
+    const user = await this.save(new UserEntity(phone, password))
     const info = await this.saveInfo(
       new UserInfoEntity(user.id!, "镜花水月", "简介")
     )
@@ -51,7 +51,7 @@ export class AuthService {
   async signIn(phone: string, password: string) {
     const user = await this.getUserByPhone(phone)
     if (user.password === password) {
-      const info = await  this.getInfoByUserId(user.id!)
+      const info = await this.getInfoByUserId(user.id!)
       return this.sign(info.id!)
     }
     throw new HttpException("密码错误", HttpStatus.UNAUTHORIZED)
@@ -63,11 +63,11 @@ export class AuthService {
     return this.save(user)
   }
 
-  private save(user: UserEntity){
+  private save(user: UserEntity) {
     return this.userCache.save(user)
   }
 
-  private saveInfo(userInfo: UserInfoEntity){
+  private saveInfo(userInfo: UserInfoEntity) {
     return this.userInfoCache.save(userInfo)
   }
 

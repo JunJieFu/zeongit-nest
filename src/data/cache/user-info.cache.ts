@@ -1,5 +1,4 @@
 import { CACHE_MANAGER, CacheStore, Inject, Injectable } from "@nestjs/common"
-import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
 import { UserInfoEntity } from "../entity/account/user-info.entity"
 import { deserialize, serialize } from "class-transformer"
@@ -7,6 +6,7 @@ import { fromPromise } from "rxjs/internal-compatibility"
 import { mergeMap } from "rxjs/operators"
 import { of } from "rxjs"
 import { nullable } from "../../share/fragment/pipe.function"
+import { InjectAccount } from "../decorator/inject-account.decorator"
 
 
 const GET_KEY = "user_info:get:"
@@ -14,7 +14,7 @@ const GET_KEY = "user_info:get:"
 @Injectable()
 export class UserInfoCache {
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: CacheStore,
-              @InjectRepository(UserInfoEntity) private readonly userInfoRepository: Repository<UserInfoEntity>
+              @InjectAccount(UserInfoEntity) private readonly userInfoRepository: Repository<UserInfoEntity>
   ) {
   }
 

@@ -13,5 +13,5 @@ import { QiniuModule } from "../qiniu/qiniu.module"
   providers: [UserService, VerificationCodeCache],
   exports: []
 })
-export class WebModule {
+export class AccountModule {
 }
