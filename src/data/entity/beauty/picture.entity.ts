@@ -61,8 +61,7 @@ export class PictureEntity extends AskEntity {
   aspectRatio: AspectRatio
 
   @OneToMany(() => TagEntity, tag => tag.picture)
-  @Column({ name: "tag_list" })
-  tagList: TagEntity[] = []
+  tagList!: TagEntity[]
 
   constructor(userInfoId: number, url: string, width: number, height: number, name?: string, introduction?: string, privacy: PrivacyState = PrivacyState.PUBLIC) {
     super(userInfoId)

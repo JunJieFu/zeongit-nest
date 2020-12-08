@@ -6,7 +6,7 @@ import { ReadState } from "../../constant/read-state.conatnat"
  * @author fjj
  */
 @Entity("complaint")
-@Index(["picture_id", "created_by"], { unique: true })
+@Index(["pictureId", "createdBy"], { unique: true })
 export class ComplaintEntity extends AskEntity {
   //被关注的人的id
   @Column({ name: "picture_id" })

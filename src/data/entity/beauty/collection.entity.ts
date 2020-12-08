@@ -5,7 +5,7 @@ import { AskEntity } from "../../../share/entity/ask.entity"
  * @author fjj
  */
 @Entity("collection")
-@Index(["picture_id", "created_by"], { unique: true })
+@Index(["pictureId", "createdBy"], { unique: true })
 export class CollectionEntity extends AskEntity {
   //被关注的人的id
   @Column({ name: "picture_id" })
