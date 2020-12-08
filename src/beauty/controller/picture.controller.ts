@@ -186,7 +186,7 @@ export class PictureController extends PictureVoAbstract {
   }
 
   /**
-   * 保存图片
+   * 更新图片
    */
   @JwtAuth()
   @Post("update")
@@ -199,6 +199,12 @@ export class PictureController extends PictureVoAbstract {
       picture.tagList = dto.tagList.map(it => new TagEntity(userInfo.id!, it))
     }
     return this.getPictureVo(await this.pictureService.save(picture), userInfo.id)
+  }
+
+
+  @Post("del")
+  async del(@Body("id",ParseIntPipe) id: number) {
+    return await this.pictureService.del(id)
   }
 
 

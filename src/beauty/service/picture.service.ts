@@ -9,18 +9,27 @@ import { nullable } from "../../share/fragment/pipe.function"
 import { PermissionException } from "src/share/exception/permission.exception"
 import { PrivacyState } from "../../data/constant/privacy-state.constant"
 import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
+import { TagService } from "./tag.service"
 
 export class PictureService {
   constructor(
     @InjectBeauty(PictureEntity)
     private readonly pictureRepository: Repository<PictureEntity>,
-    private readonly pictureDocumentService: PictureDocumentService
+    private readonly pictureDocumentService: PictureDocumentService,
+    private readonly tagService: TagService
   ) {
+  }
+
+  async del(id: number) {
+    return this.pictureRepository.delete({ id })
   }
 
   async save(picture: PictureEntity, force = false) {
     if (picture.life == PictureLifeState.DISAPPEAR && !force) {
       throw new NotFoundException("图片不存在")
+    }
+    if(picture.id){
+      await this.tagService.remove(picture.id)
     }
     return this.pictureDocumentService.save(new PictureDocument(await this.pictureRepository.save(picture)))
   }

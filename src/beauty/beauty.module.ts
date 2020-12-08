@@ -25,6 +25,7 @@ import { PictureDocumentService } from "./service/picture-document.service"
 import { TagBlackHoleService } from "./service/tag-black-hole.service"
 import { UserBlackHoleService } from "./service/user-black-hole.service"
 import { UserInfoService } from "./service/user-info.service"
+import { TagService } from "./service/tag.service"
 
 @Module({
   imports: [DataModule, AuthModule, QiniuModule],
@@ -49,6 +50,7 @@ import { UserInfoService } from "./service/user-info.service"
     PictureService,
     PictureBlackHoleService,
     PictureDocumentService,
+    TagService,
     TagBlackHoleService,
     UserBlackHoleService,
     UserInfoService],

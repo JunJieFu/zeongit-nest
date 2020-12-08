@@ -57,7 +57,7 @@ export class PictureEntity extends AskEntity {
   aspectRatio: AspectRatio
 
   @OneToMany(() => TagEntity, tag => tag.picture, {
-    eager: true, cascade: true
+    eager: true, cascade: true, nullable: false
   })
   tagList?: TagEntity[]
 
