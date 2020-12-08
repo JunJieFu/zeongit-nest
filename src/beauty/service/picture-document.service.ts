@@ -4,7 +4,7 @@ import { nullable } from "../../share/fragment/pipe.function"
 import { fromPromise } from "rxjs/internal-compatibility"
 import { PictureDocument } from "../../data/document/beauty/picture.document"
 import { AspectRatio } from "../../data/constant/aspect-ratio.constant"
-import { Pageable } from "../../share/model/pageable.model"
+import { Pageable, Sort } from "../../share/model/pageable.model"
 import { PrivacyState } from "../../data/constant/privacy-state.constant"
 import { PictureBlackHoleService } from "./picture-black-hole.service"
 import { UserBlackHoleService } from "./user-black-hole.service"
@@ -12,6 +12,7 @@ import { TagBlackHoleService } from "./tag-black-hole.service"
 import { CollectionService } from "./collection.service"
 import { FollowService } from "./follow.service"
 import { Pagination } from "nestjs-typeorm-paginate"
+import { SortOrder } from "../../share/constant/sort-order.constant"
 
 interface Query {
   userInfoId?: number
@@ -147,8 +148,7 @@ export class PictureDocumentService {
     const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(userInfoId)
     const userBlacklist = await this.userBlackHoleService.listBlacklist(userInfoId)
 
-    //TODO 排序
-    return (await this.paging(new Pageable({ page: 1, size: 1 }),
+    return (await this.paging(new Pageable({ page: 1, size: 1, sort: [new Sort("likeAmount", SortOrder.DESC)] }),
       {
         tagList: [tag],
         precise: true,
@@ -191,8 +191,11 @@ export class PictureDocumentService {
     const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
     const query = this.generateQuery({ tagBlacklist })
 
-    //TODO 排序
-    return this.pictureDocumentRepository.aggregations(new Pageable({ page: 1, size: 30 }), query, {
+    return this.pictureDocumentRepository.aggregations(new Pageable({
+      page: 1,
+      size: 30,
+      sort: [new Sort("likeAmount", SortOrder.DESC)]
+    }), query, {
       terms: {
         tagListCount: {
           field: "tagList"
@@ -204,8 +207,12 @@ export class PictureDocumentService {
   async listTagByUserId(userInfoId: number) {
     const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
     const query = this.generateQuery({ tagBlacklist, mustUserList: [userInfoId] })
-    //TODO 排序
-    return this.pictureDocumentRepository.aggregations(new Pageable({ page: 1, size: 30 }), query, {
+
+    return this.pictureDocumentRepository.aggregations(new Pageable({
+      page: 1,
+      size: 30,
+      sort: [new Sort("likeAmount", SortOrder.DESC)]
+    }), query, {
       terms: {
         tagListCount: {
           field: "tagList"

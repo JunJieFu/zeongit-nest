@@ -43,12 +43,14 @@ export class TagBlackHoleService {
   }
 
   paging(pageable: Pageable, query: PagingQuery) {
+
     return paginate(
       this.tagBlackHoleRepository, {
         page: pageable.page,
         limit: pageable.limit
       }, {
-        where: this.getQuery(query)
+        where: this.getQuery(query),
+        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order]))
       })
   }
 

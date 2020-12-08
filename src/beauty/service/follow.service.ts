@@ -43,7 +43,8 @@ export class FollowService {
         page: pageable.page,
         limit: pageable.limit
       }, {
-        createdBy: followerId
+        createdBy: followerId,
+        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order]))
       })
   }
 
@@ -53,7 +54,8 @@ export class FollowService {
         page: pageable.page,
         limit: pageable.limit
       }, {
-        followingId
+        followingId,
+        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order]))
       })
   }
 

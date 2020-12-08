@@ -38,6 +38,7 @@ export class PictureDocumentRepository {
       body: {
         size: pageable.page,
         from: pageable.limit * pageable.page,
+        sort: pageable.sort.map(it => ({ [it.key]: { order: it.order } })),
         query
       }
     })).pipe(map(it => {
@@ -76,6 +77,7 @@ export class PictureDocumentRepository {
       index: ZEONGIT_BEAUTY_PICTURE,
       body: {
         size: pageable.page,
+        sort: pageable.sort.map(it => ({ [it.key]: { order: it.order } })),
         from: pageable.limit * pageable.page,
         query,
         aggs

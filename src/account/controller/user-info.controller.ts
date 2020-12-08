@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from "@nestjs/common"
+import { Body, Controller, Get, Inject } from "@nestjs/common"
 import { Type } from "class-transformer"
 import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
@@ -7,6 +7,9 @@ import { UserInfoService } from "../service/user-info.service"
 import { Gender } from "../../data/constant/gender.constant"
 import { IsDate, IsEnum, IsOptional, IsString } from "class-validator"
 import { UserService } from "../service/user.service"
+import { BucketService } from "../../qiniu/service/bucket.service"
+import { qiniuConfigType } from "../../qiniu/config"
+import { ConfigType } from "@nestjs/config"
 
 class UserInfoDto {
   @IsEnum(Gender)
@@ -44,7 +47,10 @@ class UserInfoDto {
 export class UserInfoController {
   constructor(
     private readonly userInfoService: UserInfoService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly bucketService: BucketService,
+    @Inject(qiniuConfigType.KEY)
+    private qiniuConfig: ConfigType<typeof qiniuConfigType>
   ) {
   }
 
@@ -79,19 +85,25 @@ export class UserInfoController {
 
   @JwtAuth()
   @Get("updateAvatar")
-  updateAvatar(@CurrentUser() userInfo: UserInfoEntity,
+ async updateAvatar(@CurrentUser() userInfo: UserInfoEntity,
                @Body("url") url: string) {
-    //TODO
+    await this.bucketService.move(url, this.qiniuConfig.qiniuAvatarBucket, this.qiniuConfig.qiniuTemporaryBucket)
+    if(userInfo.avatar){
+      await this.bucketService.move(userInfo.avatar, this.qiniuConfig.qiniuTemporaryBucket, this.qiniuConfig.qiniuAvatarBucket)
+    }
     userInfo.avatar = url
     return this.userInfoService.save(userInfo)
   }
 
   @JwtAuth()
   @Get("updateBackground")
-  updateBackground(@CurrentUser() userInfo: UserInfoEntity,
-                   @Body("url") url: string) {
-    //TODO
-    userInfo.background = url
+  async updateBackground(@CurrentUser() userInfo: UserInfoEntity,
+                         @Body("url") url: string) {
+    await this.bucketService.move(url, this.qiniuConfig.qiniuBackgroundBucket, this.qiniuConfig.qiniuTemporaryBucket)
+    if(userInfo.avatar){
+      await this.bucketService.move(userInfo.avatar, this.qiniuConfig.qiniuTemporaryBucket, this.qiniuConfig.qiniuBackgroundBucket)
+    }
+    userInfo.avatar = url
     return this.userInfoService.save(userInfo)
   }
 
