@@ -27,3 +27,5 @@ export const cacheConfigType = registerAs("cache", () => ({
 
 export const ACCOUNT_CONNECTION_NAME = "account"
 export const BEAUTY_CONNECTION_NAME = "beauty"
+
+export const ZEONGIT_BEAUTY_PICTURE = "zeongit_beauty_picture"

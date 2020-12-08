@@ -30,7 +30,7 @@ export class UserInfoCache {
   }
 
   async save(userInfo: UserInfoEntity) {
-    await this.cacheManager.set(GET_KEY + userInfo.id!, serialize(userInfo), {
+    await this.cacheManager.set(GET_KEY + userInfo.id!, serialize(await this.userInfoRepository.save(userInfo)), {
       ttl: 360
     })
     return userInfo

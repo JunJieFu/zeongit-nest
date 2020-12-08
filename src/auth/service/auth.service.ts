@@ -37,7 +37,7 @@ export class AuthService {
   }
 
   async signUp(phone: string, password: string) {
-    const count = this.userRepository.count({ phone })
+    const count = await this.userRepository.count({ phone })
     if (count) {
       throw new HttpException("手机号码已存在", HttpStatus.FORBIDDEN)
     }

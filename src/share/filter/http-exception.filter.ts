@@ -24,6 +24,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     } else if (exception instanceof HttpException) {
       message = exception.message
     }
+    console.log(exception)
     response.status(status).json(
       new Result(status, message ?? "服务器错误", {
         timestamp: new Date().toISOString(),

@@ -2,12 +2,12 @@ import { Injectable } from "@nestjs/common"
 import { ElasticsearchService } from "@nestjs/elasticsearch"
 import { Pageable } from "../../share/model/pageable.model"
 import { Pagination } from "nestjs-typeorm-paginate"
-import { ZEONGIT_BEAUTY_PICTURE } from "../constant/document-index.constant"
 import { fromPromise } from "rxjs/internal-compatibility"
 import { map } from "rxjs/operators"
 import { classToPlain, plainToClass } from "class-transformer"
 import { PictureDocument } from "../document/beauty/picture.document"
 import { nullable } from "../../share/fragment/pipe.function"
+import { ZEONGIT_BEAUTY_PICTURE } from "../config"
 
 
 @Injectable()
