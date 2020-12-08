@@ -16,7 +16,7 @@ export class PictureDocument {
   tagList: string[]
   createdBy: number
   createDate: Date
-  lastModifiedDate: Date
+  updateDate: Date
 
   constructor(picture: PictureEntity) {
     this.id = picture.id!
@@ -30,6 +30,6 @@ export class PictureDocument {
     this.tagList = picture.tagList.map(it => it.name)
     this.createdBy = picture.createdBy!
     this.createDate = picture.createDate!
-    this.lastModifiedDate = picture.updateDate!
+    this.updateDate = picture.updateDate!
   }
 }
