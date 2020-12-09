@@ -33,7 +33,7 @@ export class PictureVo {
 
   constructor(picture: PictureDocument) {
     this.id = picture.id
-    this.tagList = picture.tagList
+    this.tagList = picture.tagList.filter(it => it !== "")
     this.name = picture.name
     this.introduction = picture.introduction
     this.privacy = picture.privacy

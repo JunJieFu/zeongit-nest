@@ -200,10 +200,12 @@ export class PictureDocumentService {
     }), query, {
       [TAG_LIST_AGGREGATIONS_KEY]: {
         terms: {
-          field: "tagList"
+          field: "tagList",
+          size: 30,
         }
       }
     }).then(it => it.body.aggregations[TAG_LIST_AGGREGATIONS_KEY].buckets as { key: string, doc_count: number }[])
+      .then(it => it.filter(item => item.key !== ""))
   }
 
   async listTagByUserId(userInfoId: number) {
@@ -217,10 +219,12 @@ export class PictureDocumentService {
     }), query, {
       [TAG_LIST_AGGREGATIONS_KEY]: {
         terms: {
-          field: "tagList"
+          field: "tagList",
+          size: 30,
         }
       }
     }).then(it => it.body.aggregations[TAG_LIST_AGGREGATIONS_KEY].buckets as { key: string, doc_count: number }[])
+      .then(it => it.filter(item => item.key !== ""))
   }
 
   private generateQuery(
@@ -263,7 +267,6 @@ export class PictureDocumentService {
         }
       }
     })
-    console.log(startDate, endDate)
     if (typeof aspectRatio !== "undefined") {
       query.bool.must.push({
         term: {

@@ -76,8 +76,6 @@ export class PictureDocumentRepository {
     return this.elasticsearchService.search({
       index: ZEONGIT_BEAUTY_PICTURE,
       body: {
-        size: pageable.limit,
-        from: pageable.limit * (pageable.page - 1),
         sort: pageable.sort.map(it => ({ [it.key]: { order: it.order } })),
         query,
         aggs
@@ -95,7 +93,7 @@ export class PictureDocumentRepository {
         })
         list.push(classToPlain(pictureDocument))
       } catch (e) {
-        console.log(e.message)
+        console.log(e)
       }
     }
     this.elasticsearchService.bulk({ index: ZEONGIT_BEAUTY_PICTURE, type: "_doc", body: list })
