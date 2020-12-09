@@ -13,6 +13,10 @@ import { Pageable } from "../../share/model/pageable.model"
 import { Pagination } from "nestjs-typeorm-paginate"
 import { UserInfoVoAbstract } from "../communal/user-info-vo.abstract"
 import { PagingQuery } from "../query/user-black-hole.query"
+import { PictureDocumentService } from "../service/picture-document.service"
+import { TagBlackHoleVo } from "../vo/tag-black-hole.vo"
+import { TagBlackHoleService } from "../service/tag-black-hole.service"
+import { BlackHoleVo } from "../vo/black-hole.vo"
 
 class SaveDto {
   @IsInt()
@@ -21,9 +25,11 @@ class SaveDto {
 }
 
 
-@Controller("pictureBlackHole")
+@Controller("userBlackHole")
 export class UserBlackHoleController extends UserInfoVoAbstract {
   constructor(private readonly userBlackHoleService: UserBlackHoleService,
+              private readonly tagBlackHoleService: TagBlackHoleService,
+              private readonly pictureDocumentService: PictureDocumentService,
               readonly userInfoService: UserInfoService,
               readonly followService: FollowService
   ) {
@@ -53,12 +59,14 @@ export class UserBlackHoleController extends UserInfoVoAbstract {
       (await this.userBlackHoleService.count(userInfoId!, targetId)) ? BlockState.SHIELD : BlockState.NORMAL,
       vo.avatar, vo.nickname
     )
+    const tagList = await this.pictureDocumentService.listTagByUserId(targetId)
 
+    const tagBlackHoleVoList = []
 
-    // TODO
-    // const tagBlackHoleVo = (await this.pictureDocumentService.listTagByUserId(targetId)).map(it =>
-    //   new TagBlackHoleVo(it.keyAsString, (await this.tagBlackHoleService.get(userInfoId, it.keyAsString)) ? BlockState.SHIELD : BlockState.NORMAL)
-    // )
+    for (const tag of tagList) {
+      tagBlackHoleVoList.push(new TagBlackHoleVo(tag.key, (await this.tagBlackHoleService.count(userInfoId!, tag.key)) ? BlockState.SHIELD : BlockState.NORMAL))
+    }
+    return new BlackHoleVo(userBlackHoleVo, tagBlackHoleVoList)
   }
 
   @JwtAuth()

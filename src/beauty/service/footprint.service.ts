@@ -72,7 +72,9 @@ export class FootprintService {
 
   private getQuery(query: PagingQuery) {
     const where = {} as Record<keyof FootprintEntity, any>
-    where.createdBy = query.targetId
+    if (typeof query.targetId !== "undefined") {
+      where.createdBy = query.targetId
+    }
     if (typeof query.pictureId !== "undefined") {
       where.pictureId = query.pictureId
     }

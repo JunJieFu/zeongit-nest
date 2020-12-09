@@ -48,7 +48,7 @@ export class FollowingController extends UserInfoVoAbstract {
     const page = await this.followService.pagingByFollowerId(pageable, targetId)
     const voList = []
     for (const it of page.items) {
-      voList.push(this.getUserInfoVoById(it.createdBy!, userInfo?.id))
+      voList.push(await this.getUserInfoVoById(it.followingId!, userInfo?.id))
     }
     return new Pagination(voList, page.meta, page.links)
   }

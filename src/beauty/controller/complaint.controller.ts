@@ -4,8 +4,10 @@ import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 import { IsInt, IsString } from "class-validator"
 import { ComplaintService } from "../service/complaint.service"
+import { Type } from "class-transformer"
 
 class SaveDto {
+  @Type(()=>Number)
   @IsInt()
   pictureId!: number
 

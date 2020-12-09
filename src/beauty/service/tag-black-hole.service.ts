@@ -4,7 +4,6 @@ import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { Pageable } from "../../share/model/pageable.model"
 import { paginate } from "nestjs-typeorm-paginate"
 import { PagingQuery } from "../query/tag-black-hole.query"
-import { FootprintEntity } from "../../data/entity/beauty/footprint.entity"
 import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
 
 export class TagBlackHoleService {
@@ -55,7 +54,7 @@ export class TagBlackHoleService {
   }
 
   private getQuery(query: PagingQuery) {
-    const where = {} as Record<keyof FootprintEntity, any>
+    const where = {} as Record<keyof TagBlackHoleEntity, any>
     where.createdBy = query.userInfoId
     if (typeof query.startDate !== "undefined" && typeof query.endDate !== "undefined") {
       where.createDate = Between(query.startDate, query.endDate)

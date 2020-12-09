@@ -7,7 +7,6 @@ import { Pageable } from "../../share/model/pageable.model"
 import { PagingQuery } from "../query/collection.query"
 import { paginate } from "nestjs-typeorm-paginate"
 import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
-import { FootprintEntity } from "../../data/entity/beauty/footprint.entity"
 
 
 @Injectable()
@@ -57,8 +56,10 @@ export class CollectionService {
   }
 
   private getQuery(query: PagingQuery) {
-    const where = {} as Record<keyof FootprintEntity, any>
-    where.createdBy = query.targetId
+    const where = {} as Record<keyof CollectionEntity, any>
+    if (typeof query.targetId !== "undefined") {
+      where.createdBy = query.targetId
+    }
     if (typeof query.pictureId !== "undefined") {
       where.pictureId = query.pictureId
     }
