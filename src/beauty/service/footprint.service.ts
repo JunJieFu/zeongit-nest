@@ -59,14 +59,14 @@ export class FootprintService {
     return this.footprintRepository.count({ pictureId })
   }
 
-  paging(pageable: Pageable, query: PagingQuery) {
+  async paging(pageable: Pageable, query: PagingQuery) {
     return paginate(
       this.footprintRepository, {
         page: pageable.page,
         limit: pageable.limit
       }, {
         where: this.getQuery(query),
-        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order]))
+        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order.toUpperCase()]))
       })
   }
 

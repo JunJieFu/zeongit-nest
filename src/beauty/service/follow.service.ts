@@ -46,7 +46,7 @@ export class FollowService {
         where: {
           createdBy: followerId
         },
-        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order]))
+        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order.toUpperCase()]))
       })
   }
 
@@ -59,7 +59,7 @@ export class FollowService {
         where: {
           followingId
         },
-        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order]))
+        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order.toUpperCase()]))
       })
   }
 

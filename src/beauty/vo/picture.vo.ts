@@ -7,6 +7,10 @@ import { AspectRatio } from "../../data/constant/aspect-ratio.constant"
 export class PictureVo {
   id: number
 
+  createDate: Date
+
+  updateDate: Date
+
   name!: string
 
   introduction!: string
@@ -33,6 +37,8 @@ export class PictureVo {
 
   constructor(picture: PictureDocument) {
     this.id = picture.id
+    this.createDate = picture.createDate
+    this.updateDate = picture.updateDate
     this.tagList = picture.tagList.filter(it => it !== "")
     this.name = picture.name
     this.introduction = picture.introduction

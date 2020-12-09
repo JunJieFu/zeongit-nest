@@ -38,7 +38,7 @@ export class PictureBlackHoleService {
         limit: pageable.limit
       }, {
         where: this.getQuery(query),
-        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order]))
+        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order.toUpperCase()]))
       })
   }
 

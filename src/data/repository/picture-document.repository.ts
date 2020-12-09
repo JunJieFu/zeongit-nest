@@ -39,6 +39,7 @@ export class PictureDocumentRepository {
       body: {
         size: pageable.limit,
         from: pageable.limit * (pageable.page - 1),
+        sort: pageable.sort.map(it => ({ [it.key]: { order: it.order } })),
         query
       }
     })).pipe(map(it => {
