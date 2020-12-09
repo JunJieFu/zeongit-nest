@@ -24,7 +24,7 @@ async function accountBootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true, validateCustomDecorators: true
   }))
-  await app.listen(9000)
+  await app.listen(8080)
 }
 
 async function beautyBootstrap() {
@@ -38,7 +38,7 @@ async function beautyBootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true, validateCustomDecorators: true
   }))
-  await app.listen(9100)
+  await app.listen(8081)
 }
 
 accountBootstrap()
