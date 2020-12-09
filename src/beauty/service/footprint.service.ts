@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { CollectState } from "../../data/constant/collect-state.constant"
-import { LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm"
+import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm"
 import { FootprintEntity } from "../../data/entity/beauty/footprint.entity"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { Pageable } from "../../share/model/pageable.model"
@@ -73,9 +73,19 @@ export class FootprintService {
   private getQuery(query: PagingQuery) {
     const where = {} as Record<keyof FootprintEntity, any>
     where.createdBy = query.targetId
-    where.pictureId = query.pictureId
-    where.createDate = query.startDate ? MoreThanOrEqual(query.startDate) : undefined
-    where.createDate = query.endDate ? LessThanOrEqual(query.endDate) : undefined
+    if (typeof query.pictureId !== "undefined") {
+      where.pictureId = query.pictureId
+    }
+    if (typeof query.startDate !== "undefined" && typeof query.endDate !== "undefined") {
+      where.createDate = Between(query.startDate, query.endDate)
+    } else {
+      if (typeof query.startDate !== "undefined") {
+        where.createDate = MoreThanOrEqual(query.startDate)
+      }
+      if (typeof query.endDate !== "undefined") {
+        where.createDate = LessThanOrEqual(query.endDate)
+      }
+    }
     return where
   }
 }

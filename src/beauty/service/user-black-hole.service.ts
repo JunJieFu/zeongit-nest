@@ -1,4 +1,4 @@
-import { LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm"
+import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm"
 import { UserBlackHoleEntity } from "../../data/entity/beauty/user-black-hole.entity"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { Pageable } from "../../share/model/pageable.model"
@@ -56,8 +56,16 @@ export class UserBlackHoleService {
   private getQuery(query: PagingQuery) {
     const where = {} as Record<keyof FootprintEntity, any>
     where.createdBy = query.userInfoId
-    where.createDate = query.startDate ? MoreThanOrEqual(query.startDate) : undefined
-    where.createDate = query.endDate ? LessThanOrEqual(query.endDate) : undefined
+    if (typeof query.startDate !== "undefined" && typeof query.endDate !== "undefined") {
+      where.createDate = Between(query.startDate, query.endDate)
+    } else {
+      if (typeof query.startDate !== "undefined") {
+        where.createDate = MoreThanOrEqual(query.startDate)
+      }
+      if (typeof query.endDate !== "undefined") {
+        where.createDate = LessThanOrEqual(query.endDate)
+      }
+    }
     return where
   }
 }

@@ -18,8 +18,10 @@ import { PagingQuery } from "../query/footprint.query"
 import { Pagination } from "nestjs-typeorm-paginate"
 import { FootprintPictureVo } from "../vo/footprint.vo"
 import { CollectionService } from "../service/collection.service"
+import { Type } from "class-transformer"
 
 class FocusDto {
+  @Type(() => Number)
   @IsInt()
   pictureId!: number
 }
@@ -38,8 +40,8 @@ export class FootprintController extends PictureVoAbstract {
   }
 
   @JwtAuth()
-  @Post("focus")
-  async focus(@CurrentUser() userInfo: UserInfoEntity, @Body() { pictureId }: FocusDto) {
+  @Post("save")
+  async save(@CurrentUser() userInfo: UserInfoEntity, @Body() { pictureId }: FocusDto) {
     const picture = await this.pictureDocumentService.get(pictureId)
     if (picture.privacy == PrivacyState.PRIVATE) {
       throw new PermissionException("操作有误")
@@ -57,7 +59,7 @@ export class FootprintController extends PictureVoAbstract {
   }
 
   @Get("paging")
-  async paging(@PageableDefault() pageable: Pageable, @Query() query: PagingQuery, @CurrentUser() userInfo?: UserInfoEntity) {
+  async paging(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
     if (query.targetId) {
       const page = await this.footprintService.paging(pageable, query)
       const footprintPictureVoList: FootprintPictureVo[] = []
