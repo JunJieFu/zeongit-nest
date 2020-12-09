@@ -1,5 +1,6 @@
 export const getEnvPaths = () => {
   const NODE_ENV = (process.env.NODE_ENV + "").trim()
+  console.log(process)
   if (NODE_ENV === "development") {
     return [".env", ".env.development"]
   } else if (NODE_ENV === "production") {
