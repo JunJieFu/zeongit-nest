@@ -29,7 +29,7 @@ class SignUpDto {
 
 class SignInDto {
   @IsString()
-  @IsMobilePhone("zh-CN", { strictMode: false }, { message: "请输入正确的手机号码" })
+  // @IsMobilePhone("zh-CN", { strictMode: false }, { message: "请输入正确的手机号码" })
   phone!: string
   @IsString()
   password!: string
