@@ -59,7 +59,6 @@ export class PictureDocumentService {
     if (mustUserList.length && mustUserList.filter(it => it === userInfoId).length === mustUserList.length) {
       privacy = undefined
     }
-
     return this.pictureDocumentRepository.paging(pageable, this.generateQuery({
       tagList,
       precise,
@@ -78,14 +77,6 @@ export class PictureDocumentService {
   async pagingByFollowing(pageable: Pageable, userInfoId: number, startDate?: Date, endDate?: Date) {
     const followingList = await this.followService.listByFollowerId(userInfoId)
     if (followingList.length) {
-      return new Pagination([], {
-        itemCount: 0,
-        totalItems: 0,
-        itemsPerPage: pageable.limit,
-        totalPages: 0,
-        currentPage: pageable.page
-      })
-    } else {
       const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(userInfoId)
       const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
       return this.paging(pageable,
@@ -98,6 +89,14 @@ export class PictureDocumentService {
           mustUserList: followingList.map(it => it.followingId)
         }
       )
+    } else {
+      return new Pagination([], {
+        itemCount: 0,
+        totalItems: 0,
+        itemsPerPage: pageable.limit,
+        totalPages: 0,
+        currentPage: pageable.page
+      })
     }
   }
 
@@ -110,7 +109,7 @@ export class PictureDocumentService {
     if (userInfoId != null) {
       const collectionList = await this.collectionService.paging(new Pageable({
         page: 1,
-        size: 5
+        limit: 5
       }), { targetId: userInfoId })
       for (const collection of collectionList.items) {
         pictureBlacklist.push(collection.pictureId)
@@ -150,7 +149,7 @@ export class PictureDocumentService {
     const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(userInfoId)
     const userBlacklist = await this.userBlackHoleService.listBlacklist(userInfoId)
 
-    return (await this.paging(new Pageable({ page: 1, size: 1, sort: [new Sort("likeAmount", SortOrder.DESC)] }),
+    return (await this.paging(new Pageable({ page: 1, limit: 1, sort: [new Sort("likeAmount", SortOrder.DESC)] }),
       {
         tagList: [tag],
         precise: true,
@@ -194,7 +193,7 @@ export class PictureDocumentService {
     const query = this.generateQuery({ tagBlacklist })
     return this.pictureDocumentRepository.aggregations(new Pageable({
       page: 1,
-      size: 30,
+      limit: 30,
       sort: [new Sort("likeAmount", SortOrder.DESC)]
     }), query, {
       [TAG_LIST_AGGREGATIONS_KEY]: {
@@ -211,7 +210,7 @@ export class PictureDocumentService {
 
     return this.pictureDocumentRepository.aggregations(new Pageable({
       page: 1,
-      size: 30,
+      limit: 30,
       sort: [new Sort("likeAmount", SortOrder.DESC)]
     }), query, {
       [TAG_LIST_AGGREGATIONS_KEY]: {
@@ -262,14 +261,14 @@ export class PictureDocumentService {
         }
       }
     })
-    if (aspectRatio) {
+    if (typeof aspectRatio !== "undefined") {
       query.bool.must.push({
         term: {
           aspectRatio
         }
       })
     }
-    if (privacy) {
+    if (typeof privacy !== "undefined") {
       query.bool.must.push({
         term: {
           privacy
@@ -279,7 +278,7 @@ export class PictureDocumentService {
 
     query.bool.must.push({
       bool: {
-        should: mustUserList.map(it => ({ createdBy: it }))
+        should: mustUserList.map(it => ({ term: { createdBy: it } }))
       }
     })
 

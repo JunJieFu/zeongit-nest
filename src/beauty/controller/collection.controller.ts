@@ -76,7 +76,7 @@ export class CollectionController extends PictureVoAbstract {
   }
 
   @Get("paging")
-  async paging(@PageableDefault() pageable: Pageable, @Query() query: PagingQuery, @CurrentUser() userInfo?: UserInfoEntity) {
+  async paging(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
     if (query.targetId) {
       const page = await this.collectionService.paging(pageable, query)
       const collectionPictureVoList: CollectionPictureVo[] = []

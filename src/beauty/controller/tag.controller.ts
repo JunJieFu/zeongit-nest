@@ -16,7 +16,6 @@ export class TagController {
   @Get("listTagTop30")
   async listTagTop30(@CurrentUser() userInfo?: UserInfoEntity) {
     const buckets = await this.pictureDocumentService.listTagTop30(userInfo?.id)
-    console.log(buckets)
     return buckets.map(it => new TagFrequencyVo(it.key, it.doc_count))
   }
 

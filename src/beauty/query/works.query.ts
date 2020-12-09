@@ -4,12 +4,7 @@ import { Type } from "class-transformer"
 export class PagingQuery {
   @Type(() => Number)
   @IsInt()
-  @IsOptional()
-  targetId?: number
-
-  @IsInt()
-  @IsOptional()
-  pictureId?: number
+  targetId!: number
 
   @Type(() => Date)
   @IsDate()

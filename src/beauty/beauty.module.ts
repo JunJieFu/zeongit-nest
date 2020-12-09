@@ -26,6 +26,7 @@ import { TagBlackHoleService } from "./service/tag-black-hole.service"
 import { UserBlackHoleService } from "./service/user-black-hole.service"
 import { UserInfoService } from "./service/user-info.service"
 import { TagService } from "./service/tag.service"
+import { WorksController } from "./controller/works.controller"
 
 @Module({
   imports: [DataModule, AuthModule, QiniuModule],
@@ -41,7 +42,8 @@ import { TagService } from "./service/tag.service"
     TagController,
     TagBlackHoleController,
     PictureBlackHoleController,
-    UserInfoController],
+    UserInfoController,
+    WorksController],
   providers: [CollectionService,
     ComplaintService,
     FeedbackService,
@@ -53,7 +55,8 @@ import { TagService } from "./service/tag.service"
     TagService,
     TagBlackHoleService,
     UserBlackHoleService,
-    UserInfoService],
+    UserInfoService
+  ],
   exports: []
 })
 export class BeautyModule {

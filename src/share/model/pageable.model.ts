@@ -19,9 +19,9 @@ export class Pageable {
   limit: number
   sort: Sort[] = []
 
-  constructor(query: { page?: number, size?: number, sort?: string | string[] | Sort[] }, defaultData?: { size: number }) {
+  constructor(query: { page?: number, limit?: number, sort?: string | string[] | Sort[] }, defaultData?: { limit: number }) {
     this.page = Number(query?.page ?? 1)
-    this.limit = Number(query?.size ?? defaultData?.size ?? 20)
+    this.limit = Number(query?.limit ?? defaultData?.limit ?? 20)
     const sort = query?.sort
     if (sort) {
       if (Array.isArray(sort)) {
