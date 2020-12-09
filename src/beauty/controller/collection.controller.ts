@@ -64,7 +64,7 @@ export class CollectionController extends PictureVoAbstract {
         flag = CollectState.STRANGE
       }
       this.pictureDocumentService.saveLikeAmount(picture, await this.collectionService.countByPictureId(pictureId))
-      flag
+      return flag
     } else {
       if (await this.collectionService.getCollectState(pictureId, userInfo.id!) === CollectState.CONCERNED) {
         await this.collectionService.remove(pictureId, userInfo)
@@ -109,7 +109,7 @@ export class CollectionController extends PictureVoAbstract {
   }
 
   @Get("pagingUser")
-  async pagingUser(@PageableDefault() pageable: Pageable, @Query() query: PagingQuery, @CurrentUser() userInfo?: UserInfoEntity) {
+  async pagingUser(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
     if (query.pictureId) {
       const page = await this.collectionService.paging(pageable, query)
       const followingList = []
@@ -121,5 +121,4 @@ export class CollectionController extends PictureVoAbstract {
       throw new ProgramException("请传递参数pictureId")
     }
   }
-
 }

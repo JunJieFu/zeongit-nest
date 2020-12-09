@@ -7,6 +7,7 @@ export class PagingQuery {
   @IsOptional()
   targetId?: number
 
+  @Type(() => Number)
   @IsInt()
   @IsOptional()
   pictureId?: number

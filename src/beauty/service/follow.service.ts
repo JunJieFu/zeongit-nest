@@ -34,7 +34,7 @@ export class FollowService {
   }
 
   remove(followingId: number, { id: followerId }: UserInfoEntity) {
-    return this.followRepository.remove({ createdBy: followerId!, followingId })
+    return this.followRepository.delete({ createdBy: followerId!, followingId })
   }
 
   pagingByFollowerId(pageable: Pageable, followerId: number) {

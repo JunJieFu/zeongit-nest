@@ -31,7 +31,7 @@ export class CollectionService {
   }
 
   remove(pictureId: number, { id: userInfoId }: UserInfoEntity) {
-    return this.collectionRepository.remove({
+    return this.collectionRepository.delete({
       createdBy: userInfoId,
       pictureId
     })

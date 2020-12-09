@@ -32,7 +32,7 @@ export class FootprintService {
   }
 
   remove(pictureId: number, { id: userInfoId }: UserInfoEntity) {
-    return this.footprintRepository.remove({
+    return this.footprintRepository.delete({
       createdBy: userInfoId,
       pictureId
     })
