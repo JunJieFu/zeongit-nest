@@ -2,8 +2,6 @@ import { Injectable } from "@nestjs/common"
 import { ElasticsearchService } from "@nestjs/elasticsearch"
 import { Pageable } from "../../share/model/pageable.model"
 import { Pagination } from "nestjs-typeorm-paginate"
-import { fromPromise } from "rxjs/internal-compatibility"
-import { map } from "rxjs/operators"
 import { classToPlain, plainToClass } from "class-transformer"
 import { PictureDocument } from "../document/beauty/picture.document"
 import { nullable } from "../../share/fragment/pipe.function"
@@ -27,14 +25,15 @@ export class PictureDocumentRepository {
   }
 
   async get(id: number) {
-    return fromPromise(this.elasticsearchService.get({
+    return this.elasticsearchService.get({
       id: id.toString(),
       index: ZEONGIT_BEAUTY_PICTURE
-    })).pipe(map(it => plainToClass(PictureDocument, it.body._source as PictureDocument | undefined)), nullable("图片不存在")).toPromise()
+    }).then(it => plainToClass(PictureDocument, it.body._source as PictureDocument | undefined))
+      .then(nullable("图片不存在"))
   }
 
-  paging(pageable: Pageable, query: unknown) {
-    return fromPromise(this.elasticsearchService.search({
+  async paging(pageable: Pageable, query: unknown) {
+    const response = await this.elasticsearchService.search({
       index: ZEONGIT_BEAUTY_PICTURE,
       body: {
         size: pageable.limit,
@@ -42,18 +41,17 @@ export class PictureDocumentRepository {
         sort: pageable.sort.map(it => ({ [it.key]: { order: it.order } })),
         query
       }
-    })).pipe(map(it => {
-      const hits = it.body.hits
-      return new Pagination(
-        plainToClass(PictureDocument, hits.hits.map((it: any) => it._source)),
-        {
-          itemCount: hits.hits.length as number,
-          totalItems: hits.total,
-          itemsPerPage: pageable.limit,
-          totalPages: Math.ceil(hits.total / pageable.limit),
-          currentPage: pageable.page
-        })
-    })).toPromise()
+    })
+    const hits = response.body.hits
+    return new Pagination(
+      plainToClass(PictureDocument, hits.hits.map((it: any) => it._source)),
+      {
+        itemCount: hits.hits.length as number,
+        totalItems: hits.total,
+        itemsPerPage: pageable.limit,
+        totalPages: Math.ceil(hits.total / pageable.limit),
+        currentPage: pageable.page
+      })
   }
 
   count(query: unknown) {

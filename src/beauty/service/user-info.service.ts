@@ -1,6 +1,5 @@
 import { Repository } from "typeorm"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { fromPromise } from "rxjs/internal-compatibility"
 import { nullable } from "../../share/fragment/pipe.function"
 import { InjectAccount } from "../../data/decorator/inject-account.decorator"
 
@@ -9,6 +8,6 @@ export class UserInfoService {
   }
 
   get(id: number) {
-    return fromPromise(this.userInfoRepository.findOne({ id })).pipe(nullable("用户不存在")).toPromise()
+    return this.userInfoRepository.findOne({ id }).then(nullable("用户不存在"))
   }
 }

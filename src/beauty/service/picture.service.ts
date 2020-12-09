@@ -4,7 +4,6 @@ import { PictureLifeState } from "../../data/constant/picture-life-state.constan
 import { NotFoundException } from "@nestjs/common"
 import { PictureDocumentService } from "./picture-document.service"
 import { PictureDocument } from "../../data/document/beauty/picture.document"
-import { fromPromise } from "rxjs/internal-compatibility"
 import { nullable } from "../../share/fragment/pipe.function"
 import { PermissionException } from "src/share/exception/permission.exception"
 import { PrivacyState } from "../../data/constant/privacy-state.constant"
@@ -43,7 +42,7 @@ export class PictureService {
   }
 
   async getByLife(id: number, life: PictureLifeState) {
-    return fromPromise(this.pictureRepository.findOne({ where: { id, life } })).pipe(nullable("图片不存在")).toPromise()
+    return this.pictureRepository.findOne({ where: { id, life } }).then(nullable("图片不存在"))
   }
 
   get(id: number) {

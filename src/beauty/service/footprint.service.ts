@@ -6,7 +6,6 @@ import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { Pageable } from "../../share/model/pageable.model"
 import { PagingQuery } from "../query/footprint.query"
 import { paginate } from "nestjs-typeorm-paginate"
-import { fromPromise } from "rxjs/internal-compatibility"
 import { nullable } from "../../share/fragment/pipe.function"
 import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
 
@@ -39,10 +38,10 @@ export class FootprintService {
   }
 
   get(pictureId: number, { id: userInfoId }: UserInfoEntity) {
-    return fromPromise(this.footprintRepository.findOne({
+    return this.footprintRepository.findOne({
       pictureId,
       createdBy: userInfoId
-    })).pipe(nullable("足迹不存在")).toPromise()
+    }).then(nullable("足迹不存在"))
   }
 
   async update(pictureId: number, userInfo: UserInfoEntity) {

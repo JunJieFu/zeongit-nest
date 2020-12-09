@@ -5,7 +5,6 @@ import { Repository } from "typeorm"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { ConfigType } from "@nestjs/config"
 import { jwtConfigType } from "../config"
-import { fromPromise } from "rxjs/internal-compatibility"
 import { nullable } from "../../share/fragment/pipe.function"
 import { UserInfoCache } from "../../data/cache/user-info.cache"
 import { Payload } from "../model/payload.model"
@@ -72,15 +71,13 @@ export class AuthService {
   }
 
   private getUserByPhone(phone: string) {
-    return fromPromise(this.userRepository.findOne({
+    return this.userRepository.findOne({
       phone: phone
-    })).pipe(nullable("用户不存在")).toPromise()
+    }).then(nullable("用户不存在"))
   }
 
   private getInfoByUserId(userId: number) {
-    return fromPromise(this.userInfoRepository.findOne({ userId })).pipe(
-      nullable("用户不存在")
-    ).toPromise()
+    return this.userInfoRepository.findOne({ userId }).then(nullable("用户不存在"))
   }
 
   private sign(id: number) {
