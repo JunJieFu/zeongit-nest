@@ -8,6 +8,7 @@ import { classToPlain, plainToClass } from "class-transformer"
 import { PictureDocument } from "../document/beauty/picture.document"
 import { nullable } from "../../share/fragment/pipe.function"
 import { ZEONGIT_BEAUTY_PICTURE } from "../config"
+import { PictureEntity } from "../entity/beauty/picture.entity"
 
 
 @Injectable()
@@ -82,5 +83,22 @@ export class PictureDocumentRepository {
         aggs
       }
     })
+  }
+
+  async synchronizationIndexPicture(pictureList: PictureEntity[]) {
+    const list = []
+    for (const picture of pictureList) {
+      try {
+        const pictureDocument = new PictureDocument(picture)
+        list.push({
+          index: { _index: ZEONGIT_BEAUTY_PICTURE, _type: "_doc", _id: pictureDocument.id.toString() }
+        })
+        list.push(classToPlain(pictureDocument))
+      } catch (e) {
+        console.log(e.message)
+      }
+    }
+    this.elasticsearchService.bulk({ index: ZEONGIT_BEAUTY_PICTURE, type: "_doc", body: list })
+    return pictureList.length
   }
 }

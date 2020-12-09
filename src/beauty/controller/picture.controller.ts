@@ -226,6 +226,11 @@ export class PictureController extends PictureVoAbstract {
     return this.pictureService.remove(picture)
   }
 
+  @Get("synchronizationIndexPicture")
+  synchronizationIndexPicture() {
+    return this.pictureService.synchronizationIndexPicture()
+  }
+
   private async getPageVo(page: Pagination<PictureDocument>, userInfoId ?: number
   ) {
     const voList = []

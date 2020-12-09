@@ -14,6 +14,7 @@ import { FollowService } from "./follow.service"
 import { Pagination } from "nestjs-typeorm-paginate"
 import { SortOrder } from "../../share/constant/sort-order.constant"
 import { addDay } from "../../share/uitl/date.util"
+import { PictureEntity } from "../../data/entity/beauty/picture.entity"
 
 interface Query {
   userInfoId?: number
@@ -309,5 +310,9 @@ export class PictureDocumentService {
     })
 
     return query
+  }
+
+  synchronizationIndexPicture(pictureList: PictureEntity[]) {
+    return this.pictureDocumentRepository.synchronizationIndexPicture(pictureList)
   }
 }

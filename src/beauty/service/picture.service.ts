@@ -28,7 +28,7 @@ export class PictureService {
     if (picture.life == PictureLifeState.DISAPPEAR && !force) {
       throw new NotFoundException("图片不存在")
     }
-    if(picture.id){
+    if (picture.id) {
       await this.tagService.remove(picture.id)
     }
     return this.pictureDocumentService.save(new PictureDocument(await this.pictureRepository.save(picture)))
@@ -67,5 +67,9 @@ export class PictureService {
     picture.life = PictureLifeState.DISAPPEAR
     await this.save(picture, true)
     await this.pictureDocumentService.remove(picture.id!)
+  }
+
+  async synchronizationIndexPicture() {
+    return this.pictureDocumentService.synchronizationIndexPicture(await this.pictureRepository.find())
   }
 }
