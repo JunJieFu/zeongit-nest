@@ -13,6 +13,7 @@ import { CollectionService } from "./collection.service"
 import { FollowService } from "./follow.service"
 import { Pagination } from "nestjs-typeorm-paginate"
 import { SortOrder } from "../../share/constant/sort-order.constant"
+import { addDay } from "../../share/uitl/date.util"
 
 interface Query {
   userInfoId?: number
@@ -257,10 +258,11 @@ export class PictureDocumentService {
       range: {
         createDate: {
           gte: startDate,
-          lte: endDate
+          lte: endDate ? addDay(endDate, 1) : undefined
         }
       }
     })
+    console.log(startDate, endDate)
     if (typeof aspectRatio !== "undefined") {
       query.bool.must.push({
         term: {

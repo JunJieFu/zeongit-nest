@@ -9,3 +9,7 @@ export const parseArrayTransformFn = (value: unknown) => {
     }
   }
 }
+
+export const parseBooleanTransformFn = (value: unknown) => {
+  return typeof value === "string" && value === "true";
+}

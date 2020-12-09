@@ -14,7 +14,7 @@ import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { Pageable } from "../../share/model/pageable.model"
 import { PageableDefault } from "../../share/decorator/pageable-default.decorator"
-import { parseArrayTransformFn } from "../../share/fragment/transform.function"
+import { parseArrayTransformFn, parseBooleanTransformFn } from "../../share/fragment/transform.function"
 import { Pagination } from "nestjs-typeorm-paginate"
 import { PictureDocument } from "../../data/document/beauty/picture.document"
 import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
@@ -32,9 +32,9 @@ class PagingDto {
   @Transform(parseArrayTransformFn)
   tagList!: string[]
 
-  @Type(() => Boolean)
   @IsBoolean()
   @IsOptional()
+  @Transform(parseBooleanTransformFn)
   precise = false
 
   @IsString()
@@ -51,6 +51,7 @@ class PagingDto {
   @IsOptional()
   endDate?: Date
 
+  @Type(() => Number)
   @IsEnum(AspectRatio)
   @IsOptional()
   aspectRatio?: AspectRatio
