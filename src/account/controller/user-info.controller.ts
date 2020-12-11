@@ -85,11 +85,11 @@ export class UserInfoController {
 
   @JwtAuth()
   @Get("updateAvatar")
- async updateAvatar(@CurrentUser() userInfo: UserInfoEntity,
-               @Body("url") url: string) {
-    await this.bucketService.move(url, this.qiniuConfig.qiniuAvatarBucket, this.qiniuConfig.qiniuTemporaryBucket)
-    if(userInfo.avatar){
-      await this.bucketService.move(userInfo.avatar, this.qiniuConfig.qiniuTemporaryBucket, this.qiniuConfig.qiniuAvatarBucket)
+  async updateAvatar(@CurrentUser() userInfo: UserInfoEntity,
+                     @Body("url") url: string) {
+    await this.bucketService.move(url, this.qiniuConfig.avatarBucket, this.qiniuConfig.temporaryBucket)
+    if (userInfo.avatar) {
+      await this.bucketService.move(userInfo.avatar, this.qiniuConfig.temporaryBucket, this.qiniuConfig.avatarBucket)
     }
     userInfo.avatar = url
     return this.userInfoService.save(userInfo)
@@ -99,9 +99,9 @@ export class UserInfoController {
   @Get("updateBackground")
   async updateBackground(@CurrentUser() userInfo: UserInfoEntity,
                          @Body("url") url: string) {
-    await this.bucketService.move(url, this.qiniuConfig.qiniuBackgroundBucket, this.qiniuConfig.qiniuTemporaryBucket)
-    if(userInfo.avatar){
-      await this.bucketService.move(userInfo.avatar, this.qiniuConfig.qiniuTemporaryBucket, this.qiniuConfig.qiniuBackgroundBucket)
+    await this.bucketService.move(url, this.qiniuConfig.backgroundBucket, this.qiniuConfig.temporaryBucket)
+    if (userInfo.avatar) {
+      await this.bucketService.move(userInfo.avatar, this.qiniuConfig.temporaryBucket, this.qiniuConfig.backgroundBucket)
     }
     userInfo.avatar = url
     return this.userInfoService.save(userInfo)

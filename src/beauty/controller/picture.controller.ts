@@ -168,12 +168,13 @@ export class PictureController extends PictureVoAbstract {
   @JwtAuth()
   @Post("save")
   async save(@CurrentUser() userInfo: UserInfoEntity, @Body() dto: SaveDto) {
-    await this.bucketService.move(dto.url, this.qiniuConfig.qiniuPictureBucket, this.qiniuConfig.qiniuTemporaryBucket)
+    await this.bucketService.move(dto.url, this.qiniuConfig.pictureBucket, this.qiniuConfig.temporaryBucket)
     const
       imageInfo = await this.bucketService.getImageInfo(
-        dto.url,
-        this.qiniuConfig.qiniuPictureBucketUrl
+        this.qiniuConfig.pictureBucketUrl,
+        dto.url
       )
+
     const
       picture = new PictureEntity(userInfo.id!, dto.url,
         imageInfo.width,

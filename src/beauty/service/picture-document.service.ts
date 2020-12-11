@@ -257,7 +257,6 @@ export class PictureDocumentService {
         }
       })
     }
-    //TODO 开始结束天
     query.bool.must.push({
       range: {
         createDate: {

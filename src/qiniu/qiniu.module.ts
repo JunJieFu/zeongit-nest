@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common"
+import { HttpModule, Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
 import { getEnvPaths } from "../share/fragment/env.function"
 import { qiniuConfigType } from "./config"
@@ -13,7 +13,8 @@ const configModule = ConfigModule.forRoot(
 
 @Module({
   imports: [
-    configModule
+    configModule,
+    HttpModule
   ],
   controllers: [],
   providers: [BucketService],

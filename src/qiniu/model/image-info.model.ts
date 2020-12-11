@@ -3,12 +3,9 @@ export class ImageInfo {
 
   format?: string
 
-  //TODO test
-  // width!: number
-  width = 855
+  width!: number
 
-  // height!: number
-  height = 1100
+  height!: number
 
   colorModel?: string
 }
