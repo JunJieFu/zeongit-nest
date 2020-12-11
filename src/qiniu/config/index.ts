@@ -1,15 +1,15 @@
 import { registerAs } from "@nestjs/config"
 
 export const qiniuConfigType = registerAs("qiniu", () => ({
-  qiniuAccessKey: "0G397Ly7Z6pqnm2MPUhHIbMFzvBX19yyhu-RdiqI",
-  qiniuSecretKey: "_xLtVKJ4VNUrwSsEGkJBHtV2s6mZ2QG2yDXaCvTk",
-  qiniuHost: "rs.qiniu.com",
-  qiniuTemporaryBucket: "temporary",
-  qiniuAvatarBucket: "head",
-  qiniuBackgroundBucket: "background",
-  qiniuPictureBucket: "secdra",
-  qiniuTemporaryBucketUrl: "http://temporary.zeongit.cn",
-  qiniuAvatarBucketUrl: "http://avatar.zeongit.cn",
-  qiniuBackgroundBucketUrl: "http://background.zeongit.cn",
-  qiniuPictureBucketUrl: "http://beauty.picture.zeongit.cn"
+  accessKey: process.env.QINIU_ACCESS_KEY,
+  secretKey: process.env.QINIU_SECRET_KEY,
+  host: process.env.QINIU_HOST,
+  temporaryBucket: process.env.QINIU_TEMPORARY_BUCKET,
+  avatarBucket: process.env.QINIU_AVATAR_BUCKET,
+  backgroundBucket: process.env.QINIU_BACKGROUND_BUCKET,
+  pictureBucket: process.env.QINIU_PICTURE_BUCKET,
+  temporaryBucketUrl: process.env.QINIU_TEMPORARY_BUCKET_URL,
+  avatarBucketUrl: process.env.QINIU_AVATAR_BUCKET_URL,
+  backgroundBucketUrl: process.env.QINIU_BACKGROUND_BUCKET_URL,
+  pictureBucketUrl: process.env.QINIU_PICTURE_BUCKET_URL
 }))
