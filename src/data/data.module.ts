@@ -6,8 +6,8 @@ import { ConfigModule } from "@nestjs/config"
 import { getEnvPaths } from "../share/fragment/env.function"
 import {
   ACCOUNT_CONNECTION_NAME,
-  accountConfigType,
-  BEAUTY_CONNECTION_NAME,
+  accountConfigType, BEAUTY_ADMIN_CONNECTION_NAME,
+  BEAUTY_CONNECTION_NAME, beautyAdminConfigType,
   beautyConfigType,
   cacheConfigType
 } from "./config"
@@ -28,11 +28,13 @@ import { PictureBlackHoleEntity } from "./entity/beauty/picture-black-hole.entit
 import { TagEntity } from "./entity/beauty/tag.entity"
 import { TagBlackHoleEntity } from "./entity/beauty/tag-black-hole.entity"
 import { UserBlackHoleEntity } from "./entity/beauty/user-black-hole.entity"
+import { PixivUserEntity } from "./entity/beauty-admin/pixiv-user.entity"
+import { BeautyAdminConfigService } from "./config-service/beauty-admin-config.service"
 
 
 const configModule = ConfigModule.forRoot(
   {
-    envFilePath: [...getEnvPaths()], load: [accountConfigType, beautyConfigType, cacheConfigType]
+    envFilePath: [...getEnvPaths()], load: [accountConfigType, beautyConfigType, beautyAdminConfigType, cacheConfigType]
   }
 )
 
@@ -50,13 +52,13 @@ const configModule = ConfigModule.forRoot(
       useClass: AccountConfigService,
       name: ACCOUNT_CONNECTION_NAME
     }),
+    TypeOrmModule.forFeature([UserEntity,
+      UserInfoEntity], ACCOUNT_CONNECTION_NAME),
     TypeOrmModule.forRootAsync({
       imports: [configModule],
       useClass: BeautyConfigService,
       name: BEAUTY_CONNECTION_NAME
     }),
-    TypeOrmModule.forFeature([UserEntity,
-      UserInfoEntity], ACCOUNT_CONNECTION_NAME),
     TypeOrmModule.forFeature([
       CollectionEntity,
       ComplaintEntity,
@@ -68,6 +70,12 @@ const configModule = ConfigModule.forRoot(
       TagEntity,
       TagBlackHoleEntity,
       UserBlackHoleEntity], BEAUTY_CONNECTION_NAME),
+    TypeOrmModule.forRootAsync({
+      imports: [configModule],
+      useClass: BeautyAdminConfigService,
+      name: BEAUTY_ADMIN_CONNECTION_NAME
+    }),
+    TypeOrmModule.forFeature([PixivUserEntity], BEAUTY_ADMIN_CONNECTION_NAME),
     ElasticsearchModule.register({
       node: "http://localhost:9200"
     })
