@@ -3,7 +3,7 @@ import { Column, Entity } from "typeorm"
 
 @Entity("pixiv_detail_work")
 export class PixivWorkDetailEntity extends BaseEntity {
-  @Column({ name: "pixiv_id" })
+  @Column({ name: "pixiv_id", nullable: true })
   pixivId?: string
   @Column({ name: "name" })
   name: string
@@ -11,9 +11,9 @@ export class PixivWorkDetailEntity extends BaseEntity {
   url: string
   @Column({ name: "proxy_url" })
   proxyUrl: string
-  @Column({ name: "x_restrict" })
+  @Column({ name: "x_restrict", nullable: true })
   xRestrict?: number
-  @Column({ name: "pixiv_restrict" })
+  @Column({ name: "pixiv_restrict", nullable: true })
   pixivRestrict ?: number
   @Column({ name: "width", type: "int" })
   width = 0

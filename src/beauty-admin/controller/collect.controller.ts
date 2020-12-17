@@ -1,4 +1,4 @@
-import { Body, Controller, Get, ParseIntPipe, Post, Query } from "@nestjs/common"
+import { Body, Controller, Get, ParseIntPipe, Post } from "@nestjs/common"
 import { PixivUserService } from "../service/pixiv-user.service"
 import { PixivWorkService } from "../service/pixiv-work.service"
 import { PixivWorkDetailService } from "../service/pixiv-work-detail.service"
@@ -81,6 +81,10 @@ export class CollectController {
     return true
   }
 
+  /**
+   * 获取采集任务，即原地址为空的分页列表
+   * @param pageable
+   */
   @Get("pagingOriginalUrlTask")
   pagingOriginalUrlTask(@PageableDefault() pageable: Pageable) {
     return this.pixivWorkService.pagingOriginalUrlTask(pageable)
@@ -98,12 +102,10 @@ export class CollectController {
       work.translateTags = dto.translateTags
       work.description = emojiChange(dto.description ?? "").trim()
       if (originalUrl != null && originalUrl.startsWith("https://i.pximg.net/")) {
-        const allUrlList: string[] = []
-        const proxyUrlList: string[] = []
         for (let i = 0; i < work.pageCount; i++) {
           const originalUrlArray = originalUrl.split("/")
           const pictureName = originalUrlArray[originalUrlArray.length - 1]
-          const suitPictureName = pictureName.replace("p0", "p$i")
+          const suitPictureName = pictureName.replace("p0", `p${i}`)
           const suitUrl = originalUrl.replace(pictureName, suitPictureName)
           await this.pixivWorkDetailService.save(new PixivWorkDetailEntity(
             work.pixivId!,
@@ -114,12 +116,7 @@ export class CollectController {
             work.xRestrict,
             work.pixivRestrict
           ))
-          allUrlList.push(suitUrl)
-          proxyUrlList.push(suitUrl.replace("https://i.pximg.net/",
-            "https://pixiv.zeongit.workers.dev/"))
         }
-        work.allUrl = allUrlList.join("|")
-        work.proxyUrl = proxyUrlList.join("|")
       }
       await this.pixivWorkService.save(work)
     } catch (e) {
@@ -129,8 +126,12 @@ export class CollectController {
     return true
   }
 
+  /**
+   * 更新下载状态
+   * @param folderPath 新下载的文件存放的文件夹
+   */
   @Post("checkDownload")
-  async checkDownload(@Query("folderPath") folderPath: string) {
+  async checkDownload(@Body("folderPath") folderPath: string) {
     const pixivWorkList = await this.pixivWorkService.listByDownload(0)
 
     const fileNameList = fs.readdirSync(folderPath) ?? []
@@ -142,7 +143,7 @@ export class CollectController {
 //        val pixivWorkDetailList = pixivWorkDetailService.listByWidth(0)
 
     for (const pixivWorkDetail of pixivWorkDetailList) {
-      pixivWorkDetail.download = fileNameList.toList().contains(pixivWorkDetail.name)
+      pixivWorkDetail.download = fileNameList.includes(pixivWorkDetail.name)
       try {
         if (pixivWorkDetail.download) {
           const read = imageSize(`${folderPath}/${pixivWorkDetail.name}`)
@@ -157,12 +158,41 @@ export class CollectController {
     return true
   }
 
+  /**
+   * 将一个文件夹中限制图片抽离
+   * @param sourcePath 原文件夹
+   * @param folderPath 目标文件夹
+   */
+  @Post("checkRestrict")
+  async checkRestrict(@Body("sourcePath") sourcePath: string, @Body("folderPath") folderPath: string) {
+    const sourcePathList = fs.readdirSync(sourcePath) ?? []
+    const list: string[] = []
+    for (const path of sourcePathList) {
+      let
+        detail: PixivWorkDetailEntity
+      try {
+        detail = await this.pixivWorkDetailService.getByName(path)
+      } catch (e) {
+        list.push(path)
+        continue
+      }
+      if (detail.xRestrict == 1) {
+        fs.renameSync(`${sourcePath}/${path}`, `${folderPath}/${path}`)
+      }
+    }
+    return list
+  }
 
+  /**
+   * 将文件夹的所有图片正式启用
+   * @param folderPath 文件夹
+   * @param userInfoId 若没有用户信息的时候将其存放在该用户下
+   */
   @Post("checkUse")
-  async checkUse(@Query("folderPath") folderPath: string, @Query("userInfoId", ParseIntPipe)userInfoId: number) {
+  async checkUse(@Body("folderPath") folderPath: string, @Body("userInfoId", ParseIntPipe)userInfoId: number) {
     const fileNameList = fs.readdirSync(folderPath) ?? []
-    console.log(fileNameList.size)
-    for (const fileName in fileNameList) {
+    console.log(fileNameList.length)
+    for (const fileName of fileNameList) {
       try {
         let pixivWorkDetail: PixivWorkDetailEntity
         //获取pixiv图片详情
@@ -233,27 +263,9 @@ export class CollectController {
     return true
   }
 
-
-  @Post("checkRestrict")
-  async checkRestrict(@Query("sourcePath") sourcePath: string, @Query("folderPath") folderPath: string) {
-    const sourcePathList = fs.readdirSync(sourcePath) ?? []
-    const list: string[] = []
-    for (const path of sourcePathList) {
-      let
-        detail: PixivWorkDetailEntity
-      try {
-        detail = await this.pixivWorkDetailService.getByName(path)
-      } catch (e) {
-        list.push(path)
-        continue
-      }
-      if (detail.xRestrict == 1) {
-        fs.renameSync(`${sourcePath}/${path}`, `${folderPath}/${path}`)
-      }
-    }
-    return list
-  }
-
+  /**
+   * 输入待下载的地址文件
+   */
   @Get("toTxt")
   async toTxt() {
     fs.writeFileSync("D:\\my\\图片\\p\\download.txt",
@@ -264,6 +276,10 @@ export class CollectController {
     )
   }
 
+  /**
+   * 重新校验文件夹，输入下载地址
+   * @param sourcePath
+   */
   @Post("toTxtAgain")
   async toTxtAgain(sourcePath: string) {
     const sourcePathList = fs.readdirSync(sourcePath) ?? []
@@ -282,6 +298,10 @@ export class CollectController {
     )
   }
 
+  /**
+   * 有一些高宽为0的图片需要重新获取一遍
+   * @param folderPath
+   */
   @Post("checkErrorPicture")
   async checkErrorPicture(folderPath: string) {
     const pictureList = await this.pictureService.list()
@@ -312,6 +332,11 @@ export class CollectController {
     }
   }
 
+  /**
+   * 移动图片，数据库信息需要通过python nsfw项目来添加
+   * @param sourcePath 原文件夹
+   * @param folderPath 目标文件夹
+   */
   @Post("move")
   async move(sourcePath: string, folderPath: string) {
     const list = await this.nsfwLevelService.list()

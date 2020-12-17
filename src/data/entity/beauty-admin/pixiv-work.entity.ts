@@ -3,31 +3,31 @@ import { BaseEntity } from "../../../share/entity/base.entity"
 
 @Entity("pixiv_work")
 export class PixivWorkEntity extends BaseEntity {
-  @Column({ name: "illust_id" })
+  @Column({ name: "illust_id", nullable: true })
   illustId?: string
-  @Column({ name: "illust_title" })
+  @Column({ name: "illust_title", nullable: true })
   illustTitle?: string
-  @Column({ name: "pixiv_id", unique: true })
+  @Column({ name: "pixiv_id", unique: true, nullable: true })
   pixivId?: string
-  @Column({ name: "title" })
+  @Column({ name: "title", nullable: true })
   title?: string
-  @Column({ name: "illust_type" })
+  @Column({ name: "illust_type", nullable: true })
   illustType?: number
   @Column({ name: "x_restrict", type: "int" })
   xRestrict = 0
   @Column({ name: "pixiv_restrict", type: "int" })
   pixivRestrict = 0
-  @Column({ name: "sl" })
+  @Column({ name: "sl", nullable: true })
   sl?: number
-  @Column({ name: "description", type: "text" })
+  @Column({ name: "description", type: "text", nullable: true })
   description?: string
-  @Column({ name: "tags" })
+  @Column({ name: "tags", nullable: true })
   tags?: string
-  @Column({ name: "translate_tags" })
+  @Column({ name: "translate_tags", nullable: true })
   translateTags?: string
-  @Column({ name: "user_id" })
+  @Column({ name: "user_id", nullable: true })
   userId?: string
-  @Column({ name: "user_name" })
+  @Column({ name: "user_name", nullable: true })
   userName?: string
   @Column({ name: "width", type: "int" })
   width = 0
@@ -35,20 +35,16 @@ export class PixivWorkEntity extends BaseEntity {
   height = 0
   @Column({ name: "page_count", type: "int" })
   pageCount = 0
-  @Column({ name: "bookmarkable" })
+  @Column({ name: "bookmarkable", nullable: true })
   bookmarkable ?: number
-  @Column({ name: "ad_container" })
+  @Column({ name: "ad_container", nullable: true })
   adContainer ?: number
-  @Column({ name: "pixiv_create_date" })
+  @Column({ name: "pixiv_create_date", nullable: true })
   pixivCreateDate?: Date
-  @Column({ name: "pixiv_update_date" })
+  @Column({ name: "pixiv_update_date", nullable: true })
   pixivUpdateDate?: Date
-  @Column({ name: "original_url" })
+  @Column({ name: "original_url", nullable: true })
   originalUrl?: string
   @Column({ name: "download", type: "int" })
   download = 0
-  @Column({ name: "all_url" })
-  allUrl?: string
-  @Column({ name: "proxy_url" })
-  proxyUrl?: string
 }

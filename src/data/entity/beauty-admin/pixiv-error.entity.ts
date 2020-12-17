@@ -5,7 +5,7 @@ import { Column, Entity } from "typeorm"
 export class PixivErrorEntity extends BaseEntity {
   @Column({ name: "pixiv_id" })
   pixivId: string
-  @Column({ name: "message" })
+  @Column({ name: "message", nullable: true })
   message?: string
 
   constructor(
