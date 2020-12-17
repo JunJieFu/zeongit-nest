@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { InjectBeautyAdmin } from "../../data/decorator/inject-beauty-admin.decorator"
 import { Repository } from "typeorm"
 import { PixivUserEntity } from "../../data/entity/beauty-admin/pixiv-user.entity"
+import { nullable } from "../../share/fragment/pipe.function"
 
 
 @Injectable()
@@ -20,6 +21,6 @@ export class PixivUserService {
   }
 
   getByPixivUserId(pixivUserId: string) {
-    return this.pixivUserRepository.findOne({ pixivUserId })
+    return this.pixivUserRepository.findOne({ pixivUserId }).then(nullable("用户不存在"))
   }
 }

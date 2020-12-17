@@ -35,6 +35,7 @@ import { BeautyAdminConfigService } from "./config-service/beauty-admin-config.s
 import { PixivWorkDetailEntity } from "./entity/beauty-admin/pixiv-work-detail.entity"
 import { PixivWorkEntity } from "./entity/beauty-admin/pixiv-work.entity"
 import { PixivErrorEntity } from "./entity/beauty-admin/pixiv-error.entity"
+import { NsfwLevelEntity } from "./entity/beauty-admin/nsfw-level.entity"
 
 
 const configModule = ConfigModule.forRoot(
@@ -80,7 +81,7 @@ const configModule = ConfigModule.forRoot(
       useClass: BeautyAdminConfigService,
       name: BEAUTY_ADMIN_CONNECTION_NAME
     }),
-    TypeOrmModule.forFeature([PixivUserEntity, PixivWorkEntity, PixivWorkDetailEntity, PixivErrorEntity], BEAUTY_ADMIN_CONNECTION_NAME),
+    TypeOrmModule.forFeature([NsfwLevelEntity, PixivUserEntity, PixivWorkEntity, PixivWorkDetailEntity, PixivErrorEntity], BEAUTY_ADMIN_CONNECTION_NAME),
     ElasticsearchModule.register({
       node: "http://localhost:9200"
     })

@@ -13,10 +13,10 @@ export class PixivWorkEntity extends BaseEntity {
   title?: string
   @Column({ name: "illust_type" })
   illustType?: number
-  @Column({ name: "x_restrict" })
-  xRestrict?: number
-  @Column({ name: "pixiv_restrict" })
-  pixivRestrict ?: number
+  @Column({ name: "x_restrict", type: "int" })
+  xRestrict = 0
+  @Column({ name: "pixiv_restrict", type: "int" })
+  pixivRestrict = 0
   @Column({ name: "sl" })
   sl?: number
   @Column({ name: "description", type: "text" })
@@ -33,8 +33,8 @@ export class PixivWorkEntity extends BaseEntity {
   width = 0
   @Column({ name: "height", type: "int" })
   height = 0
-  @Column({ name: "page_count" })
-  pageCount?: number
+  @Column({ name: "page_count", type: "int" })
+  pageCount = 0
   @Column({ name: "bookmarkable" })
   bookmarkable ?: number
   @Column({ name: "ad_container" })
