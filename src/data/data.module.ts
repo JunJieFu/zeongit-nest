@@ -6,8 +6,10 @@ import { ConfigModule } from "@nestjs/config"
 import { getEnvPaths } from "../share/fragment/env.function"
 import {
   ACCOUNT_CONNECTION_NAME,
-  accountConfigType, BEAUTY_ADMIN_CONNECTION_NAME,
-  BEAUTY_CONNECTION_NAME, beautyAdminConfigType,
+  accountConfigType,
+  BEAUTY_ADMIN_CONNECTION_NAME,
+  BEAUTY_CONNECTION_NAME,
+  beautyAdminConfigType,
   beautyConfigType,
   cacheConfigType
 } from "./config"
@@ -30,6 +32,9 @@ import { TagBlackHoleEntity } from "./entity/beauty/tag-black-hole.entity"
 import { UserBlackHoleEntity } from "./entity/beauty/user-black-hole.entity"
 import { PixivUserEntity } from "./entity/beauty-admin/pixiv-user.entity"
 import { BeautyAdminConfigService } from "./config-service/beauty-admin-config.service"
+import { PixivWorkDetailEntity } from "./entity/beauty-admin/pixiv-work-detail.entity"
+import { PixivWorkEntity } from "./entity/beauty-admin/pixiv-work.entity"
+import { PixivErrorEntitiy } from "./entity/beauty-admin/pixiv-error.entity"
 
 
 const configModule = ConfigModule.forRoot(
@@ -75,7 +80,7 @@ const configModule = ConfigModule.forRoot(
       useClass: BeautyAdminConfigService,
       name: BEAUTY_ADMIN_CONNECTION_NAME
     }),
-    TypeOrmModule.forFeature([PixivUserEntity], BEAUTY_ADMIN_CONNECTION_NAME),
+    TypeOrmModule.forFeature([PixivUserEntity, PixivWorkEntity, PixivWorkDetailEntity, PixivErrorEntitiy], BEAUTY_ADMIN_CONNECTION_NAME),
     ElasticsearchModule.register({
       node: "http://localhost:9200"
     })
