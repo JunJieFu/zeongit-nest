@@ -28,6 +28,7 @@ import { UserInfoService } from "./service/user-info.service"
 import { TagService } from "./service/tag.service"
 import { WorksController } from "./controller/works.controller"
 import { UserBlackHoleController } from "./controller/user-black-hole.controller"
+import { UserInfoDocumentService } from "./service/user-info-document.service";
 
 @Module({
   imports: [DataModule, AuthModule, QiniuModule],
@@ -57,7 +58,8 @@ import { UserBlackHoleController } from "./controller/user-black-hole.controller
     TagService,
     TagBlackHoleService,
     UserBlackHoleService,
-    UserInfoService
+    UserInfoService,
+    UserInfoDocumentService
   ],
   exports: []
 })

@@ -36,6 +36,7 @@ import { PixivWorkDetailEntity } from "./entity/beauty-admin/pixiv-work-detail.e
 import { PixivWorkEntity } from "./entity/beauty-admin/pixiv-work.entity"
 import { PixivErrorEntity } from "./entity/beauty-admin/pixiv-error.entity"
 import { NsfwLevelEntity } from "./entity/beauty-admin/nsfw-level.entity"
+import { UserInfoDocumentRepository } from "./repository/user-info-document.repository";
 
 
 const configModule = ConfigModule.forRoot(
@@ -87,8 +88,8 @@ const configModule = ConfigModule.forRoot(
     })
   ],
   controllers: [],
-  providers: [UserCache, UserInfoCache, PictureDocumentRepository],
-  exports: [TypeOrmModule, CacheModule, UserCache, UserInfoCache, PictureDocumentRepository]
+  providers: [UserCache, UserInfoCache, PictureDocumentRepository, UserInfoDocumentRepository],
+  exports: [TypeOrmModule, CacheModule, UserCache, UserInfoCache, PictureDocumentRepository, UserInfoDocumentRepository]
 })
 export class DataModule {
 }

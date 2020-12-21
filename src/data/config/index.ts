@@ -38,3 +38,5 @@ export const BEAUTY_CONNECTION_NAME = "beauty"
 export const BEAUTY_ADMIN_CONNECTION_NAME = "beauty_admin"
 
 export const ZEONGIT_BEAUTY_PICTURE = "zeongit_beauty_picture"
+
+export const ZEONGIT_BEAUTY_USER_INFO = "zeongit_beauty_user_info"

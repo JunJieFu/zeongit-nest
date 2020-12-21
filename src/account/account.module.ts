@@ -12,7 +12,7 @@ import { UserInfoService } from "./service/user-info.service"
 @Module({
   imports: [DataModule, AuthModule, QiniuModule],
   controllers: [AppController, UserController, UserInfoController],
-  providers: [UserService, UserInfoService,VerificationCodeCache],
+  providers: [UserService, UserInfoService, VerificationCodeCache],
   exports: []
 })
 export class AccountModule {
