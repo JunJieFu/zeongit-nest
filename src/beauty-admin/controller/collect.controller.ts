@@ -176,7 +176,7 @@ export class CollectController {
         list.push(path)
         continue
       }
-      if (detail.xRestrict == 1) {
+      if (detail.xRestrict === 1) {
         fs.renameSync(`${sourcePath}/${path}`, `${folderPath}/${path}`)
       }
     }

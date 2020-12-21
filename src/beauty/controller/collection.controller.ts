@@ -48,7 +48,7 @@ export class CollectionController extends PictureVoAbstract {
     }
 
     if (picture) {
-      if (picture.createdBy == userInfoId) {
+      if (picture.createdBy === userInfoId) {
         throw new ProgramException("不能收藏自己的作品")
       }
       let flag: CollectState
@@ -85,7 +85,7 @@ export class CollectionController extends PictureVoAbstract {
         try {
           const picture = await this.pictureDocumentService.get(collection.pictureId)
           //图片被隐藏
-          if (picture.privacy == PrivacyState.PRIVATE) {
+          if (picture.privacy === PrivacyState.PRIVATE) {
             picture.url = ""
           }
           collectionPictureVo = new CollectionPictureVo(

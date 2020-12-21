@@ -16,7 +16,7 @@ export abstract class PictureVoAbstract extends UserInfoVoAbstract {
   }
 
   async getPictureVo(picture: PictureDocument, userInfoId?: number) {
-    if (picture.privacy == PrivacyState.PRIVATE && picture.createdBy !== userInfoId) {
+    if (picture.privacy === PrivacyState.PRIVATE && picture.createdBy !== userInfoId) {
       throw new PermissionException("你没有权限查看该图片")
     }
     const pictureVo = new PictureVo(picture)

@@ -17,7 +17,7 @@ export class PictureService {
   }
 
   save(picture: PictureEntity, force = false) {
-    if (picture.life == PictureLifeState.DISAPPEAR && !force) {
+    if (picture.life === PictureLifeState.DISAPPEAR && !force) {
       throw new NotFoundException("图片不存在")
     }
     return this.pictureRepository.save(picture)

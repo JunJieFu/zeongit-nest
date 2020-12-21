@@ -43,7 +43,7 @@ export class FootprintController extends PictureVoAbstract {
   @Post("save")
   async save(@CurrentUser() userInfo: UserInfoEntity, @Body() { pictureId }: FocusDto) {
     const picture = await this.pictureDocumentService.get(pictureId)
-    if (picture.privacy == PrivacyState.PRIVATE) {
+    if (picture.privacy === PrivacyState.PRIVATE) {
       throw new PermissionException("操作有误")
     }
     try {
@@ -68,7 +68,7 @@ export class FootprintController extends PictureVoAbstract {
         try {
           const picture = await this.pictureDocumentService.get(footprint.pictureId)
           //图片被隐藏
-          if (picture.privacy == PrivacyState.PRIVATE) {
+          if (picture.privacy === PrivacyState.PRIVATE) {
             picture.url = ""
           }
           footprintPictureVo = new FootprintPictureVo(
