@@ -250,6 +250,7 @@ export class CollectController {
           }
         }
         picture.createdBy = info.id
+        picture.createDate = pixivWork.pixivCreateDate
         const translateTags = pixivWork.translateTags ?? ""
         if (translateTags) {
           picture.tagList = Array.from(new Set(translateTags.split("|"))).map(it => new TagEntity(info.id!, it))
