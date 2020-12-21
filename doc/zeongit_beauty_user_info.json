@@ -1,0 +1,49 @@
+{
+  "settings": {
+    "number_of_shards": 5,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "_doc": {
+      "properties": {
+        "createDate": {
+          "type": "keyword"
+        },
+        "id": {
+          "type": "keyword"
+        },
+        "gender": {
+          "type": "keyword"
+        },
+        "birthday": {
+          "type": "keyword"
+        },
+        "introduction": {
+          "type": "text",
+          "analyzer": "ik_max_word"
+        },
+        "updateDate": {
+          "type": "keyword"
+        },
+        "nickname": {
+          "type": "keyword"
+        },
+        "avatar": {
+          "type": "keyword"
+        },
+        "background": {
+          "type": "keyword"
+        },
+        "country": {
+          "type": "keyword"
+        },
+        "province": {
+          "type": "keyword"
+        },
+        "city": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}
