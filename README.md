@@ -27,7 +27,7 @@
 模仿Pixiv的管理模块，现阶段主要是对采集Pixiv的一系列操作
 
 ## 采集流程
-![process](https://github.com/JunJieFu/zeongit-nest/tree/master/doc/beauty-admin-process.jpg)
+![process](https://github.com/JunJieFu/zeongit-nest/tree/master/doc/beauty-admin-process.jpg?raw=true)
 采集流程可以作很多机械操作，但是现在没有精力去弄自动化采集。
 
 ## 快速链接  
