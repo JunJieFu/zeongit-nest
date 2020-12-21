@@ -1,7 +1,7 @@
 import { BaseEntity } from "../../../share/entity/base.entity"
 import { Column, Entity } from "typeorm"
 
-@Entity("pixiv_detail_work")
+@Entity("pixiv_work_detail")
 export class PixivWorkDetailEntity extends BaseEntity {
   @Column({ name: "pixiv_id", nullable: true })
   pixivId?: string

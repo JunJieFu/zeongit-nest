@@ -52,7 +52,7 @@ async function beautyAdminBootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true, validateCustomDecorators: true
   }))
-  await app.listen(12082)
+  await app.listen(8082)
 }
 
 accountBootstrap()
