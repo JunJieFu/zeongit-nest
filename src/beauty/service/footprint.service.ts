@@ -8,6 +8,7 @@ import { PagingQuery } from "../query/footprint.query"
 import { paginate } from "nestjs-typeorm-paginate"
 import { nullable } from "../../share/fragment/pipe.function"
 import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
+import { addDay } from "../../share/uitl/date.util";
 
 
 @Injectable()
@@ -30,14 +31,14 @@ export class FootprintService {
     }
   }
 
-  remove(pictureId: number, { id: userInfoId }: UserInfoEntity) {
+  remove(pictureId: number, {id: userInfoId}: UserInfoEntity) {
     return this.footprintRepository.delete({
       createdBy: userInfoId,
       pictureId
     })
   }
 
-  get(pictureId: number, { id: userInfoId }: UserInfoEntity) {
+  get(pictureId: number, {id: userInfoId}: UserInfoEntity) {
     return this.footprintRepository.findOne({
       pictureId,
       createdBy: userInfoId
@@ -50,12 +51,12 @@ export class FootprintService {
     return this.footprintRepository.save(footprint)
   }
 
-  save(pictureId: number, { id: userInfoId }: UserInfoEntity) {
+  save(pictureId: number, {id: userInfoId}: UserInfoEntity) {
     return this.footprintRepository.save(new FootprintEntity(userInfoId!, pictureId))
   }
 
   countByPictureId(pictureId: number) {
-    return this.footprintRepository.count({ pictureId })
+    return this.footprintRepository.count({pictureId})
   }
 
   async paging(pageable: Pageable, query: PagingQuery) {
@@ -78,13 +79,13 @@ export class FootprintService {
       where.pictureId = query.pictureId
     }
     if (typeof query.startDate !== "undefined" && typeof query.endDate !== "undefined") {
-      where.createDate = Between(query.startDate, query.endDate)
+      where.createDate = Between(query.startDate, addDay(query.endDate, 1))
     } else {
       if (typeof query.startDate !== "undefined") {
         where.createDate = MoreThanOrEqual(query.startDate)
       }
       if (typeof query.endDate !== "undefined") {
-        where.createDate = LessThanOrEqual(query.endDate)
+        where.createDate = LessThanOrEqual(addDay(query.endDate, 1))
       }
     }
     return where

@@ -38,16 +38,20 @@ export class UserInfoDocumentService {
 
     const query: { bool: { must: any[] } } = {
       bool: {
-        must: nicknameList.map((it) => ({
-          [precise ? "term" : "wildcard"]: {
-            nickname: precise ? it : `*${it}*`
+        must: [{
+          bool: {
+            should: nicknameList.map((it) => ({
+              [precise ? "term" : "wildcard"]: {
+                nickname: precise ? it : `*${it}*`
+              }
+            }))
           }
-        }))
+        }]
       }
     }
     query.bool.must.push({
       range: {
-        createDate: {
+        updateDate: {
           gte: startDate,
           lte: endDate ? addDay(endDate, 1) : undefined
         }

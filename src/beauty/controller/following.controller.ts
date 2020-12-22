@@ -1,4 +1,4 @@
-import { Body, Controller, Get, ParseIntPipe, Post, Query } from "@nestjs/common"
+import { Body, Controller, Get, Post, Query } from "@nestjs/common"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { FollowService } from "../service/follow.service"
@@ -11,6 +11,7 @@ import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 import { ProgramException } from "../../share/exception/program.exception"
 import { IsInt } from "class-validator"
 import { FollowState } from "../constant/follow-state.constant"
+import { PagingQuery } from "../query/follow.query";
 
 
 class FocusDto {
@@ -28,7 +29,7 @@ export class FollowingController extends UserInfoVoAbstract {
 
   @JwtAuth()
   @Post("focus")
-  async focus(@CurrentUser() userInfo: UserInfoEntity, @Body() { followingId }: FocusDto) {
+  async focus(@CurrentUser() userInfo: UserInfoEntity, @Body() {followingId}: FocusDto) {
     const userInfoId = userInfo.id!
     if (userInfoId === followingId) {
       throw new ProgramException("不能关注自己")
@@ -44,8 +45,8 @@ export class FollowingController extends UserInfoVoAbstract {
   }
 
   @Get("paging")
-  async paging(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query("targetId", ParseIntPipe) targetId: number) {
-    const page = await this.followService.pagingByFollowerId(pageable, targetId)
+  async paging(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
+    const page = await this.followService.pagingByFollowerId(pageable, query)
     const voList = []
     for (const it of page.items) {
       voList.push(await this.getUserInfoVoById(it.followingId!, userInfo?.id))

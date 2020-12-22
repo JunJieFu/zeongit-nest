@@ -28,7 +28,6 @@ import { Pagination } from "nestjs-typeorm-paginate"
 class SaveDto {
   @IsInt()
   targetId!: number
-
 }
 
 
@@ -44,7 +43,6 @@ export class PictureBlackHoleController extends PictureVoAbstract {
   ) {
     super()
   }
-
 
   @JwtAuth()
   @Post("block")

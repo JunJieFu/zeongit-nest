@@ -7,6 +7,7 @@ import { Pageable } from "../../share/model/pageable.model"
 import { PagingQuery } from "../query/collection.query"
 import { paginate } from "nestjs-typeorm-paginate"
 import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
+import { addDay } from "../../share/uitl/date.util";
 
 
 @Injectable()
@@ -29,19 +30,19 @@ export class CollectionService {
     }
   }
 
-  remove(pictureId: number, { id: userInfoId }: UserInfoEntity) {
+  remove(pictureId: number, {id: userInfoId}: UserInfoEntity) {
     return this.collectionRepository.delete({
       createdBy: userInfoId,
       pictureId
     })
   }
 
-  save(pictureId: number, { id: userInfoId }: UserInfoEntity) {
+  save(pictureId: number, {id: userInfoId}: UserInfoEntity) {
     return this.collectionRepository.save(new CollectionEntity(userInfoId!, pictureId))
   }
 
   countByPictureId(pictureId: number) {
-    return this.collectionRepository.count({ pictureId })
+    return this.collectionRepository.count({pictureId})
   }
 
   paging(pageable: Pageable, query: PagingQuery) {
@@ -64,13 +65,13 @@ export class CollectionService {
       where.pictureId = query.pictureId
     }
     if (typeof query.startDate !== "undefined" && typeof query.endDate !== "undefined") {
-      where.createDate = Between(query.startDate, query.endDate)
+      where.createDate = Between(query.startDate, addDay(query.endDate, 1))
     } else {
       if (typeof query.startDate !== "undefined") {
         where.createDate = MoreThanOrEqual(query.startDate)
       }
       if (typeof query.endDate !== "undefined") {
-        where.createDate = LessThanOrEqual(query.endDate)
+        where.createDate = LessThanOrEqual(addDay(query.endDate, 1))
       }
     }
     return where
