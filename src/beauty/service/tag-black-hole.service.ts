@@ -5,6 +5,7 @@ import { Pageable } from "../../share/model/pageable.model"
 import { paginate } from "nestjs-typeorm-paginate"
 import { PagingQuery } from "../query/tag-black-hole.query"
 import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
+import { addDay } from "../../share/uitl/date.util";
 
 export class TagBlackHoleService {
   constructor(
@@ -20,11 +21,11 @@ export class TagBlackHoleService {
     })
   }
 
-  save(tag: string, { id: userInfoId }: UserInfoEntity) {
+  save(tag: string, {id: userInfoId}: UserInfoEntity) {
     return this.tagBlackHoleRepository.save(new TagBlackHoleEntity(userInfoId!, tag))
   }
 
-  remove(tag: string, { id: userInfoId }: UserInfoEntity) {
+  remove(tag: string, {id: userInfoId}: UserInfoEntity) {
     return this.tagBlackHoleRepository.delete({
       createdBy: userInfoId,
       tag
@@ -57,13 +58,13 @@ export class TagBlackHoleService {
     const where = {} as Record<keyof TagBlackHoleEntity, any>
     where.createdBy = query.userInfoId
     if (typeof query.startDate !== "undefined" && typeof query.endDate !== "undefined") {
-      where.createDate = Between(query.startDate, query.endDate)
+      where.createDate = Between(query.startDate, addDay(query.endDate, 1))
     } else {
       if (typeof query.startDate !== "undefined") {
         where.createDate = MoreThanOrEqual(query.startDate)
       }
       if (typeof query.endDate !== "undefined") {
-        where.createDate = LessThanOrEqual(query.endDate)
+        where.createDate = LessThanOrEqual(addDay(query.endDate, 1))
       }
     }
     return where

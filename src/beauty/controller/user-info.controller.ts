@@ -64,7 +64,6 @@ export class UserInfoController extends UserInfoVoAbstract {
   @Get("paging")
   async paging(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() dto: PagingDto) {
     const page = await this.userInfoDocumentService.paging(pageable, dto)
-
     return this.getPageVo(page, userInfo?.id)
   }
 

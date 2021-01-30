@@ -25,8 +25,6 @@ export class WorksController extends PictureVoAbstract {
 
   @Get("paging")
   async paging(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
-
-
     const page = await this.pictureDocumentService.paging(pageable, {
       userInfoId: userInfo?.id,
       startDate: query.startDate,
