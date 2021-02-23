@@ -84,7 +84,7 @@ export class FollowService {
       where.createdBy = query.createdBy
     }
     if (typeof query.followingId !== "undefined") {
-      where.createdBy = query.followingId
+      where.followingId = query.followingId
     }
     if (typeof query.startDate !== "undefined" && typeof query.endDate !== "undefined") {
       where.createDate = Between(query.startDate, addDay(query.endDate, 1))

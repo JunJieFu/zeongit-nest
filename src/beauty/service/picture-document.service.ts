@@ -19,6 +19,7 @@ interface Query {
   userInfoId?: number
   tagList?: string[]
   precise?: boolean
+  and?: boolean
   name?: string
   startDate?: Date
   endDate?: Date
@@ -111,7 +112,7 @@ export class PictureDocumentService {
       const collectionList = await this.collectionService.paging(new Pageable({
         page: 1,
         limit: 5
-      }), { targetId: userInfoId })
+      }), {targetId: userInfoId})
       for (const collection of collectionList.items) {
         pictureBlacklist.push(collection.pictureId)
         try {
@@ -120,9 +121,8 @@ export class PictureDocumentService {
         }
       }
     }
-
     return this.paging(pageable,
-      { tagList, userBlacklist, pictureBlacklist, tagBlacklist, startDate, endDate, precise: true }
+      {tagList, userBlacklist, pictureBlacklist, tagBlacklist, startDate, endDate}
     )
   }
 
@@ -137,7 +137,7 @@ export class PictureDocumentService {
     const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
 
     return this.paging(pageable,
-      { tagList, userBlacklist, pictureBlacklist, tagBlacklist, startDate, endDate, precise: true }
+      {tagList, userBlacklist, pictureBlacklist, tagBlacklist, startDate, endDate, precise: true}
     )
   }
 
@@ -150,7 +150,7 @@ export class PictureDocumentService {
     const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(userInfoId)
     const userBlacklist = await this.userBlackHoleService.listBlacklist(userInfoId)
 
-    return (await this.paging(new Pageable({ page: 1, limit: 1, sort: [new Sort("likeAmount", SortOrder.DESC)] }),
+    return (await this.paging(new Pageable({page: 1, limit: 1, sort: [new Sort("likeAmount", SortOrder.DESC)]}),
       {
         tagList: [tag],
         precise: true,
@@ -191,7 +191,7 @@ export class PictureDocumentService {
 
   async listTagTop30(userInfoId?: number) {
     const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
-    const query = this.generateQuery({ tagBlacklist })
+    const query = this.generateQuery({tagBlacklist})
     return this.pictureDocumentRepository.aggregations(new Pageable({
       page: 1,
       limit: 30,
@@ -209,7 +209,7 @@ export class PictureDocumentService {
 
   async listTagByUserId(userInfoId: number) {
     const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
-    const query = this.generateQuery({ tagBlacklist, mustUserList: [userInfoId] })
+    const query = this.generateQuery({tagBlacklist, mustUserList: [userInfoId]})
 
     return this.pictureDocumentRepository.aggregations(new Pageable({
       page: 1,
@@ -230,6 +230,7 @@ export class PictureDocumentService {
     {
       tagList = [],
       precise,
+      and,
       name,
       startDate,
       endDate,
@@ -241,15 +242,23 @@ export class PictureDocumentService {
       tagBlacklist = []
     }: Query
   ) {
-    const query: { bool: { must: any[] } } = {
+    const query: any = {
       bool: {
-        must: tagList.map((it) => ({
-          [precise ? "term" : "wildcard"]: {
-            tagList: precise ? it : `*${it}*`
-          }
-        }))
+        must: [],
+        should: [],
+
       }
     }
+    query.bool[and ? "must" : "should"].push(...tagList.map((it) => ({
+      [precise ? "term" : "wildcard"]: {
+        tagList: precise ? it : `*${it}*`
+      }
+    })))
+
+    if (tagList && tagList.length) {
+      query.bool.minimum_should_match = tagList.length < 3 ? tagList.length : 3
+    }
+
     if (name) {
       query.bool.must.push({
         [precise ? "term" : "match_phrase"]: {
@@ -282,34 +291,34 @@ export class PictureDocumentService {
 
     query.bool.must.push({
       bool: {
-        should: mustUserList.map(it => ({ term: { createdBy: it } }))
+        should: mustUserList.map(it => ({term: {createdBy: it}}))
       }
     })
 
     query.bool.must.push({
       bool: {
-        must_not: userBlacklist.map(it => ({ term: { createdBy: it } }))
+        must_not: userBlacklist.map(it => ({term: {createdBy: it}}))
       }
     })
 
     query.bool.must.push({
       bool: {
-        must_not: userBlacklist.map(it => ({ term: { createdBy: it } }))
+        must_not: userBlacklist.map(it => ({term: {createdBy: it}}))
       }
     })
 
     query.bool.must.push({
       bool: {
-        must_not: pictureBlacklist.map(it => ({ term: { id: it } }))
+        must_not: pictureBlacklist.map(it => ({term: {id: it}}))
       }
     })
 
     query.bool.must.push({
       bool: {
-        must_not: tagBlacklist.map(it => ({ term: { tagList: it } }))
+        must_not: tagBlacklist.map(it => ({term: {tagList: it}}))
       }
     })
-
+    console.log(JSON.stringify(query))
     return query
   }
 

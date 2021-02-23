@@ -1,6 +1,7 @@
 import { SortOrder } from "../constant/sort-order.constant"
 import { IsEnum, IsString } from "class-validator"
 import { plainToClass } from "class-transformer"
+import { PaginationMeta } from "../types";
 
 export class Sort {
   @IsString()
@@ -45,5 +46,15 @@ export class Pageable {
         }))
       }
     }
+  }
+}
+
+export class PaginationAdvance<T> {
+  items: T[];
+  meta: PaginationMeta;
+
+  constructor(items: T[], meta: PaginationMeta) {
+    this.items = items
+    this.meta = meta
   }
 }
