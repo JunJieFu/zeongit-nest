@@ -84,7 +84,7 @@ const configModule = ConfigModule.forRoot(
     }),
     TypeOrmModule.forFeature([NsfwLevelEntity, PixivUserEntity, PixivWorkEntity, PixivWorkDetailEntity, PixivErrorEntity], BEAUTY_ADMIN_CONNECTION_NAME),
     ElasticsearchModule.register({
-      node: "http://localhost:9200"
+      node: "http://47.107.181.201:9200"
     })
   ],
   controllers: [],

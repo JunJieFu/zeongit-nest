@@ -16,8 +16,7 @@
           "type": "keyword"
         },
         "height": {
-          "type": "keyword",
-          "index": false
+          "type": "keyword"
         },
         "id": {
           "type": "keyword"
@@ -50,8 +49,7 @@
           "type": "keyword"
         },
         "width": {
-          "type": "keyword",
-          "index": false
+          "type": "keyword"
         }
       }
     }

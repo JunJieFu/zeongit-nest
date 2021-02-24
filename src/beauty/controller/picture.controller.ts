@@ -52,9 +52,30 @@ class PagingDto {
   endDate?: Date
 
   @Type(() => Number)
-  @IsEnum(AspectRatio)
+  @IsEnum(AspectRatio,{ each: true })
   @IsOptional()
-  aspectRatio?: AspectRatio
+  @Transform(parseArrayTransformFn)
+  aspectRatio!: AspectRatio[]
+
+  @Type(() => Number)
+  @IsInt()
+  @IsOptional()
+  startWidth?: number
+
+  @Type(() => Number)
+  @IsInt()
+  @IsOptional()
+  endWidth?: number
+
+  @Type(() => Number)
+  @IsInt()
+  @IsOptional()
+  startHeight?: number
+
+  @Type(() => Number)
+  @IsInt()
+  @IsOptional()
+  endHeight?: number
 }
 
 class SaveDto {
@@ -115,6 +136,10 @@ export class PictureController extends PictureVoAbstract {
       startDate: dto.startDate,
       endDate: dto.endDate,
       aspectRatio: dto.aspectRatio,
+      startWidth: dto.startWidth,
+      endWidth: dto.endWidth,
+      startHeight: dto.startHeight,
+      endHeight: dto.endHeight,
       userBlacklist: await this.userBlackHoleService.listBlacklist(userInfo?.id),
       pictureBlacklist: await this.pictureBlackHoleService.listBlacklist(userInfo?.id),
       tagBlacklist: await this.tagBlackHoleService.listBlacklist(userInfo?.id)

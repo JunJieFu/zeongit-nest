@@ -92,7 +92,7 @@ export class UserInfoDocumentRepository {
         })
         list.push(classToPlain(userInfoDocument))
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     }
     this.elasticsearchService.bulk({index: ZEONGIT_BEAUTY_USER_INFO, type: "_doc", body: list})

@@ -23,7 +23,11 @@ interface Query {
   name?: string
   startDate?: Date
   endDate?: Date
-  aspectRatio?: AspectRatio
+  aspectRatio?: AspectRatio[]
+  startWidth?:number
+  endWidth?:number
+  startHeight?:number
+  endHeight?:number
   privacy?: PrivacyState
   mustUserList?: number[]
   userBlacklist?: number[]
@@ -51,7 +55,11 @@ export class PictureDocumentService {
     name,
     startDate,
     endDate,
-    aspectRatio,
+    aspectRatio = [],
+    startWidth,
+    endWidth,
+    startHeight,
+    endHeight,
     mustUserList = [],
     userBlacklist = [],
     pictureBlacklist = [],
@@ -68,6 +76,10 @@ export class PictureDocumentService {
       startDate,
       endDate,
       aspectRatio,
+      startWidth,
+      endWidth,
+      startHeight,
+      endHeight,
       privacy,
       mustUserList,
       userBlacklist,
@@ -235,6 +247,10 @@ export class PictureDocumentService {
       startDate,
       endDate,
       aspectRatio,
+      startWidth,
+      endWidth,
+      startHeight,
+      endHeight,
       privacy,
       mustUserList = [],
       userBlacklist = [],
@@ -274,10 +290,27 @@ export class PictureDocumentService {
         }
       }
     })
+    query.bool.must.push({
+      range: {
+        width: {
+          gte: startWidth,
+          lte: endWidth
+        }
+      }
+    })
+    query.bool.must.push({
+      range: {
+        height: {
+          gte: startHeight,
+          lte: endHeight
+        }
+      }
+    })
     if (typeof aspectRatio !== "undefined") {
       query.bool.must.push({
-        term: {
-          aspectRatio
+        bool: {
+          should: aspectRatio.map(it => ({term: {aspectRatio: it}})),
+          minimum_should_match: 1
         }
       })
     }
@@ -291,7 +324,8 @@ export class PictureDocumentService {
 
     query.bool.must.push({
       bool: {
-        should: mustUserList.map(it => ({term: {createdBy: it}}))
+        should: mustUserList.map(it => ({term: {createdBy: it}})),
+        minimum_should_match: 1
       }
     })
 
@@ -318,7 +352,6 @@ export class PictureDocumentService {
         must_not: tagBlacklist.map(it => ({term: {tagList: it}}))
       }
     })
-    console.log(JSON.stringify(query))
     return query
   }
 
