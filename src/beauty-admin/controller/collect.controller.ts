@@ -183,6 +183,18 @@ export class CollectController {
     return list
   }
 
+  @Post("checkSuit")
+  async checkSuit(@Body("sourcePath") sourcePath: string, @Body("folderPath") folderPath: string) {
+    const sourcePathList = fs.readdirSync(sourcePath) ?? []
+    const list: string[] = []
+    for (const path of sourcePathList) {
+      if (path.indexOf("_p0") === -1) {
+        fs.renameSync(`${sourcePath}/${path}`, `${folderPath}/${path}`)
+      }
+    }
+    return list
+  }
+
   /**
    * 将文件夹的所有图片正式启用
    * @param folderPath 文件夹

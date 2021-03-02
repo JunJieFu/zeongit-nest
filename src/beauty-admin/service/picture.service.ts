@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common"
-import { Repository } from "typeorm"
+import { Like, Not, Repository } from "typeorm"
 import { PictureEntity } from "../../data/entity/beauty/picture.entity"
 import { nullable } from "../../share/fragment/pipe.function"
 import { PictureLifeState } from "../../data/constant/picture-life-state.constant"
@@ -25,5 +25,17 @@ export class PictureService {
 
   list() {
     return this.pictureRepository.find()
+  }
+
+  remove(picture: PictureEntity) {
+    return this.pictureRepository.remove(picture)
+  }
+
+  listSuit() {
+    return this.pictureRepository.find({
+      where: {
+        url: Not(Like("%_p0%"))
+      }
+    })
   }
 }

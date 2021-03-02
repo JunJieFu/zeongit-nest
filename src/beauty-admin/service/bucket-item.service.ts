@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { InjectBeautyAdmin } from "../../data/decorator/inject-beauty-admin.decorator"
-import { Repository } from "typeorm"
-import { BucketItemEntity } from "../../data/entity/beauty-admin/bucket-item.entity";
+import { Like, Not, Repository } from "typeorm"
+import { BucketItemEntity } from "../../data/entity/beauty-admin/bucket-item.entity"
 
 @Injectable()
 export class BucketItemService {
@@ -12,5 +12,13 @@ export class BucketItemService {
 
   save(key: string) {
     return this.bucketItemRepository.insert(new BucketItemEntity(key))
+  }
+
+  listSuit() {
+    return this.bucketItemRepository.find({
+      where: {
+        key: Not(Like("%_p0%"))
+      }
+    })
   }
 }

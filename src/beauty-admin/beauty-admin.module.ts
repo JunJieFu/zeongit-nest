@@ -9,13 +9,14 @@ import { CollectController } from "./controller/collect.controller"
 import { PictureService } from "./service/picture.service"
 import { UserService } from "./service/user.service"
 import { UserInfoService } from "./service/user-info.service"
-import { QiniuModule } from "../qiniu/qiniu.module";
+import { QiniuModule } from "../qiniu/qiniu.module"
 import { QiniuController } from "./controller/qiniu.controller"
-import { BucketItemService } from "./service/bucket-item.service";
+import { BucketItemService } from "./service/bucket-item.service"
+import { PictureController } from "./controller/picture.controller"
 
 @Module({
   imports: [DataModule, QiniuModule],
-  controllers: [CollectController, QiniuController],
+  controllers: [CollectController, QiniuController, PictureController],
   providers: [BucketItemService, NsfwLevelService, PixivErrorService, PixivUserService, PixivWorkService, PixivWorkDetailService, PictureService, UserService, UserInfoService
   ],
   exports: []
