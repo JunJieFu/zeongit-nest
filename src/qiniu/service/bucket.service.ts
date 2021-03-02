@@ -26,7 +26,7 @@ export class BucketService {
   }
 
   getToken(bucket: string, expires = 7200) {
-    const putPolicy = new PutPolicy({ scope: bucket, expires })
+    const putPolicy = new PutPolicy({scope: bucket, expires})
     return putPolicy.uploadToken(this.mac)
   }
 
@@ -61,5 +61,20 @@ export class BucketService {
     // })
 
     return this.httpService.get(bucketUrl + "/" + url + "?imageInfo").pipe(map(it => plainToClass(ImageInfo, it.data))).toPromise()
+  }
+
+  getList(bucket: string, limit = 20, marker?: string): Promise<{ marker: string, items: { key: string }[] }> {
+    return new Promise((resolve, reject) => {
+      this.bucketManager.listPrefix(bucket, {
+        marker,
+        limit
+      }, (e?: Error, respBody?: { marker: string, items: { key: string }[] }) => {
+        if (e) {
+          reject(e)
+        } else {
+          resolve(respBody)
+        }
+      })
+    })
   }
 }

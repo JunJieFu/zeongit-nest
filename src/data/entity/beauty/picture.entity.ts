@@ -8,7 +8,7 @@ import { TagEntity } from "./tag.entity"
 
 @Entity("picture")
 export class PictureEntity extends AskEntity {
-//图片地址
+  //图片地址
   @Column({ name: "url" })
   url!: string
 
