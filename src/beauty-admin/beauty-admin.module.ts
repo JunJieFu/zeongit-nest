@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common"
+import { HttpModule, Module } from "@nestjs/common"
 import { DataModule } from "../data/data.module"
 import { NsfwLevelService } from "./service/nsfw-level.service"
 import { PixivErrorService } from "./service/pixiv-error.service"
@@ -13,11 +13,18 @@ import { QiniuModule } from "../qiniu/qiniu.module"
 import { QiniuController } from "./controller/qiniu.controller"
 import { BucketItemService } from "./service/bucket-item.service"
 import { PictureController } from "./controller/picture.controller"
+import { AutoCollectController } from "./controller/auto-collect.controller";
+import { AutoPixivWorkService } from "./service/auto-pixiv-work.service";
 
 @Module({
-  imports: [DataModule, QiniuModule],
-  controllers: [CollectController, QiniuController, PictureController],
-  providers: [BucketItemService, NsfwLevelService, PixivErrorService, PixivUserService, PixivWorkService, PixivWorkDetailService, PictureService, UserService, UserInfoService
+  imports: [DataModule, QiniuModule, HttpModule],
+  controllers: [CollectController, QiniuController, PictureController,
+    AutoCollectController
+  ],
+  providers: [BucketItemService, NsfwLevelService, PixivErrorService,
+    PixivUserService, PixivWorkService, PixivWorkDetailService,
+    PictureService, UserService, UserInfoService,
+    AutoPixivWorkService
   ],
   exports: []
 })
