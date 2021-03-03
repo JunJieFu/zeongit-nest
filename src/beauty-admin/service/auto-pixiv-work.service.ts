@@ -3,6 +3,7 @@ import { InjectBeautyAdmin } from "../../data/decorator/inject-beauty-admin.deco
 import { PixivWorkEntity } from "../../data/entity/beauty-admin/pixiv-work.entity"
 import { Repository } from "typeorm"
 import { AutoPixivWorkEntity } from "../../data/entity/beauty-admin/auto-pixiv-work.entity";
+import { nullable } from "../../share/fragment/pipe.function";
 
 @Injectable()
 export class AutoPixivWorkService {
@@ -13,5 +14,13 @@ export class AutoPixivWorkService {
 
   save(pixivWork: PixivWorkEntity) {
     return this.autoPixivWorkRepository.save(pixivWork)
+  }
+
+  getTypeByDownload(download: number) {
+    return this.autoPixivWorkRepository.findOne({
+      where: {
+        download
+      }
+    }).then(nullable("图片不存在"))
   }
 }

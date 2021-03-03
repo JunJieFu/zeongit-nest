@@ -31,13 +31,15 @@ export class AutoPixivWorkEntity extends BaseEntity {
   pixivCreateDate?: Date
   @Column({name: "original_url"})
   originalUrl!: string
-  @Column({name: "download", type: "int"})
-  download = 0
   @Column({name: "total_view", type: "int"})
   totalView = 0
   @Column({name: "total_bookmarks", type: "int"})
   totalBookmarks = 0
   @Column({name: "sl", nullable: true})
   sl?: number
+  @Column({name: "download", type: "int"})
+  download = 0
+  @Column({name: "pixiv_use", type: "int"})
+  pixivUse = 0
 }
 

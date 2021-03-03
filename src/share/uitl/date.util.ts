@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 type WideDate = number | string | Date
 
 interface DifferDate {
@@ -120,12 +122,9 @@ export function equalsDay(value: Date, target: Date) {
   )
 }
 
-// export function format(date: Date, formatString = "YYYY-MM-DD") {
-//   if (date) {
-//     return moment(date).format(formatString)
-//   }
-//   return ""
-// }
+export function format(date: Date, formatString = "YYYY-MM-DD") {
+  return dayjs(date).format(formatString)
+}
 
 // export function dateToTimeList(date: Date, long: number) {
 //   let i = 0
