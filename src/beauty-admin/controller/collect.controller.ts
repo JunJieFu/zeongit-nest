@@ -22,6 +22,8 @@ import { Gender } from "src/data/constant/gender.constant"
 import { UserService } from "../service/user.service"
 import { TagEntity } from "../../data/entity/beauty/tag.entity"
 import { AspectRatio } from "../../data/constant/aspect-ratio.constant"
+import { AutoPixivWorkService } from "../service/auto-pixiv-work.service"
+import { AutoPixivWorkEntity } from "../../data/entity/beauty-admin/auto-pixiv-work.entity"
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require("fs")
 
@@ -35,7 +37,8 @@ export class CollectController {
     private readonly nsfwLevelService: NsfwLevelService,
     private readonly pictureService: PictureService,
     private readonly userService: UserService,
-    private readonly userInfoService: UserInfoService
+    private readonly userInfoService: UserInfoService,
+    private readonly  autoPixivWorkService: AutoPixivWorkService
   ) {
   }
 
@@ -204,6 +207,7 @@ export class CollectController {
   async checkUse(@Body("folderPath") folderPath: string, @Body("userInfoId", ParseIntPipe)userInfoId: number) {
     const fileNameList = fs.readdirSync(folderPath) ?? []
     console.log(fileNameList.length)
+    const autoErrorList = []
     for (const fileName of fileNameList) {
       try {
         let pixivWorkDetail: PixivWorkDetailEntity
@@ -223,11 +227,29 @@ export class CollectController {
         let pixivWork: PixivWorkEntity
         try {
           pixivWork = await this.pixivWorkService.getByPixivId(pixivWorkDetail.pixivId!)
+          const auto = new AutoPixivWorkEntity()
+          auto.pixivId = pixivWorkDetail.pixivId ?? ""
+          auto.title = pixivWork.title ?? ""
+          auto.xRestrict = pixivWork.xRestrict
+          auto.pixivRestrict = pixivWork.pixivRestrict
+          auto.description = pixivWork.description
+          auto.tags = pixivWork.tags
+          auto.translateTags = pixivWork.translateTags
+          auto.userId = pixivWork.userId ?? ""
+          auto.userName = pixivWork.userName?? ""
+          auto.width = pixivWork.width
+          auto.height = pixivWork.height
+          auto.pageCount = pixivWork.pageCount
+          auto.pixivCreateDate = pixivWork.pixivCreateDate
+          auto.originalUrl = pixivWork.originalUrl!
+          auto.sl = pixivWork.sl
+          await this.autoPixivWorkService.save(auto)
         } catch (e) {
           const read = imageSize(`${folderPath}/${fileName}`)
           pixivWork = new PixivWorkEntity()
           pixivWork.width = read.width ?? 0
           pixivWork.height = read.height ?? 0
+          autoErrorList.push(fileName)
         }
 
         //根据url获取正式数据库图片信息
@@ -273,7 +295,7 @@ export class CollectController {
         console.error(e.message)
       }
     }
-    return true
+    return autoErrorList
   }
 
   /**

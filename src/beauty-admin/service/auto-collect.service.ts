@@ -1,21 +1,21 @@
-import { Get, HttpService, Injectable } from "@nestjs/common"
-import { Interval } from "@nestjs/schedule";
-import { AutoPixivWorkService } from "./auto-pixiv-work.service";
-import { BucketService } from "../../qiniu/service/bucket.service";
-import { map } from "rxjs/operators";
-import { plainToClass } from "class-transformer";
-import { AutoCollectPick } from "../dto";
-import { format } from "../../share/uitl/date.util";
-import { AutoPixivWorkEntity } from "../../data/entity/beauty-admin/auto-pixiv-work.entity";
-import { PictureEntity } from "../../data/entity/beauty/picture.entity";
-import { Gender } from "../../data/constant/gender.constant";
-import { UserService } from "./user.service";
-import { UserInfoService } from "./user-info.service";
-import { PixivUserService } from "./pixiv-user.service";
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity";
-import { PixivUserEntity } from "../../data/entity/beauty-admin/pixiv-user.entity";
-import { TagEntity } from "../../data/entity/beauty/tag.entity";
-import { PictureService } from "./picture.service";
+import { HttpService, Injectable } from "@nestjs/common"
+import { Interval } from "@nestjs/schedule"
+import { AutoPixivWorkService } from "./auto-pixiv-work.service"
+import { BucketService } from "../../qiniu/service/bucket.service"
+import { map } from "rxjs/operators"
+import { plainToClass } from "class-transformer"
+import { AutoCollectPick } from "../dto"
+import { addDay, format } from "../../share/uitl/date.util"
+import { AutoPixivWorkEntity } from "../../data/entity/beauty-admin/auto-pixiv-work.entity"
+import { PictureEntity } from "../../data/entity/beauty/picture.entity"
+import { Gender } from "../../data/constant/gender.constant"
+import { UserService } from "./user.service"
+import { UserInfoService } from "./user-info.service"
+import { PixivUserService } from "./pixiv-user.service"
+import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
+import { PixivUserEntity } from "../../data/entity/beauty-admin/pixiv-user.entity"
+import { TagEntity } from "../../data/entity/beauty/tag.entity"
+import { PictureService } from "./picture.service"
 
 @Injectable()
 export class AutoCollectService {
@@ -26,17 +26,18 @@ export class AutoCollectService {
     private readonly pixivUserService: PixivUserService,
     private readonly userService: UserService,
     private readonly userInfoService: UserInfoService,
-    private readonly pictureService: PictureService,
+    private readonly pictureService: PictureService
   ) {
   }
 
-  private pages = [1,1,1]
+  private pages = [1, 1, 1]
   private userInfoId = 1
   private readonly types = ["day_male", "week_original", "week_rookie"]
-  @Interval(1000 * 60 * 30)
+
+  // @Interval(1000 * 60 * 30)
   async collect() {
     const typeIndex = parseInt(String(Math.random() * 3), 10)
-    const vo = await this.httpService.get(`https://hibiapi.getloli.com/api/pixiv/?type=rank&mode=${this.types[typeIndex]}&page=${this.pages[typeIndex]}&date=${format(new Date())}`).pipe(map(it => plainToClass(AutoCollectPick, it.data))).toPromise()
+    const vo = await this.httpService.get(`https://hibiapi.getloli.com/api/pixiv/?type=rank&mode=${this.types[typeIndex]}&page=${this.pages[typeIndex]}&date=${format(addDay(new Date(), -2))}`).pipe(map(it => plainToClass(AutoCollectPick, it.data))).toPromise()
     this.pages[typeIndex]++
     for (const item of vo.illusts) {
       if (item.page_count === 1) {

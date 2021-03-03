@@ -1,7 +1,7 @@
-import { Body, Controller, Get } from "@nestjs/common"
+import { Body, Controller, Get, Post } from "@nestjs/common"
 import { BucketItemService } from "../service/bucket-item.service"
-import { PictureService } from "../service/picture.service";
-import { PixivWorkDetailService } from "../service/pixiv-work-detail.service";
+import { PictureService } from "../service/picture.service"
+import { PixivWorkDetailService } from "../service/pixiv-work-detail.service"
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require("fs")
 
@@ -23,7 +23,7 @@ export class BucketItemController {
     return true
   }
 
-  @Get("move")
+  @Post("move")
   async move(@Body("sourcePath") sourcePath: string, @Body("folderPath") folderPath: string) {
     const list = await this.bucketItemService.list()
     const restrictList: string[] = []
@@ -34,6 +34,7 @@ export class BucketItemController {
         fs.renameSync(`${sourcePath}/${item.key}`, `${folderPath}/${item.key}`)
         this.bucketItemService.remove(item).then()
       } catch (e) {
+        console.log(e)
         try {
           const workDetail = await this.pixivWorkDetailService.getByUrl(item.key)
           if (workDetail.xRestrict === 1) {
@@ -47,13 +48,13 @@ export class BucketItemController {
       }
     }
 
-    fs.writeFileSync("D:\\my\\图片\\p\\restrictList.json",
+    fs.writeFileSync("D:\\my\\图片\\p\\source\\restrictList.json",
       JSON.stringify(restrictList)
     )
-    fs.writeFileSync("D:\\my\\图片\\p\\nullList.json",
+    fs.writeFileSync("D:\\my\\图片\\p\\source\\nullList.json",
       JSON.stringify(nullList)
     )
-    fs.writeFileSync("D:\\my\\图片\\p\\waitList.json",
+    fs.writeFileSync("D:\\my\\图片\\p\\source\\waitList.json",
       JSON.stringify(waitList)
     )
     return true

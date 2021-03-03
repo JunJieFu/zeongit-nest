@@ -13,14 +13,15 @@ import { QiniuModule } from "../qiniu/qiniu.module"
 import { QiniuController } from "./controller/qiniu.controller"
 import { BucketItemService } from "./service/bucket-item.service"
 import { PictureController } from "./controller/picture.controller"
-import { AutoPixivWorkService } from "./service/auto-pixiv-work.service";
-import { AutoCollectService } from "./service/auto-collect.service";
-import { ScheduleModule } from "@nestjs/schedule";
+import { AutoPixivWorkService } from "./service/auto-pixiv-work.service"
+import { AutoCollectService } from "./service/auto-collect.service"
+import { ScheduleModule } from "@nestjs/schedule"
+import { BucketItemController } from "./controller/bucket-item.controller"
 
 @Module({
   imports: [DataModule, QiniuModule, HttpModule,
     ScheduleModule.forRoot()],
-  controllers: [CollectController, QiniuController, PictureController],
+  controllers: [CollectController, QiniuController, PictureController, BucketItemController],
   providers: [BucketItemService, NsfwLevelService, PixivErrorService,
     PixivUserService, PixivWorkService, PixivWorkDetailService,
     PictureService, UserService, UserInfoService,
