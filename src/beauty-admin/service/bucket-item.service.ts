@@ -14,11 +14,23 @@ export class BucketItemService {
     return this.bucketItemRepository.insert(new BucketItemEntity(key))
   }
 
+  list() {
+    return this.bucketItemRepository.find({
+      where: {
+        key: Like("%_p0%")
+      }
+    })
+  }
+
   listSuit() {
     return this.bucketItemRepository.find({
       where: {
         key: Not(Like("%_p0%"))
       }
     })
+  }
+
+  removeSuit(entity: BucketItemEntity) {
+    return this.bucketItemRepository.remove(entity)
   }
 }

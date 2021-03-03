@@ -1,7 +1,5 @@
 import { Controller, Get } from "@nestjs/common"
 import { PictureService } from "../service/picture.service"
-import { BucketService } from "../../qiniu/service/bucket.service"
-import { BucketItemService } from "../service/bucket-item.service"
 
 @Controller("picture")
 export class PictureController {

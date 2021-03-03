@@ -19,6 +19,10 @@ export class PixivWorkDetailService {
     return this.pixivWorkDetailRepository.findOne({ name }).then(nullable("图片不存在"))
   }
 
+  getByUrl(url: string) {
+    return this.pixivWorkDetailRepository.findOne({ url }).then(nullable("图片不存在"))
+  }
+
   listByPixivId(pixivId: string) {
     return this.pixivWorkDetailRepository.find({
       pixivId

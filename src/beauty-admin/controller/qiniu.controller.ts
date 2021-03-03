@@ -36,8 +36,8 @@ export class QiniuController {
     return newList
   }
 
-  @Get("test")
-  async test(@Query("marker") marker?: string) {
+  @Get("list")
+  async list(@Query("marker") marker?: string) {
     const body = await this.bucketService.getList(this.qiniuConfig.pictureBucket, 30000, marker)
     for (const item of body.items) {
       await this.bucketItemService.save(item.key)
