@@ -30,7 +30,7 @@ export class BucketItemService {
     })
   }
 
-  removeSuit(entity: BucketItemEntity) {
+  remove(entity: BucketItemEntity) {
     return this.bucketItemRepository.remove(entity)
   }
 }

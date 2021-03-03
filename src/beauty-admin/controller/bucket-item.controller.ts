@@ -18,7 +18,7 @@ export class BucketItemController {
   async remove() {
     const list = await this.bucketItemService.listSuit()
     for (const item of list) {
-      await this.bucketItemService.removeSuit(item)
+      await this.bucketItemService.remove(item)
     }
     return true
   }
@@ -32,6 +32,7 @@ export class BucketItemController {
     for (const item of list) {
       try {
         fs.renameSync(`${sourcePath}/${item.key}`, `${folderPath}/${item.key}`)
+        this.bucketItemService.remove(item).then()
       } catch (e) {
         try {
           const workDetail = await this.pixivWorkDetailService.getByUrl(item.key)
