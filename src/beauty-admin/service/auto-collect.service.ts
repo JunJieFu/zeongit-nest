@@ -1,10 +1,10 @@
-import { HttpService, Injectable } from "@nestjs/common"
-import { Cron, Interval } from "@nestjs/schedule"
+import { HttpService, Inject, Injectable } from "@nestjs/common"
+import { Cron } from "@nestjs/schedule"
 import { AutoPixivWorkService } from "./auto-pixiv-work.service"
 import { BucketService } from "../../qiniu/service/bucket.service"
 import { map } from "rxjs/operators"
 import { plainToClass } from "class-transformer"
-import { AutoCollectPick } from "../dto"
+import { AutoCollectPick } from "../vo"
 import { addDay, format } from "../../share/uitl/date.util"
 import { AutoPixivWorkEntity } from "../../data/entity/beauty-admin/auto-pixiv-work.entity"
 import { PictureEntity } from "../../data/entity/beauty/picture.entity"
@@ -16,10 +16,17 @@ import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { PixivUserEntity } from "../../data/entity/beauty-admin/pixiv-user.entity"
 import { TagEntity } from "../../data/entity/beauty/tag.entity"
 import { PictureService } from "./picture.service"
+import { ConfigType } from "@nestjs/config";
+import { collectConfigType } from "../config";
+import * as qs from "qs"
+import { RankParamsModel } from "../model/rank-params.model";
+import { RankModeConstant } from "../constant/rank-mode.constant";
 
 @Injectable()
 export class AutoCollectService {
   constructor(
+    @Inject(collectConfigType.KEY)
+    private collectConfig: ConfigType<typeof collectConfigType>,
     private readonly autoPixivWorkService: AutoPixivWorkService,
     private readonly httpService: HttpService,
     private readonly bucketService: BucketService,
@@ -30,19 +37,18 @@ export class AutoCollectService {
   ) {
   }
 
-  private pages = [1, 1, 1]
-  private userInfoId = 1
-  private readonly types = ["day_male", "week_original", "week_rookie", "day"]
+  private rankList = [
+    new RankParamsModel(RankModeConstant.DAY, format(addDay(new Date(), -2))),
+    new RankParamsModel(RankModeConstant.DAY_MALE, format(addDay(new Date(), -2))),
+    new RankParamsModel(RankModeConstant.WEEK_ORIGINAL, format(addDay(new Date(), -2))),
+    new RankParamsModel(RankModeConstant.WEEK_ROOKIE, format(addDay(new Date(), -2))),
+  ]
 
-  private rank = {
-    type:"rank"
-  }
-
-  // @Interval(1000 * 60 * 30)
+  //整点和30分钟时调用一次，调用采集
+  @Cron('0 0,30 * * * *')
   async collect() {
-    const typeIndex = parseInt(String(Math.random() * 3), 10)
-    const vo = await this.httpService.get(`https://hibiapi.getloli.com/api/pixiv/?type=rank&mode=${this.types[typeIndex]}&page=${this.pages[typeIndex]}&date=${format(addDay(new Date(), -2))}`).pipe(map(it => plainToClass(AutoCollectPick, it.data))).toPromise()
-    this.pages[typeIndex]++
+    console.log("collect--------------->" + new Date())
+    const vo = await this.getVo()
     for (const item of vo.illusts) {
       if (item.page_count === 1) {
         const auto = new AutoPixivWorkEntity()
@@ -75,6 +81,8 @@ export class AutoCollectService {
   /**
    * 采集上七牛
    */
+  //每10分钟调用一次，抓取第三方图片
+  // @Cron('0 */10 * * * *')
   async putQiniu() {
     const pixivWork = await this.autoPixivWorkService.getTypeByDownload(0)
     const originalUrlArray = pixivWork.originalUrl.split("/")
@@ -88,16 +96,30 @@ export class AutoCollectService {
     }
   }
 
-  //每10分钟调用一次，抓取第三方图片
-  // @Cron('0 */10 * * * *')
-  //整点和30分钟时调用一次，调用采集
-  // @Cron('0 0,30 * * * *')
-  //每天整点调用一次，更新采集缓存
-  // @Cron('0 0 0 * * *')
-  @Cron('*/2 * * * * *')
-  cron() {
-    console.log(this.pages)
-    this.pages[0]++
+  //每天1点调用一次，更新采集条件
+  @Cron('0 0 1 * * *')
+  toZero() {
+    console.log("toZero--------------->" + new Date())
+    for (const i in this.rankList) {
+      this.rankList[i].page = 1
+      this.rankList[i].date = format(addDay(new Date(), -2))
+    }
+  }
+
+  private async getVo() {
+    const rank = this.rankList[Math.floor(Math.random() * 4)]
+    console.log(rank)
+    const vo = await this.httpService.get(
+      this.collectConfig.url,
+      {
+        params: rank,
+        paramsSerializer: (params) => qs.stringify(params, {
+          arrayFormat: "repeat"
+        })
+      }
+    ).pipe(map(it => plainToClass(AutoCollectPick, it.data))).toPromise()
+    rank.page++
+    return vo
   }
 
   private async use(pixivWork: AutoPixivWorkEntity, url: string) {
@@ -107,7 +129,7 @@ export class AutoCollectService {
       const pixivUser = await this.pixivUserService.getByPixivUserId(pixivWork.userId)
       info = await this.userInfoService.get(pixivUser.userInfoId)
     } catch (e) {
-      info = await this.initUser(pixivWork.userName ?? "镜花水月")
+      info = await this.initUser(pixivWork.userName, pixivWork.userId)
       await this.pixivUserService.save(
         new PixivUserEntity(info.id!, pixivWork.userId)
       )
@@ -127,13 +149,9 @@ export class AutoCollectService {
     await this.pictureService.save(picture, true)
   }
 
-  private async initUser(name: string) {
-    let phone = (Math.round(Math.random() * 100))
-    while (await this.userService.countByPhone(phone.toString())) {
-      phone += (Math.round(Math.random() * 1000))
-    }
-    const userInfo = await this.userService.signUp(phone.toString(), "123456")
-    userInfo.gender = phone % 2 === 0 ? Gender.FEMALE : Gender.MALE
+  private async initUser(name: string, id: string) {
+    const userInfo = await this.userService.signUp(id.toString(), "123456")
+    userInfo.gender = Number(id) % 2 === 0 ? Gender.FEMALE : Gender.MALE
     userInfo.nickname = name
     return this.userInfoService.save(userInfo)
   }

@@ -21,6 +21,7 @@ export class BeautyAdminConfigService implements TypeOrmOptionsFactory {
       password: this.beautyAdminConfig.password,
       database: this.beautyAdminConfig.name,
       entities: [path.join(__dirname, "..", "/**/beauty-admin/*.entity{.ts,.js}")],
+      charset: "utf8mb4",
       synchronize: true
     }
   }

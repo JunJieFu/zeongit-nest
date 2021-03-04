@@ -13,9 +13,19 @@ import { QiniuModule } from "../qiniu/qiniu.module"
 import { AutoPixivWorkService } from "./service/auto-pixiv-work.service"
 import { AutoCollectService } from "./service/auto-collect.service"
 import { ScheduleModule } from "@nestjs/schedule"
+import { ConfigModule } from "@nestjs/config";
+import { getEnvPaths } from "../share/fragment/env.function";
+import { collectConfigType } from "./config";
+
+const configModule = ConfigModule.forRoot(
+  {
+    envFilePath: [...getEnvPaths()], load: [collectConfigType],
+    isGlobal: true
+  }
+)
 
 @Module({
-  imports: [DataModule, QiniuModule, HttpModule,
+  imports: [configModule, DataModule, QiniuModule, HttpModule,
     ScheduleModule.forRoot()],
   controllers: [CollectController],
   providers: [NsfwLevelService, PixivErrorService,
