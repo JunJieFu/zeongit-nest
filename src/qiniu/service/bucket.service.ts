@@ -80,8 +80,7 @@ export class BucketService {
 
   putUrl(url: string, bucket: string, name: string) {
     return new Promise((resolve, reject) => {
-      this.bucketManager.fetch(url.replace("https://i.pximg.net/",
-        "https://pixiv.zeongit.workers.dev/"), bucket, name, (e, body) => {
+      this.bucketManager.fetch(url, bucket, name, (e, body) => {
         if (e) {
           reject(e)
         } else {

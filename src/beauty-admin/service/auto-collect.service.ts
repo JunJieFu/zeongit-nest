@@ -21,12 +21,15 @@ import { collectConfigType } from "../config";
 import * as qs from "qs"
 import { RankParamsModel } from "../model/rank-params.model";
 import { RankModeConstant } from "../constant/rank-mode.constant";
+import { qiniuConfigType } from "../../qiniu/config";
 
 @Injectable()
 export class AutoCollectService {
   constructor(
     @Inject(collectConfigType.KEY)
     private collectConfig: ConfigType<typeof collectConfigType>,
+    @Inject(qiniuConfigType.KEY)
+    private qiniuConfig: ConfigType<typeof qiniuConfigType>,
     private readonly autoPixivWorkService: AutoPixivWorkService,
     private readonly httpService: HttpService,
     private readonly bucketService: BucketService,
@@ -87,7 +90,10 @@ export class AutoCollectService {
     const pixivWork = await this.autoPixivWorkService.getTypeByDownload(0)
     const originalUrlArray = pixivWork.originalUrl.split("/")
     const pictureName = originalUrlArray[originalUrlArray.length - 1]
-    const model: any = await this.bucketService.putUrl(pixivWork.originalUrl, "zeongit-pixiv", pictureName)
+    const model: any = await this.bucketService.putUrl(
+      pixivWork.originalUrl.replace(this.collectConfig.pixivHost,
+        this.collectConfig.proxy)
+      , this.qiniuConfig.pictureBucket, pictureName)
     if (model.fsize) {
       pixivWork.download = 1
       pixivWork.pixivUse = 1
