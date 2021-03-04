@@ -8,8 +8,10 @@ export const qiniuConfigType = registerAs("qiniu", () => ({
   avatarBucket: process.env.QINIU_AVATAR_BUCKET!,
   backgroundBucket: process.env.QINIU_BACKGROUND_BUCKET!,
   pictureBucket: process.env.QINIU_PICTURE_BUCKET!,
+  collectBucket: process.env.QINIU_COLLECT_BUCKET!,
   temporaryBucketUrl: process.env.QINIU_TEMPORARY_BUCKET_URL!,
   avatarBucketUrl: process.env.QINIU_AVATAR_BUCKET_URL!,
   backgroundBucketUrl: process.env.QINIU_BACKGROUND_BUCKET_URL!,
-  pictureBucketUrl: process.env.QINIU_PICTURE_BUCKET_URL!
+  pictureBucketUrl: process.env.QINIU_PICTURE_BUCKET_URL!,
+  collectBucketUrl: process.env.QINIU_COLLECT_BUCKET_URL!
 }))

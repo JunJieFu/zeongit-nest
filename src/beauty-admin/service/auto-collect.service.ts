@@ -1,5 +1,5 @@
 import { HttpService, Injectable } from "@nestjs/common"
-import { Interval } from "@nestjs/schedule"
+import { Cron, Interval } from "@nestjs/schedule"
 import { AutoPixivWorkService } from "./auto-pixiv-work.service"
 import { BucketService } from "../../qiniu/service/bucket.service"
 import { map } from "rxjs/operators"
@@ -32,7 +32,11 @@ export class AutoCollectService {
 
   private pages = [1, 1, 1]
   private userInfoId = 1
-  private readonly types = ["day_male", "week_original", "week_rookie"]
+  private readonly types = ["day_male", "week_original", "week_rookie", "day"]
+
+  private rank = {
+    type:"rank"
+  }
 
   // @Interval(1000 * 60 * 30)
   async collect() {
@@ -82,6 +86,18 @@ export class AutoCollectService {
       await this.use(pixivWork, pictureName)
       this.autoPixivWorkService.save(pixivWork).then()
     }
+  }
+
+  //每10分钟调用一次，抓取第三方图片
+  // @Cron('0 */10 * * * *')
+  //整点和30分钟时调用一次，调用采集
+  // @Cron('0 0,30 * * * *')
+  //每天整点调用一次，更新采集缓存
+  // @Cron('0 0 0 * * *')
+  @Cron('*/2 * * * * *')
+  cron() {
+    console.log(this.pages)
+    this.pages[0]++
   }
 
   private async use(pixivWork: AutoPixivWorkEntity, url: string) {
