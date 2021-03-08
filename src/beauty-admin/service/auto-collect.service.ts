@@ -81,8 +81,8 @@ export class AutoCollectService {
   /**
    * 采集上七牛
    */
-  //每10分钟调用一次，抓取第三方图片
-  @Cron('0 */10 * * * *')
+  //每5分钟调用一次，抓取第三方图片
+  @Cron('0 */5 * * * *')
   async putQiniu() {
     console.log("putQiniu--------------->" + new Date())
     let pixivWork = await this.autoPixivWorkService.getTypeByDownload(0)
