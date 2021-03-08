@@ -38,6 +38,7 @@ import { PixivErrorEntity } from "./entity/beauty-admin/pixiv-error.entity"
 import { NsfwLevelEntity } from "./entity/beauty-admin/nsfw-level.entity"
 import { UserInfoDocumentRepository } from "./repository/user-info-document.repository";
 import { AutoPixivWorkEntity } from "./entity/beauty-admin/auto-pixiv-work.entity";
+import { PixivFollowingEntity } from "./entity/beauty-admin/pixiv-following.entity"
 
 
 const configModule = ConfigModule.forRoot(
@@ -83,8 +84,15 @@ const configModule = ConfigModule.forRoot(
       useClass: BeautyAdminConfigService,
       name: BEAUTY_ADMIN_CONNECTION_NAME
     }),
-    TypeOrmModule.forFeature([NsfwLevelEntity, PixivUserEntity, PixivWorkEntity,
-      PixivWorkDetailEntity, PixivErrorEntity, AutoPixivWorkEntity], BEAUTY_ADMIN_CONNECTION_NAME),
+    TypeOrmModule.forFeature([
+      NsfwLevelEntity,
+      PixivUserEntity,
+      PixivWorkEntity,
+      PixivWorkDetailEntity,
+      PixivErrorEntity,
+      AutoPixivWorkEntity,
+      PixivFollowingEntity
+    ], BEAUTY_ADMIN_CONNECTION_NAME),
     ElasticsearchModule.register({
       node: "http://localhost:9200"
     })
