@@ -41,5 +41,6 @@ export class AutoPixivWorkEntity extends BaseEntity {
   download = 0
   @Column({name: "pixiv_use", type: "int"})
   pixivUse = 0
+  @Column({name: "collect_amount", type: "int"})
+  collectAmount = 0
 }
-

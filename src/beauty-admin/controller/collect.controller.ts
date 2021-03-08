@@ -38,7 +38,7 @@ export class CollectController {
     private readonly pictureService: PictureService,
     private readonly userService: UserService,
     private readonly userInfoService: UserInfoService,
-    private readonly  autoPixivWorkService: AutoPixivWorkService
+    private readonly autoPixivWorkService: AutoPixivWorkService
   ) {
   }
 
@@ -236,7 +236,7 @@ export class CollectController {
           auto.tags = pixivWork.tags
           auto.translateTags = pixivWork.translateTags
           auto.userId = pixivWork.userId ?? ""
-          auto.userName = pixivWork.userName?? ""
+          auto.userName = pixivWork.userName ?? ""
           auto.width = pixivWork.width
           auto.height = pixivWork.height
           auto.pageCount = pixivWork.pageCount

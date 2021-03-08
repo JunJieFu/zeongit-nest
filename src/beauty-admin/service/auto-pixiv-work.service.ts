@@ -20,6 +20,9 @@ export class AutoPixivWorkService {
     return this.autoPixivWorkRepository.findOne({
       where: {
         download
+      },
+      order: {
+        collectAmount: "ASC"
       }
     }).then(nullable("图片不存在"))
   }

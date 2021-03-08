@@ -43,8 +43,7 @@ export class AutoCollectService {
   private rankList = [
     new RankParamsModel(RankModeConstant.DAY, format(addDay(new Date(), -2))),
     new RankParamsModel(RankModeConstant.DAY_MALE, format(addDay(new Date(), -2))),
-    new RankParamsModel(RankModeConstant.WEEK_ORIGINAL, format(addDay(new Date(), -2))),
-    new RankParamsModel(RankModeConstant.WEEK_ROOKIE, format(addDay(new Date(), -2))),
+    new RankParamsModel(RankModeConstant.WEEK_ORIGINAL, format(addDay(new Date(), -2)))
   ]
 
   //整点和30分钟时调用一次，调用采集
@@ -74,9 +73,7 @@ export class AutoCollectService {
         auto.sl = item.sanity_level
         try {
           await this.autoPixivWorkService.save(auto)
-        } catch (e) {
-          console.log(e)
-        }
+        } catch (e) {}
       }
     }
   }
@@ -85,9 +82,12 @@ export class AutoCollectService {
    * 采集上七牛
    */
   //每10分钟调用一次，抓取第三方图片
-  // @Cron('0 */10 * * * *')
+  @Cron('0 */10 * * * *')
   async putQiniu() {
-    const pixivWork = await this.autoPixivWorkService.getTypeByDownload(0)
+    console.log("putQiniu--------------->" + new Date())
+    let pixivWork = await this.autoPixivWorkService.getTypeByDownload(0)
+    pixivWork.collectAmount++
+    pixivWork = await this.autoPixivWorkService.save(pixivWork)
     const originalUrlArray = pixivWork.originalUrl.split("/")
     const pictureName = originalUrlArray[originalUrlArray.length - 1]
     const model: any = await this.bucketService.putUrl(
@@ -113,8 +113,7 @@ export class AutoCollectService {
   }
 
   private async getVo() {
-    const rank = this.rankList[Math.floor(Math.random() * 4)]
-    console.log(rank)
+    const rank = this.rankList[Math.floor(Math.random() * this.rankList.length)]
     const vo = await this.httpService.get(
       this.collectConfig.url,
       {
@@ -148,6 +147,7 @@ export class AutoCollectService {
       pixivWork.title,
       pixivWork.description)
     picture.createdBy = info.id
+    picture.createDate = pixivWork.pixivCreateDate
     const translateTags = pixivWork.translateTags ?? ""
     if (translateTags) {
       picture.tagList = Array.from(new Set(translateTags.split("|"))).map(it => new TagEntity(info.id!, it))
