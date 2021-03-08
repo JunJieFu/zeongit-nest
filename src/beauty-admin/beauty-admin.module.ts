@@ -13,10 +13,11 @@ import { QiniuModule } from "../qiniu/qiniu.module"
 import { AutoPixivWorkService } from "./service/auto-pixiv-work.service"
 import { AutoCollectService } from "./service/auto-collect.service"
 import { ScheduleModule } from "@nestjs/schedule"
-import { ConfigModule } from "@nestjs/config";
-import { getEnvPaths } from "../share/fragment/env.function";
-import { collectConfigType } from "./config";
-import { PictureDocumentService } from "./service/picture-document.service";
+import { ConfigModule } from "@nestjs/config"
+import { getEnvPaths } from "../share/fragment/env.function"
+import { collectConfigType } from "./config"
+import { PictureDocumentService } from "./service/picture-document.service"
+import { PixivFollowingService } from "./service/pixiv-following.service"
 
 const configModule = ConfigModule.forRoot(
   {
@@ -29,11 +30,19 @@ const configModule = ConfigModule.forRoot(
   imports: [configModule, DataModule, QiniuModule, HttpModule,
     ScheduleModule.forRoot()],
   controllers: [CollectController],
-  providers: [NsfwLevelService, PixivErrorService,
-    PixivUserService, PixivWorkService, PixivWorkDetailService,
-    PictureService, PictureDocumentService, UserService, UserInfoService,
+  providers: [
+    NsfwLevelService,
+    PixivErrorService,
+    PixivUserService,
+    PixivWorkService,
+    PixivWorkDetailService,
+    PictureService,
+    PictureDocumentService,
+    UserService,
+    UserInfoService,
     AutoPixivWorkService,
-    AutoCollectService
+    AutoCollectService,
+    PixivFollowingService
   ],
   exports: []
 })
