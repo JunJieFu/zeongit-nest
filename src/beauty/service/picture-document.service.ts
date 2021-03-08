@@ -24,10 +24,12 @@ interface Query {
   startDate?: Date
   endDate?: Date
   aspectRatio?: AspectRatio[]
-  startWidth?:number
-  endWidth?:number
-  startHeight?:number
-  endHeight?:number
+  startWidth?: number
+  endWidth?: number
+  startHeight?: number
+  endHeight?: number
+  startRatio?: number
+  endRatio?: number
   privacy?: PrivacyState
   mustUserList?: number[]
   userBlacklist?: number[]
@@ -60,6 +62,8 @@ export class PictureDocumentService {
     endWidth,
     startHeight,
     endHeight,
+    startRatio,
+    endRatio,
     mustUserList = [],
     userBlacklist = [],
     pictureBlacklist = [],
@@ -80,6 +84,8 @@ export class PictureDocumentService {
       endWidth,
       startHeight,
       endHeight,
+      startRatio,
+      endRatio,
       privacy,
       mustUserList,
       userBlacklist,
@@ -251,6 +257,8 @@ export class PictureDocumentService {
       endWidth,
       startHeight,
       endHeight,
+      startRatio,
+      endRatio,
       privacy,
       mustUserList = [],
       userBlacklist = [],
@@ -303,6 +311,14 @@ export class PictureDocumentService {
         height: {
           gte: startHeight,
           lte: endHeight
+        }
+      }
+    })
+    query.bool.must.push({
+      range: {
+        ratio: {
+          gte: startRatio,
+          lte: endRatio
         }
       }
     })

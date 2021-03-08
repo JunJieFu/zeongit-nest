@@ -13,6 +13,7 @@ export class PictureDocument {
   width!: number
   height!: number
   aspectRatio!: AspectRatio
+  ratio!: number
   tagList!: string[]
   createdBy!: number
   createDate!: Date
@@ -20,6 +21,7 @@ export class PictureDocument {
 
   constructor(picture: PictureEntity) {
     if (picture) {
+      const {width, height} = picture
       this.id = picture.id!
       this.url = picture.url
       this.name = picture.name
@@ -27,11 +29,18 @@ export class PictureDocument {
       this.privacy = picture.privacy
       this.width = picture.width
       this.height = picture.height
-      this.aspectRatio = picture.aspectRatio
+      this.ratio = picture.width / picture.height
       this.tagList = picture.tagList?.map(it => it.name) ?? []
       this.createdBy = picture.createdBy!
       this.createDate = picture.createDate!
       this.updateDate = picture.updateDate!
+      if (width > height) {
+        this.aspectRatio = AspectRatio.HORIZONTAL
+      } else if (width < height) {
+        this.aspectRatio = AspectRatio.VERTICAL
+      } else {
+        this.aspectRatio = AspectRatio.SQUARE
+      }
     }
   }
 }

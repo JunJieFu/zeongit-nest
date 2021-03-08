@@ -38,6 +38,9 @@
         "privacy": {
           "type": "keyword"
         },
+        "ratio": {
+          "type": "keyword"
+        },
         "tagList": {
           "type": "keyword"
         },

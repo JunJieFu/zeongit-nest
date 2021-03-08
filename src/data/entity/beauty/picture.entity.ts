@@ -9,15 +9,15 @@ import { TagEntity } from "./tag.entity"
 @Entity("picture")
 export class PictureEntity extends AskEntity {
   //图片地址
-  @Column({ name: "url" })
+  @Column({name: "url"})
   url!: string
 
   //图片名称
-  @Column({ name: "name" })
+  @Column({name: "name"})
   name: string
 
   //图片简介
-  @Column({ name: "introduction", type: "text" })
+  @Column({name: "introduction", type: "text"})
   introduction: string
 
   //是否公开
@@ -42,19 +42,12 @@ export class PictureEntity extends AskEntity {
   life: PictureLifeState = PictureLifeState.EXIST
 
   //宽度
-  @Column({ name: "width" })
+  @Column({name: "width"})
   width: number
 
   //高度
-  @Column({ name: "height" })
+  @Column({name: "height"})
   height: number
-
-  //图片类型
-  @Column({
-    name: "aspect_ratio",
-    type: "int"
-  })
-  aspectRatio: AspectRatio
 
   @OneToMany(() => TagEntity, tag => tag.picture, {
     eager: true, cascade: true, nullable: false
@@ -69,12 +62,5 @@ export class PictureEntity extends AskEntity {
     this.width = width
     this.height = height
     this.privacy = privacy
-    if (width > height) {
-      this.aspectRatio = AspectRatio.HORIZONTAL
-    } else if (width < height) {
-      this.aspectRatio = AspectRatio.VERTICAL
-    } else {
-      this.aspectRatio = AspectRatio.SQUARE
-    }
   }
 }

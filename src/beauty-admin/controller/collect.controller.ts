@@ -349,13 +349,6 @@ export class CollectController {
           pixivworkDetail.width = read.width ?? 0
           picture.height = read.height ?? 0
           picture.width = read.width ?? 0
-          if (picture.width > picture.height) {
-            picture.aspectRatio = AspectRatio.HORIZONTAL
-          } else if (picture.width < picture.height) {
-            picture.aspectRatio = AspectRatio.VERTICAL
-          } else {
-            picture.aspectRatio = AspectRatio.SQUARE
-          }
           await this.pixivWorkDetailService.save(pixivworkDetail)
           await this.pictureService.save(picture)
         } catch (e) {

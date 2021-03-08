@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Inject, ParseIntPipe, Post, Query } from "@nestjs/common"
-import { IsBoolean, IsDate, IsEnum, IsInt, IsOptional, IsString } from "class-validator"
+import { IsBoolean, IsDate, IsEnum, IsInt, IsNumber, IsOptional, IsString } from "class-validator"
 import { PictureBlackHoleService } from "../service/picture-black-hole.service"
 import { PictureVoAbstract } from "../communal/picture-vo.abstract"
 import { CollectionService } from "../service/collection.service"
@@ -27,7 +27,7 @@ import { TagEntity } from "../../data/entity/beauty/tag.entity"
 import { PictureService } from "../service/picture.service"
 
 class PagingDto {
-  @IsString({ each: true })
+  @IsString({each: true})
   @IsOptional()
   @Transform(parseArrayTransformFn)
   tagList!: string[]
@@ -52,7 +52,7 @@ class PagingDto {
   endDate?: Date
 
   @Type(() => Number)
-  @IsEnum(AspectRatio,{ each: true })
+  @IsEnum(AspectRatio, {each: true})
   @IsOptional()
   @Transform(parseArrayTransformFn)
   aspectRatio!: AspectRatio[]
@@ -76,6 +76,16 @@ class PagingDto {
   @IsInt()
   @IsOptional()
   endHeight?: number
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsOptional()
+  startRatio?: number
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsOptional()
+  endRatio?: number
 }
 
 class SaveDto {
@@ -87,7 +97,7 @@ class SaveDto {
   introduction!: string
   @IsEnum(PrivacyState)
   privacy!: PrivacyState
-  @IsString({ each: true })
+  @IsString({each: true})
   tagList!: string[]
 }
 
@@ -103,7 +113,7 @@ class UpdateDto {
   @IsEnum(PrivacyState)
   @IsOptional()
   privacy?: PrivacyState
-  @IsString({ each: true })
+  @IsString({each: true})
   @IsOptional()
   tagList?: string[]
 }
@@ -140,6 +150,8 @@ export class PictureController extends PictureVoAbstract {
       endWidth: dto.endWidth,
       startHeight: dto.startHeight,
       endHeight: dto.endHeight,
+      startRatio: dto.startRatio,
+      endRatio: dto.endRatio,
       userBlacklist: await this.userBlackHoleService.listBlacklist(userInfo?.id),
       pictureBlacklist: await this.pictureBlackHoleService.listBlacklist(userInfo?.id),
       tagBlacklist: await this.tagBlackHoleService.listBlacklist(userInfo?.id)

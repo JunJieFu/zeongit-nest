@@ -29,6 +29,8 @@ export class PictureVo {
 
   aspectRatio!: AspectRatio
 
+  ratio!: number
+
   tagList: string[]
 
   focus: CollectState = CollectState.STRANGE
@@ -48,6 +50,7 @@ export class PictureVo {
     this.width = picture.width
     this.height = picture.height
     this.aspectRatio = picture.aspectRatio
+    this.ratio = picture.ratio
     this.url = picture.url
   }
 }
