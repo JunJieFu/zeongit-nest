@@ -16,6 +16,7 @@ import { ScheduleModule } from "@nestjs/schedule"
 import { ConfigModule } from "@nestjs/config";
 import { getEnvPaths } from "../share/fragment/env.function";
 import { collectConfigType } from "./config";
+import { PictureDocumentService } from "./service/picture-document.service";
 
 const configModule = ConfigModule.forRoot(
   {
@@ -30,7 +31,7 @@ const configModule = ConfigModule.forRoot(
   controllers: [CollectController],
   providers: [NsfwLevelService, PixivErrorService,
     PixivUserService, PixivWorkService, PixivWorkDetailService,
-    PictureService, UserService, UserInfoService,
+    PictureService, PictureDocumentService, UserService, UserInfoService,
     AutoPixivWorkService,
     AutoCollectService
   ],
