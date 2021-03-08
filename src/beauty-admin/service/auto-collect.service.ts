@@ -52,7 +52,7 @@ export class AutoCollectService {
     console.log("collect--------------->" + new Date())
     const vo = await this.getVo()
     for (const item of vo.illusts) {
-      if (item.page_count === 1) {
+      if (item.page_count === 1 && item.restrict === 0 && item.total_bookmarks > 500) {
         const auto = new AutoPixivWorkEntity()
         auto.pixivId = String(item.id)
         auto.title = item.title
