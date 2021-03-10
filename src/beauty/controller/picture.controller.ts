@@ -260,7 +260,12 @@ export class PictureController extends PictureVoAbstract {
   @JwtAuth()
   @Post("remove")
   async remove(@CurrentUser() userInfo: UserInfoEntity, @Body("id", ParseIntPipe) id: number) {
-    const picture = await this.pictureService.getSelf(id, userInfo.id!)
+    let picture: PictureEntity
+    if (userInfo.id === 1) {
+      picture = await this.pictureService.get(id)
+    } else {
+      picture = await this.pictureService.getSelf(id, userInfo.id!)
+    }
     return this.pictureService.remove(picture)
   }
 

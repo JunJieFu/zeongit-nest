@@ -135,7 +135,7 @@ export class AutoCollectService {
 
   private async saveCollect(illusts: AutoCollect[]) {
     for (const item of illusts) {
-      if (item.page_count === 1 && item.restrict === 0 && item.total_bookmarks > 500) {
+      if (item.page_count === 1 && item.x_restrict === 0 && item.total_bookmarks > 500) {
         const auto = new AutoPixivWorkEntity()
         auto.pixivId = String(item.id)
         auto.title = item.title
@@ -154,6 +154,8 @@ export class AutoCollectService {
         auto.totalView = item.total_view
         auto.totalBookmarks = item.total_bookmarks
         auto.sl = item.sanity_level
+        const urlArray = auto.originalUrl.split("/")
+        auto.url = urlArray[urlArray.length - 1]
         try {
           await this.autoPixivWorkService.save(auto)
         } catch (e) {

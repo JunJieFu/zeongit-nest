@@ -20,7 +20,7 @@ export class PictureService {
   }
 
   async del(id: number) {
-    return this.pictureRepository.delete({ id })
+    return this.pictureRepository.delete({id})
   }
 
   async save(picture: PictureEntity, force = false) {
@@ -42,7 +42,7 @@ export class PictureService {
   }
 
   async getByLife(id: number, life: PictureLifeState) {
-    return this.pictureRepository.findOne({ where: { id, life } }).then(nullable("图片不存在"))
+    return this.pictureRepository.findOne({where: {id, life}}).then(nullable("图片不存在"))
   }
 
   get(id: number) {
@@ -69,6 +69,8 @@ export class PictureService {
   }
 
   async synchronizationIndexPicture() {
-    return this.pictureDocumentService.synchronizationIndexPicture(await this.pictureRepository.find())
+    return this.pictureDocumentService.synchronizationIndexPicture(await this.pictureRepository.find({
+      life: PictureLifeState.EXIST
+    }))
   }
 }

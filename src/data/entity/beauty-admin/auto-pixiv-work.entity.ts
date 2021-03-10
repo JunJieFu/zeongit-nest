@@ -43,4 +43,6 @@ export class AutoPixivWorkEntity extends BaseEntity {
   pixivUse = 0
   @Column({name: "collect_amount", type: "int"})
   collectAmount = 0
+  @Column({name: "url"})
+  url!: string
 }

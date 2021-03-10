@@ -16,6 +16,10 @@ export class AutoPixivWorkService {
     return this.autoPixivWorkRepository.save(pixivWork)
   }
 
+  list() {
+    return this.autoPixivWorkRepository.find()
+  }
+
   getTypeByDownload(download: number) {
     return this.autoPixivWorkRepository.findOne({
       where: {
