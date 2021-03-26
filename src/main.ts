@@ -10,6 +10,7 @@ import { jwtConfigType } from "./auth/config"
 import { AuthService } from "./auth/service/auth.service"
 import { JwtService } from "@nestjs/jwt"
 import { BeautyAdminModule } from "./beauty-admin/beauty-admin.module"
+import { BlogModule } from "./blog/blog.module";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cookieParser = require("cookie-parser")
 
@@ -55,6 +56,20 @@ async function beautyAdminBootstrap() {
   await app.listen(8082)
 }
 
+async function blogBootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(BlogModule, {
+    cors: true
+  })
+  app.use(cookieParser())
+  app.useGlobalFilters(new AllExceptionsFilter())
+  app.useGlobalInterceptors(new AdviceInterceptor())
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true, validateCustomDecorators: true
+  }))
+  await app.listen(9000)
+}
+
 accountBootstrap()
 beautyBootstrap()
 beautyAdminBootstrap()
+blogBootstrap()

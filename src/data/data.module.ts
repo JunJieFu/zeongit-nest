@@ -11,6 +11,8 @@ import {
   BEAUTY_CONNECTION_NAME,
   beautyAdminConfigType,
   beautyConfigType,
+  BLOG_CONNECTION_NAME,
+  blogConfigType,
   cacheConfigType
 } from "./config"
 import { AccountConfigService } from "./config-service/account-config.service"
@@ -39,11 +41,16 @@ import { NsfwLevelEntity } from "./entity/beauty-admin/nsfw-level.entity"
 import { UserInfoDocumentRepository } from "./repository/user-info-document.repository";
 import { AutoPixivWorkEntity } from "./entity/beauty-admin/auto-pixiv-work.entity";
 import { PixivFollowingEntity } from "./entity/beauty-admin/pixiv-following.entity"
+import { BlogConfigService } from "./config-service/blog-config.service";
+import { EssayEntity } from "./entity/blog/essay.entity";
+import { MessageEntity } from "./entity/blog/message.entity";
 
 
 const configModule = ConfigModule.forRoot(
   {
-    envFilePath: [...getEnvPaths()], load: [accountConfigType, beautyConfigType, beautyAdminConfigType, cacheConfigType]
+    envFilePath: [...getEnvPaths()],
+    load: [accountConfigType, beautyConfigType, beautyAdminConfigType, blogConfigType, cacheConfigType
+    ]
   }
 )
 
@@ -93,6 +100,15 @@ const configModule = ConfigModule.forRoot(
       AutoPixivWorkEntity,
       PixivFollowingEntity
     ], BEAUTY_ADMIN_CONNECTION_NAME),
+    TypeOrmModule.forRootAsync({
+      imports: [configModule],
+      useClass: BlogConfigService,
+      name: BLOG_CONNECTION_NAME
+    }),
+    TypeOrmModule.forFeature([
+      EssayEntity,
+      MessageEntity,
+    ], BLOG_CONNECTION_NAME),
     ElasticsearchModule.register({
       node: "http://localhost:9200"
     })

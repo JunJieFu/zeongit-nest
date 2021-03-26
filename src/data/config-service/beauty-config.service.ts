@@ -22,7 +22,8 @@ export class BeautyConfigService implements TypeOrmOptionsFactory {
       database: this.beautyConfig.name,
       entities: [path.join(__dirname, "..", "/**/beauty/*.entity{.ts,.js}")],
       charset: "utf8mb4",
-      synchronize: true
+      synchronize: true,
+      timezone: "UTC"
     }
   }
 }

@@ -27,6 +27,14 @@ export const beautyAdminConfigType = registerAs("beauty_admin_database", () => (
   name: process.env.BEAUTY_ADMIN_DATABASE_NAME
 }))
 
+export const blogConfigType = registerAs("blog_database", () => ({
+  type: process.env.BLOG_DATABASE_TYPE as "mysql" | "mariadb",
+  host: process.env.BLOG_DATABASE_HOST,
+  port: parseInt(process.env.BLOG_DATABASE_PORT as string),
+  username: process.env.BLOG_DATABASE_USERNAME,
+  password: process.env.BLOG_DATABASE_PASSWORD,
+  name: process.env.BLOG_DATABASE_NAME
+}))
 
 export const cacheConfigType = registerAs("cache", () => ({
   host: process.env.CACHE_HOST,
@@ -36,6 +44,7 @@ export const cacheConfigType = registerAs("cache", () => ({
 export const ACCOUNT_CONNECTION_NAME = "account"
 export const BEAUTY_CONNECTION_NAME = "beauty"
 export const BEAUTY_ADMIN_CONNECTION_NAME = "beauty_admin"
+export const BLOG_CONNECTION_NAME = "blog"
 
 export const ZEONGIT_BEAUTY_PICTURE = "zeongit_beauty_picture"
 
