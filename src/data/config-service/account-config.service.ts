@@ -22,8 +22,7 @@ export class AccountConfigService implements TypeOrmOptionsFactory {
       database: this.accountConfig.name,
       entities: [path.join(__dirname, "..", "/**/account/*.entity{.ts,.js}")],
       charset: "utf8mb4",
-      synchronize: true,
-      timezone: "UTC"
+      synchronize: true
     }
   }
 }

@@ -22,8 +22,7 @@ export class BlogConfigService implements TypeOrmOptionsFactory {
       database: this.blogConfig.name,
       entities: [path.join(__dirname, "..", "/**/blog/*.entity{.ts,.js}")],
       charset: "utf8mb4",
-      synchronize: true,
-      timezone: "UTC"
+      synchronize: true
     }
   }
 }
