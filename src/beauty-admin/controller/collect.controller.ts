@@ -276,7 +276,7 @@ export class CollectController {
           }
         } catch (e) {
           //都失败创建一个用户
-          info = await this.initUser(pixivWork.userName ?? "镜花水月")
+          info = await this.initUser(pixivWork.userName ?? "镜花水月", pixivWork.userId!)
           if (pixivWork.userId) {
             await this.pixivUserService.save(
               new PixivUserEntity(info.id!, pixivWork.userId)
@@ -379,14 +379,35 @@ export class CollectController {
     return true
   }
 
-  private async initUser(name: string) {
-    let phone = (Math.round(Math.random() * 100))
-    while (await this.userService.countByPhone(phone.toString())) {
-      phone += (Math.round(Math.random() * 1000))
-    }
-    const userInfo = await this.userService.signUp(phone.toString(), "123456")
-    userInfo.gender = phone % 2 === 0 ? Gender.FEMALE : Gender.MALE
+  private async initUser(name: string, id: string) {
+    const userInfo = await this.userService.signUp(id.toString(), "123456")
+    userInfo.gender = Number(id) % 2 === 0 ? Gender.FEMALE : Gender.MALE
     userInfo.nickname = name
     return this.userInfoService.save(userInfo)
+  }
+
+  @Get("checkUser")
+  async checkUser() {
+    const list = await this.autoPixivWorkService.list()
+    for (const item of list) {
+      try {
+        const picture = await this.pictureService.getByUrl(item.url)
+        let info: UserInfoEntity
+        try {
+          const user = await this.userService.getByPhone(item.userId)
+          info = await this.userInfoService.get(user.id!)
+        } catch (e) {
+          info = await this.initUser(item.userName ?? "镜花水月", item.userId)
+        }
+
+        picture.createdBy = info.id
+        picture.tagList?.forEach((it) => {
+          it.createdBy = info.id
+        })
+        await this.pictureService.save(picture)
+      } catch (e) {
+        console.log(e)
+      }
+    }
   }
 }

@@ -21,6 +21,10 @@ export class UserService {
     return this.userRepository.findOne({id}).then(nullable("用户不存在"))
   }
 
+  getByPhone(phone: string) {
+    return this.userRepository.findOne({phone}).then(nullable("用户不存在"))
+  }
+
   countByPhone(phone: string) {
     return this.userRepository.count({phone})
   }

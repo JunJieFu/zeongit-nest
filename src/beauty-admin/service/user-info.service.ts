@@ -17,6 +17,10 @@ export class UserInfoService {
     return this.userInfoRepository.findOne({id}).then(nullable("用户不存在"))
   }
 
+  getByUserId(userId:number){
+    return this.userInfoRepository.findOne({userId}).then(nullable("用户不存在"))
+  }
+
   save(userInfo: UserInfoEntity) {
     return this.userInfoCache.save(userInfo)
   }
