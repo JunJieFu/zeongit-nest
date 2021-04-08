@@ -168,13 +168,10 @@ export class AutoCollectService {
     //获取pixiv用户信息
     let info: UserInfoEntity
     try {
-      const pixivUser = await this.pixivUserService.getByPixivUserId(pixivWork.userId)
-      info = await this.userInfoService.get(pixivUser.userInfoId)
+      const user = await this.userService.getByPhone(pixivWork.userId)
+      info = await this.userInfoService.getByUserId(user.id!)
     } catch (e) {
       info = await this.initUser(pixivWork.userName, pixivWork.userId)
-      await this.pixivUserService.save(
-        new PixivUserEntity(info.id!, pixivWork.userId)
-      )
     }
     const picture = new PictureEntity(
       info.id!,
