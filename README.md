@@ -24,11 +24,14 @@
 ### beauty
 模仿Pixiv的主体模块，主要提供图片预览，收藏等功能接口功能。
 ### beauty-admin
-模仿Pixiv的管理模块，现阶段主要是对采集Pixiv的一系列操作
-
+模仿Pixiv的管理模块，现阶段主要是对采集Pixiv的一系列操作。
+### blog
+博客模块，主要提供[Zeongit Blog](http://zeongit.cn/)的接口。
 ## 采集流程
 ![process](https://github.com/JunJieFu/zeongit-nest/raw/master/doc/beauty-admin-process.jpg)
-采集流程可以作很多机械操作，但是现在没有精力去弄自动化采集。
+~~采集流程可以作很多机械操作，但是现在没有精力去弄自动化采集。~~
+
+已经实现实现自动采集，主体业务主要集中在beauty-admin下，利用定时器去自动采集Pixiv的排行榜，然后[Cloudflare](https://dash.cloudflare.com)代理pixiv图片，最后通过[七牛云](https://www.qiniu.com)直接采集上线，当然R-18和限制级图片都不会采集。
 
 ## 快速链接  
 官网：[Zeongit Beauty](http://beauty.zeongit.cn)  
