@@ -1,5 +1,5 @@
-import { Gender } from "../../constant/gender.constant";
-import { UserInfoEntity } from "../../entity/account/user-info.entity";
+import { Gender } from "../../constant/gender.constant"
+import { UserInfoEntity } from "../../entity/account/user-info.entity"
 
 export class UserInfoDocument {
   id!: number

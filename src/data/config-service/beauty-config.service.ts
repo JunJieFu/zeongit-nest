@@ -4,13 +4,12 @@ import { ConfigType } from "@nestjs/config"
 import * as path from "path"
 import { beautyConfigType } from "../config"
 
-
 @Injectable()
 export class BeautyConfigService implements TypeOrmOptionsFactory {
-  constructor(@Inject(beautyConfigType.KEY)
-              private beautyConfig: ConfigType<typeof beautyConfigType>
-  ) {
-  }
+  constructor(
+    @Inject(beautyConfigType.KEY)
+    private beautyConfig: ConfigType<typeof beautyConfigType>
+  ) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {

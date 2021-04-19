@@ -7,7 +7,6 @@ import { ReadState } from "../../constant/read-state.conatnat"
  */
 @Entity("feedback")
 export class FeedbackEntity extends AskEntity {
-
   @Column({ name: "email" })
   email?: string
 

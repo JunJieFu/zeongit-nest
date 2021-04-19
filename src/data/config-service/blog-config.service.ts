@@ -2,15 +2,14 @@ import { Inject, Injectable } from "@nestjs/common"
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm"
 import { ConfigType } from "@nestjs/config"
 import * as path from "path"
-import { blogConfigType } from "../config";
-
+import { blogConfigType } from "../config"
 
 @Injectable()
 export class BlogConfigService implements TypeOrmOptionsFactory {
-  constructor(@Inject(blogConfigType.KEY)
-              private blogConfig: ConfigType<typeof blogConfigType>
-  ) {
-  }
+  constructor(
+    @Inject(blogConfigType.KEY)
+    private blogConfig: ConfigType<typeof blogConfigType>
+  ) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {

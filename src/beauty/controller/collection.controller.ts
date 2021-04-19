@@ -24,7 +24,6 @@ class FocusDto {
   pictureId!: number
 }
 
-
 @Controller("collection")
 export class CollectionController extends PictureVoAbstract {
   constructor(
@@ -36,16 +35,17 @@ export class CollectionController extends PictureVoAbstract {
     super()
   }
 
-
   @JwtAuth()
   @Post("focus")
-  async focus(@CurrentUser() userInfo: UserInfoEntity, @Body() { pictureId }: FocusDto) {
+  async focus(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @Body() { pictureId }: FocusDto
+  ) {
     const userInfoId = userInfo.id!
     let picture: PictureDocument | undefined
     try {
       picture = await this.pictureDocumentService.get(pictureId)
-    } catch (e) {
-    }
+    } catch (e) {}
 
     if (picture) {
       if (picture.createdBy === userInfoId) {
@@ -53,7 +53,12 @@ export class CollectionController extends PictureVoAbstract {
       }
       let flag: CollectState
 
-      if (await this.collectionService.getCollectState(pictureId, userInfo.id!) === CollectState.STRANGE) {
+      if (
+        (await this.collectionService.getCollectState(
+          pictureId,
+          userInfo.id!
+        )) === CollectState.STRANGE
+      ) {
         if (picture.privacy === PrivacyState.PRIVATE) {
           throw new PermissionException("不能收藏私密图片")
         }
@@ -63,10 +68,18 @@ export class CollectionController extends PictureVoAbstract {
         await this.collectionService.remove(pictureId, userInfo)
         flag = CollectState.STRANGE
       }
-      this.pictureDocumentService.saveLikeAmount(picture, await this.collectionService.countByPictureId(pictureId))
+      this.pictureDocumentService.saveLikeAmount(
+        picture,
+        await this.collectionService.countByPictureId(pictureId)
+      )
       return flag
     } else {
-      if (await this.collectionService.getCollectState(pictureId, userInfo.id!) === CollectState.CONCERNED) {
+      if (
+        (await this.collectionService.getCollectState(
+          pictureId,
+          userInfo.id!
+        )) === CollectState.CONCERNED
+      ) {
         await this.collectionService.remove(pictureId, userInfo)
         return CollectState.STRANGE
       } else {
@@ -76,14 +89,20 @@ export class CollectionController extends PictureVoAbstract {
   }
 
   @Get("paging")
-  async paging(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
+  async paging(
+    @CurrentUser() userInfo: UserInfoEntity | undefined,
+    @PageableDefault() pageable: Pageable,
+    @Query() query: PagingQuery
+  ) {
     if (query.targetId) {
       const page = await this.collectionService.paging(pageable, query)
       const collectionPictureVoList: CollectionPictureVo[] = []
       for (const collection of page.items) {
         let collectionPictureVo: CollectionPictureVo
         try {
-          const picture = await this.pictureDocumentService.get(collection.pictureId)
+          const picture = await this.pictureDocumentService.get(
+            collection.pictureId
+          )
           //图片被隐藏
           if (picture.privacy === PrivacyState.PRIVATE) {
             picture.url = ""
@@ -92,11 +111,15 @@ export class CollectionController extends PictureVoAbstract {
             picture,
             (await this.getPictureVo(picture, userInfo?.id)).focus,
             collection.updateDate!,
-            await this.getUserInfoVoById(picture.createdBy, userInfo?.id))
+            await this.getUserInfoVoById(picture.createdBy, userInfo?.id)
+          )
         } catch (e) {
           collectionPictureVo = new CollectionPictureVo(
             { id: collection.pictureId } as PictureDocument,
-            await this.collectionService.getCollectState(query.targetId, collection.pictureId),
+            await this.collectionService.getCollectState(
+              query.targetId,
+              collection.pictureId
+            ),
             collection.updateDate!
           )
         }
@@ -109,12 +132,18 @@ export class CollectionController extends PictureVoAbstract {
   }
 
   @Get("pagingUser")
-  async pagingUser(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
+  async pagingUser(
+    @CurrentUser() userInfo: UserInfoEntity | undefined,
+    @PageableDefault() pageable: Pageable,
+    @Query() query: PagingQuery
+  ) {
     if (query.pictureId) {
       const page = await this.collectionService.paging(pageable, query)
       const followingList = []
       for (const it of page.items) {
-        followingList.push(await this.getUserInfoVoById(it.createdBy!, userInfo?.id))
+        followingList.push(
+          await this.getUserInfoVoById(it.createdBy!, userInfo?.id)
+        )
       }
       return new Pagination(followingList, page.meta, page.links)
     } else {

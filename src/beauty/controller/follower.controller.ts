@@ -7,18 +7,23 @@ import { Pageable } from "../../share/model/pageable.model"
 import { UserInfoVoAbstract } from "../communal/user-info-vo.abstract"
 import { UserInfoService } from "../service/user-info.service"
 import { Pagination } from "nestjs-typeorm-paginate"
-import { PagingQuery } from "../query/follow.query";
+import { PagingQuery } from "../query/follow.query"
 
 @Controller("follower")
 export class FollowerController extends UserInfoVoAbstract {
   constructor(
     readonly userInfoService: UserInfoService,
-    readonly followService: FollowService) {
+    readonly followService: FollowService
+  ) {
     super()
   }
 
   @Get("paging")
-  async paging(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
+  async paging(
+    @CurrentUser() userInfo: UserInfoEntity | undefined,
+    @PageableDefault() pageable: Pageable,
+    @Query() query: PagingQuery
+  ) {
     const page = await this.followService.pagingByFollowingId(pageable, query)
     const voList = []
     for (const it of page.items) {

@@ -11,8 +11,7 @@ import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 import { ProgramException } from "../../share/exception/program.exception"
 import { IsInt } from "class-validator"
 import { FollowState } from "../constant/follow-state.constant"
-import { PagingQuery } from "../query/follow.query";
-
+import { PagingQuery } from "../query/follow.query"
 
 class FocusDto {
   @IsInt()
@@ -23,18 +22,25 @@ class FocusDto {
 export class FollowingController extends UserInfoVoAbstract {
   constructor(
     readonly userInfoService: UserInfoService,
-    readonly followService: FollowService) {
+    readonly followService: FollowService
+  ) {
     super()
   }
 
   @JwtAuth()
   @Post("focus")
-  async focus(@CurrentUser() userInfo: UserInfoEntity, @Body() {followingId}: FocusDto) {
+  async focus(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @Body() { followingId }: FocusDto
+  ) {
     const userInfoId = userInfo.id!
     if (userInfoId === followingId) {
       throw new ProgramException("不能关注自己")
     }
-    const state = await this.followService.getFollowState(followingId, userInfoId)
+    const state = await this.followService.getFollowState(
+      followingId,
+      userInfoId
+    )
     if (state === FollowState.STRANGE) {
       await this.followService.save(followingId, userInfo)
       return FollowState.CONCERNED
@@ -45,7 +51,11 @@ export class FollowingController extends UserInfoVoAbstract {
   }
 
   @Get("paging")
-  async paging(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
+  async paging(
+    @CurrentUser() userInfo: UserInfoEntity | undefined,
+    @PageableDefault() pageable: Pageable,
+    @Query() query: PagingQuery
+  ) {
     const page = await this.followService.pagingByFollowerId(pageable, query)
     const voList = []
     for (const it of page.items) {

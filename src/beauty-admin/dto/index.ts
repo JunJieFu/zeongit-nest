@@ -39,5 +39,3 @@ export class UpdateOriginalUrlDto {
   translateTags?: string
   pixivId?: string
 }
-
-

@@ -15,13 +15,12 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
     private readonly userCache: UserCache,
     private readonly verificationCodeCache: VerificationCodeCache
-  ) {
-  }
+  ) {}
 
   async sendCode(phone: string, type: CodeTypeConstant) {
     let code = ""
     while (code.length < 6) {
-      code += (Math.round(Math.random() * 100)).toString()
+      code += Math.round(Math.random() * 100).toString()
     }
     const count = await this.countByPhone(phone)
     if (type === CodeTypeConstant.SIGN_UP && count) {

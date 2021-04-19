@@ -14,7 +14,7 @@ export class PixivWorkDetailEntity extends BaseEntity {
   @Column({ name: "x_restrict", nullable: true })
   xRestrict?: number
   @Column({ name: "pixiv_restrict", nullable: true })
-  pixivRestrict ?: number
+  pixivRestrict?: number
   @Column({ name: "width", type: "int" })
   width = 0
   @Column({ name: "height", type: "int" })

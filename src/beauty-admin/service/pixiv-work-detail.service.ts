@@ -8,19 +8,25 @@ import { nullable } from "../../share/fragment/pipe.function"
 export class PixivWorkDetailService {
   constructor(
     @InjectBeautyAdmin(PixivWorkDetailEntity)
-    private readonly pixivWorkDetailRepository: Repository<PixivWorkDetailEntity>) {
-  }
+    private readonly pixivWorkDetailRepository: Repository<
+      PixivWorkDetailEntity
+    >
+  ) {}
 
   save(pixivWorkDetail: PixivWorkDetailEntity) {
     return this.pixivWorkDetailRepository.save(pixivWorkDetail)
   }
 
   getByName(name: string) {
-    return this.pixivWorkDetailRepository.findOne({ name }).then(nullable("图片不存在"))
+    return this.pixivWorkDetailRepository
+      .findOne({ name })
+      .then(nullable("图片不存在"))
   }
 
   getByUrl(url: string) {
-    return this.pixivWorkDetailRepository.findOne({ url }).then(nullable("图片不存在"))
+    return this.pixivWorkDetailRepository
+      .findOne({ url })
+      .then(nullable("图片不存在"))
   }
 
   listByPixivId(pixivId: string) {

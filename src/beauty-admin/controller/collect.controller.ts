@@ -39,8 +39,7 @@ export class CollectController {
     private readonly userService: UserService,
     private readonly userInfoService: UserInfoService,
     private readonly autoPixivWorkService: AutoPixivWorkService
-  ) {
-  }
+  ) {}
 
   /**
    * 采集收藏夹到数据库
@@ -77,7 +76,9 @@ export class CollectController {
         pixivWork.pixivUpdateDate = work.updateDate
         await this.pixivWorkService.save(pixivWork)
       } catch (e) {
-        await this.pixivErrorService.save(new PixivErrorEntity(work.illustId ?? "", "insert--->" + e.message))
+        await this.pixivErrorService.save(
+          new PixivErrorEntity(work.illustId ?? "", "insert--->" + e.message)
+        )
         console.error(e.message)
       }
     }
@@ -104,26 +105,38 @@ export class CollectController {
       work.originalUrl = originalUrl
       work.translateTags = dto.translateTags
       work.description = emojiChange(dto.description ?? "").trim()
-      if (originalUrl != null && originalUrl.startsWith("https://i.pximg.net/")) {
+      if (
+        originalUrl != null &&
+        originalUrl.startsWith("https://i.pximg.net/")
+      ) {
         for (let i = 0; i < work.pageCount; i++) {
           const originalUrlArray = originalUrl.split("/")
           const pictureName = originalUrlArray[originalUrlArray.length - 1]
           const suitPictureName = pictureName.replace("p0", `p${i}`)
           const suitUrl = originalUrl.replace(pictureName, suitPictureName)
-          await this.pixivWorkDetailService.save(new PixivWorkDetailEntity(
-            work.pixivId!,
-            suitPictureName,
-            suitUrl,
-            suitUrl.replace("https://i.pximg.net/",
-              "https://pixiv.zeongit.workers.dev/"),
-            work.xRestrict,
-            work.pixivRestrict
-          ))
+          await this.pixivWorkDetailService.save(
+            new PixivWorkDetailEntity(
+              work.pixivId!,
+              suitPictureName,
+              suitUrl,
+              suitUrl.replace(
+                "https://i.pximg.net/",
+                "https://pixiv.zeongit.workers.dev/"
+              ),
+              work.xRestrict,
+              work.pixivRestrict
+            )
+          )
         }
       }
       await this.pixivWorkService.save(work)
     } catch (e) {
-      await this.pixivErrorService.save(new PixivErrorEntity(dto.pixivId ?? "", "updateOriginalUrl---->" + e.message))
+      await this.pixivErrorService.save(
+        new PixivErrorEntity(
+          dto.pixivId ?? "",
+          "updateOriginalUrl---->" + e.message
+        )
+      )
       console.error(e.message)
     }
     return true
@@ -139,11 +152,18 @@ export class CollectController {
 
     const fileNameList = fs.readdirSync(folderPath) ?? []
     for (const pixivWork of pixivWorkList) {
-      pixivWork.download = (fileNameList.filter((it: string) => it.toLowerCase().indexOf(pixivWork.pixivId!) !== -1).length === pixivWork.pageCount) ? 1 : 0
+      pixivWork.download =
+        fileNameList.filter(
+          (it: string) => it.toLowerCase().indexOf(pixivWork.pixivId!) !== -1
+        ).length === pixivWork.pageCount
+          ? 1
+          : 0
       await this.pixivWorkService.save(pixivWork)
     }
-    const pixivWorkDetailList = await this.pixivWorkDetailService.listByDownload(0)
-//        val pixivWorkDetailList = pixivWorkDetailService.listByWidth(0)
+    const pixivWorkDetailList = await this.pixivWorkDetailService.listByDownload(
+      0
+    )
+    //        val pixivWorkDetailList = pixivWorkDetailService.listByWidth(0)
 
     for (const pixivWorkDetail of pixivWorkDetailList) {
       pixivWorkDetail.download = fileNameList.includes(pixivWorkDetail.name)
@@ -167,12 +187,14 @@ export class CollectController {
    * @param folderPath 目标文件夹
    */
   @Post("checkRestrict")
-  async checkRestrict(@Body("sourcePath") sourcePath: string, @Body("folderPath") folderPath: string) {
+  async checkRestrict(
+    @Body("sourcePath") sourcePath: string,
+    @Body("folderPath") folderPath: string
+  ) {
     const sourcePathList = fs.readdirSync(sourcePath) ?? []
     const list: string[] = []
     for (const path of sourcePathList) {
-      let
-        detail: PixivWorkDetailEntity
+      let detail: PixivWorkDetailEntity
       try {
         detail = await this.pixivWorkDetailService.getByName(path)
       } catch (e) {
@@ -187,7 +209,10 @@ export class CollectController {
   }
 
   @Post("checkSuit")
-  async checkSuit(@Body("sourcePath") sourcePath: string, @Body("folderPath") folderPath: string) {
+  async checkSuit(
+    @Body("sourcePath") sourcePath: string,
+    @Body("folderPath") folderPath: string
+  ) {
     const sourcePathList = fs.readdirSync(sourcePath) ?? []
     const list: string[] = []
     for (const path of sourcePathList) {
@@ -204,7 +229,10 @@ export class CollectController {
    * @param userInfoId 若没有用户信息的时候将其存放在该用户下
    */
   @Post("checkUse")
-  async checkUse(@Body("folderPath") folderPath: string, @Body("userInfoId", ParseIntPipe)userInfoId: number) {
+  async checkUse(
+    @Body("folderPath") folderPath: string,
+    @Body("userInfoId", ParseIntPipe) userInfoId: number
+  ) {
     const fileNameList = fs.readdirSync(folderPath) ?? []
     console.log(fileNameList.length)
     const autoErrorList = []
@@ -214,9 +242,18 @@ export class CollectController {
         //获取pixiv图片详情
         try {
           try {
-            pixivWorkDetail = await this.pixivWorkDetailService.getByName(fileName)
+            pixivWorkDetail = await this.pixivWorkDetailService.getByName(
+              fileName
+            )
           } catch (e) {
-            pixivWorkDetail = new PixivWorkDetailEntity(fileName.split("_")[0], fileName, "hide", "hide", 0, 0)
+            pixivWorkDetail = new PixivWorkDetailEntity(
+              fileName.split("_")[0],
+              fileName,
+              "hide",
+              "hide",
+              0,
+              0
+            )
           }
           pixivWorkDetail.using = 1
           await this.pixivWorkDetailService.save(pixivWorkDetail)
@@ -226,7 +263,9 @@ export class CollectController {
         //现在数据库获取图片信息，如果没有直接读取图片信息
         let pixivWork: PixivWorkEntity
         try {
-          pixivWork = await this.pixivWorkService.getByPixivId(pixivWorkDetail.pixivId!)
+          pixivWork = await this.pixivWorkService.getByPixivId(
+            pixivWorkDetail.pixivId!
+          )
           const auto = new AutoPixivWorkEntity()
           auto.pixivId = pixivWorkDetail.pixivId ?? ""
           auto.title = pixivWork.title ?? ""
@@ -263,20 +302,26 @@ export class CollectController {
             pixivWorkDetail.width,
             pixivWorkDetail.height,
             pixivWork.title,
-            pixivWork.description)
+            pixivWork.description
+          )
         }
         //获取pixiv用户信息
         let info: UserInfoEntity
         try {
           if (pixivWork.userId) {
-            const pixivUser = await this.pixivUserService.getByPixivUserId(pixivWork.userId)
+            const pixivUser = await this.pixivUserService.getByPixivUserId(
+              pixivWork.userId
+            )
             info = await this.userInfoService.get(pixivUser.userInfoId)
           } else {
             info = await this.userInfoService.get(userInfoId)
           }
         } catch (e) {
           //都失败创建一个用户
-          info = await this.initUser(pixivWork.userName ?? "镜花水月", pixivWork.userId!)
+          info = await this.initUser(
+            pixivWork.userName ?? "镜花水月",
+            pixivWork.userId!
+          )
           if (pixivWork.userId) {
             await this.pixivUserService.save(
               new PixivUserEntity(info.id!, pixivWork.userId)
@@ -287,7 +332,9 @@ export class CollectController {
         picture.createDate = pixivWork.pixivCreateDate
         const translateTags = pixivWork.translateTags ?? ""
         if (translateTags) {
-          picture.tagList = Array.from(new Set(translateTags.split("|"))).map(it => new TagEntity(info.id!, it))
+          picture.tagList = Array.from(new Set(translateTags.split("|"))).map(
+            (it) => new TagEntity(info.id!, it)
+          )
         }
         await this.pictureService.save(picture, true)
       } catch (e) {
@@ -303,11 +350,17 @@ export class CollectController {
    */
   @Get("toTxt")
   async toTxt() {
-    fs.writeFileSync("D:\\my\\图片\\p\\download.txt",
-      (await this.pixivWorkDetailService.listByDownload(0)).map(it => it.url).join("\r\n")
+    fs.writeFileSync(
+      "D:\\my\\图片\\p\\download.txt",
+      (await this.pixivWorkDetailService.listByDownload(0))
+        .map((it) => it.url)
+        .join("\r\n")
     )
-    fs.writeFileSync("D:\\my\\图片\\p\\download_proxy.txt",
-      (await this.pixivWorkDetailService.listByDownload(0)).map(it => it.proxyUrl).join("\r\n")
+    fs.writeFileSync(
+      "D:\\my\\图片\\p\\download_proxy.txt",
+      (await this.pixivWorkDetailService.listByDownload(0))
+        .map((it) => it.proxyUrl)
+        .join("\r\n")
     )
   }
 
@@ -322,14 +375,15 @@ export class CollectController {
     for (const path of sourcePathList) {
       try {
         list.push(await this.pixivWorkDetailService.getByName(path))
-      } catch (e) {
-      }
+      } catch (e) {}
     }
-    fs.writeFileSync("D:\\my\\图片\\p\\download.txt",
-      list.map(it => it.url).join("\r\n")
+    fs.writeFileSync(
+      "D:\\my\\图片\\p\\download.txt",
+      list.map((it) => it.url).join("\r\n")
     )
-    fs.writeFileSync("D:\\my\\图片\\p\\download_proxy.txt",
-      list.map(it => it.proxyUrl).join("\r\n")
+    fs.writeFileSync(
+      "D:\\my\\图片\\p\\download_proxy.txt",
+      list.map((it) => it.proxyUrl).join("\r\n")
     )
   }
 
@@ -344,7 +398,9 @@ export class CollectController {
       if (picture.width === 0 || picture.height === 0) {
         try {
           const read = imageSize(`${folderPath}/${picture.url}`)
-          const pixivworkDetail = await this.pixivWorkDetailService.getByName(picture.url)
+          const pixivworkDetail = await this.pixivWorkDetailService.getByName(
+            picture.url
+          )
           pixivworkDetail.height = read.height ?? 0
           pixivworkDetail.width = read.width ?? 0
           picture.height = read.height ?? 0
@@ -371,7 +427,10 @@ export class CollectController {
 
     for (const nsfwLevel of list) {
       try {
-        fs.renameSync(`${sourcePath}/${nsfwLevel.url}`, `${folderPath}/${nsfwLevel.classify}/${nsfwLevel.url}`)
+        fs.renameSync(
+          `${sourcePath}/${nsfwLevel.url}`,
+          `${folderPath}/${nsfwLevel.classify}/${nsfwLevel.url}`
+        )
       } catch (e) {
         console.error(e)
       }

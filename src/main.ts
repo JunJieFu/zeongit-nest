@@ -10,7 +10,7 @@ import { jwtConfigType } from "./auth/config"
 import { AuthService } from "./auth/service/auth.service"
 import { JwtService } from "@nestjs/jwt"
 import { BeautyAdminModule } from "./beauty-admin/beauty-admin.module"
-import { BlogModule } from "./blog/blog.module";
+import { BlogModule } from "./blog/blog.module"
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cookieParser = require("cookie-parser")
 
@@ -21,11 +21,20 @@ async function accountBootstrap() {
 
   app.use(cookieParser())
   app.useGlobalFilters(new AllExceptionsFilter())
-  app.useGlobalGuards(new AnalysisGuard(app.get(jwtConfigType.KEY), app.get(AuthService), app.get(JwtService)))
+  app.useGlobalGuards(
+    new AnalysisGuard(
+      app.get(jwtConfigType.KEY),
+      app.get(AuthService),
+      app.get(JwtService)
+    )
+  )
   app.useGlobalInterceptors(new AdviceInterceptor())
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true, validateCustomDecorators: true
-  }))
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      validateCustomDecorators: true
+    })
+  )
   await app.listen(8080)
 }
 
@@ -34,25 +43,40 @@ async function beautyBootstrap() {
     cors: true
   })
   app.use(cookieParser())
-  app.useGlobalGuards(new AnalysisGuard(app.get(jwtConfigType.KEY), app.get(AuthService), app.get(JwtService)))
+  app.useGlobalGuards(
+    new AnalysisGuard(
+      app.get(jwtConfigType.KEY),
+      app.get(AuthService),
+      app.get(JwtService)
+    )
+  )
   app.useGlobalFilters(new AllExceptionsFilter())
   app.useGlobalInterceptors(new AdviceInterceptor())
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true, validateCustomDecorators: true
-  }))
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      validateCustomDecorators: true
+    })
+  )
   await app.listen(8081)
 }
 
 async function beautyAdminBootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(BeautyAdminModule, {
-    cors: true
-  })
+  const app = await NestFactory.create<NestExpressApplication>(
+    BeautyAdminModule,
+    {
+      cors: true
+    }
+  )
   app.use(cookieParser())
   app.useGlobalFilters(new AllExceptionsFilter())
   app.useGlobalInterceptors(new AdviceInterceptor())
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true, validateCustomDecorators: true
-  }))
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      validateCustomDecorators: true
+    })
+  )
   await app.listen(8082)
 }
 
@@ -63,9 +87,12 @@ async function blogBootstrap() {
   app.use(cookieParser())
   app.useGlobalFilters(new AllExceptionsFilter())
   app.useGlobalInterceptors(new AdviceInterceptor())
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true, validateCustomDecorators: true
-  }))
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      validateCustomDecorators: true
+    })
+  )
   await app.listen(9000)
 }
 

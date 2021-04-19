@@ -1,4 +1,11 @@
-import { Body, Controller, Get, NotFoundException, Post, Query } from "@nestjs/common"
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Post,
+  Query
+} from "@nestjs/common"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { IsInt } from "class-validator"
@@ -30,23 +37,26 @@ class SaveDto {
   targetId!: number
 }
 
-
 @Controller("pictureBlackHole")
 export class PictureBlackHoleController extends PictureVoAbstract {
-  constructor(private readonly userBlackHoleService: UserBlackHoleService,
-              private readonly pictureBlackHoleService: PictureBlackHoleService,
-              private readonly tagBlackHoleService: TagBlackHoleService,
-              readonly collectionService: CollectionService,
-              readonly userInfoService: UserInfoService,
-              readonly pictureDocumentService: PictureDocumentService,
-              readonly followService: FollowService
+  constructor(
+    private readonly userBlackHoleService: UserBlackHoleService,
+    private readonly pictureBlackHoleService: PictureBlackHoleService,
+    private readonly tagBlackHoleService: TagBlackHoleService,
+    readonly collectionService: CollectionService,
+    readonly userInfoService: UserInfoService,
+    readonly pictureDocumentService: PictureDocumentService,
+    readonly followService: FollowService
   ) {
     super()
   }
 
   @JwtAuth()
   @Post("block")
-  async block(@CurrentUser() userInfo: UserInfoEntity, @Body() { targetId }: SaveDto) {
+  async block(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @Body() { targetId }: SaveDto
+  ) {
     const userInfoId = userInfo.id!
     let picture: PictureDocument | undefined
     try {
@@ -75,52 +85,79 @@ export class PictureBlackHoleController extends PictureVoAbstract {
     }
   }
 
-
   @JwtAuth()
   @Get("get")
-  async get(@CurrentUser() userInfo: UserInfoEntity, @Query("targetId") targetId: number) {
+  async get(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @Query("targetId") targetId: number
+  ) {
     const pictureVo = await this.getPictureVoById(targetId, userInfo.id)
     const userBlackHoleVo = new UserBlackHoleVo(
       pictureVo.user.id,
-      (await this.userBlackHoleService.count(userInfo.id!, pictureVo.user.id)) ? BlockState.SHIELD : BlockState.NORMAL,
-      pictureVo.user.avatar, pictureVo.user.nickname
+      (await this.userBlackHoleService.count(userInfo.id!, pictureVo.user.id))
+        ? BlockState.SHIELD
+        : BlockState.NORMAL,
+      pictureVo.user.avatar,
+      pictureVo.user.nickname
     )
     const tagBlackHoleVoList = []
     for (const it of pictureVo.tagList) {
       tagBlackHoleVoList.push(
         new TagBlackHoleVo(
           it,
-          (await this.tagBlackHoleService.count(userInfo.id!, it)) ? BlockState.SHIELD : BlockState.NORMAL
+          (await this.tagBlackHoleService.count(userInfo.id!, it))
+            ? BlockState.SHIELD
+            : BlockState.NORMAL
         )
       )
     }
-    const pictureBlackHoleVo = new PictureBlackHoleVo(pictureVo.id,
-      (await this.pictureBlackHoleService.count(userInfo.id!, pictureVo.id)) ? BlockState.SHIELD : BlockState.NORMAL,
+    const pictureBlackHoleVo = new PictureBlackHoleVo(
+      pictureVo.id,
+      (await this.pictureBlackHoleService.count(userInfo.id!, pictureVo.id))
+        ? BlockState.SHIELD
+        : BlockState.NORMAL,
       pictureVo.url,
       pictureVo.name
     )
-    return new BlackHoleVo(userBlackHoleVo, tagBlackHoleVoList, pictureBlackHoleVo)
+    return new BlackHoleVo(
+      userBlackHoleVo,
+      tagBlackHoleVoList,
+      pictureBlackHoleVo
+    )
   }
 
   @JwtAuth()
   @Get("paging")
-  async paging(@CurrentUser() userInfo: UserInfoEntity, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
+  async paging(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @PageableDefault() pageable: Pageable,
+    @Query() query: PagingQuery
+  ) {
     query.userInfoId = userInfo.id
     const page = await this.pictureBlackHoleService.paging(pageable, query)
     const blackList = []
     for (const pictureBlackHole of page.items) {
       let pictureBlackHoleVo: PictureBlackHoleVo
       try {
-        const picture = await this.pictureDocumentService.get(pictureBlackHole.targetId)
+        const picture = await this.pictureDocumentService.get(
+          pictureBlackHole.targetId
+        )
         //图片被隐藏
-        pictureBlackHoleVo = new PictureBlackHoleVo(pictureBlackHole.targetId,
+        pictureBlackHoleVo = new PictureBlackHoleVo(
+          pictureBlackHole.targetId,
           BlockState.SHIELD,
           picture.privacy === PrivacyState.PRIVATE ? undefined : picture.url,
           picture.name
         )
       } catch (e) {
-        if (e instanceof NotFoundException || e instanceof PermissionException) {
-          pictureBlackHoleVo = new PictureBlackHoleVo(pictureBlackHole.targetId, BlockState.SHIELD)
+        if (
+          e instanceof NotFoundException ||
+          e instanceof PermissionException
+        ) {
+          pictureBlackHoleVo = new PictureBlackHoleVo(
+            pictureBlackHole.targetId,
+            BlockState.SHIELD
+          )
         }
         throw e
       }

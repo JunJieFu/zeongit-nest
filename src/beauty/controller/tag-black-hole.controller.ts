@@ -12,14 +12,14 @@ import { PagingQuery } from "../query/tag-black-hole.query"
 
 @Controller("tagBlackHole")
 export class TagBlackHoleController {
-  constructor(private readonly tagBlackHoleService: TagBlackHoleService
-  ) {
-  }
-
+  constructor(private readonly tagBlackHoleService: TagBlackHoleService) {}
 
   @JwtAuth()
   @Post("block")
-  async block(@CurrentUser() userInfo: UserInfoEntity, @Body("tag") tag: string) {
+  async block(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @Body("tag") tag: string
+  ) {
     if (await this.tagBlackHoleService.count(userInfo.id!, tag)) {
       await this.tagBlackHoleService.remove(tag, userInfo)
       return BlockState.NORMAL
@@ -31,9 +31,17 @@ export class TagBlackHoleController {
 
   @JwtAuth()
   @Get("paging")
-  async paging(@CurrentUser() userInfo: UserInfoEntity, @PageableDefault() pageable: Pageable ,@Query() query: PagingQuery) {
+  async paging(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @PageableDefault() pageable: Pageable,
+    @Query() query: PagingQuery
+  ) {
     query.userInfoId = userInfo.id
     const page = await this.tagBlackHoleService.paging(pageable, query)
-    return new Pagination(page.items.map(it => new TagBlackHoleVo(it.tag, BlockState.SHIELD)), page.meta, page.links)
+    return new Pagination(
+      page.items.map((it) => new TagBlackHoleVo(it.tag, BlockState.SHIELD)),
+      page.meta,
+      page.links
+    )
   }
 }

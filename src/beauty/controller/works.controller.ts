@@ -24,7 +24,11 @@ export class WorksController extends PictureVoAbstract {
   }
 
   @Get("paging")
-  async paging(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
+  async paging(
+    @CurrentUser() userInfo: UserInfoEntity | undefined,
+    @PageableDefault() pageable: Pageable,
+    @Query() query: PagingQuery
+  ) {
     const page = await this.pictureDocumentService.paging(pageable, {
       userInfoId: userInfo?.id,
       startDate: query.startDate,
@@ -34,7 +38,9 @@ export class WorksController extends PictureVoAbstract {
     return this.getPageVo(page, userInfo?.id)
   }
 
-  private async getPageVo(page: Pagination<PictureDocument>, userInfoId ?: number
+  private async getPageVo(
+    page: Pagination<PictureDocument>,
+    userInfoId?: number
   ) {
     const voList = []
     for (const pictureDocument of page.items) {

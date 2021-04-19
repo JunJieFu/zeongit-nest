@@ -6,10 +6,11 @@ import { BucketService } from "../../qiniu/service/bucket.service"
 
 @Controller("qiniu")
 export class QiniuController {
-  constructor(@Inject(qiniuConfigType.KEY)
-              private qiniuConfig: ConfigType<typeof qiniuConfigType>,
-              private readonly bucketService: BucketService) {
-  }
+  constructor(
+    @Inject(qiniuConfigType.KEY)
+    private qiniuConfig: ConfigType<typeof qiniuConfigType>,
+    private readonly bucketService: BucketService
+  ) {}
 
   @JwtAuth()
   @Get("get")

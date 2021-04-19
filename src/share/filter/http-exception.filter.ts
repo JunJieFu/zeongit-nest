@@ -1,5 +1,6 @@
 import {
-  ArgumentsHost, BadRequestException,
+  ArgumentsHost,
+  BadRequestException,
   Catch,
   ExceptionFilter,
   HttpException,

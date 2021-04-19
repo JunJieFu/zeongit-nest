@@ -36,9 +36,9 @@ export class PixivWorkEntity extends BaseEntity {
   @Column({ name: "page_count", type: "int" })
   pageCount = 0
   @Column({ name: "bookmarkable", nullable: true })
-  bookmarkable ?: number
+  bookmarkable?: number
   @Column({ name: "ad_container", nullable: true })
-  adContainer ?: number
+  adContainer?: number
   @Column({ name: "pixiv_create_date", nullable: true })
   pixivCreateDate?: Date
   @Column({ name: "pixiv_update_date", nullable: true })

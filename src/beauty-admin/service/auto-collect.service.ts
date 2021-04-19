@@ -38,17 +38,22 @@ export class AutoCollectService {
     private readonly userInfoService: UserInfoService,
     private readonly pictureService: PictureService,
     private readonly pixivFollowingService: PixivFollowingService
-  ) {
-  }
+  ) {}
 
   private rankList = [
     new RankParamsModel(RankModeConstant.DAY, format(addDay(new Date(), -2))),
-    new RankParamsModel(RankModeConstant.DAY_MALE, format(addDay(new Date(), -2))),
-    new RankParamsModel(RankModeConstant.WEEK_ORIGINAL, format(addDay(new Date(), -2)))
+    new RankParamsModel(
+      RankModeConstant.DAY_MALE,
+      format(addDay(new Date(), -2))
+    ),
+    new RankParamsModel(
+      RankModeConstant.WEEK_ORIGINAL,
+      format(addDay(new Date(), -2))
+    )
   ]
 
   //整点和30分钟时调用一次，调用采集排行榜
-  @Cron('0 0,30 * * * *')
+  @Cron("0 0,30 * * * *")
   async collectRank() {
     console.log("collect rank--------------->" + new Date())
     const vo = await this.listRank()
@@ -56,7 +61,7 @@ export class AutoCollectService {
   }
 
   //整点和30分钟时调用一次，调用采集根据关注者
-  @Cron('0 15,45 * * * *')
+  @Cron("0 15,45 * * * *")
   async collectByFollowing() {
     console.log("collect by following--------------->" + new Date())
     const vo = await this.listByFollowing()
@@ -67,7 +72,7 @@ export class AutoCollectService {
    * 采集上七牛
    */
   //每5分钟调用一次，抓取第三方图片
-  @Cron('0 */4 * * * *')
+  @Cron("0 */4 * * * *")
   async putQiniu() {
     console.log("putQiniu--------------->" + new Date())
     let pixivWork = await this.autoPixivWorkService.getTypeByDownload(0)
@@ -76,9 +81,13 @@ export class AutoCollectService {
     const originalUrlArray = pixivWork.originalUrl.split("/")
     const pictureName = originalUrlArray[originalUrlArray.length - 1]
     const model: any = await this.bucketService.putUrl(
-      pixivWork.originalUrl.replace(this.collectConfig.pixivHost,
-        this.collectConfig.proxy)
-      , this.qiniuConfig.pictureBucket, pictureName)
+      pixivWork.originalUrl.replace(
+        this.collectConfig.pixivHost,
+        this.collectConfig.proxy
+      ),
+      this.qiniuConfig.pictureBucket,
+      pictureName
+    )
     if (model.fsize) {
       pixivWork.download = 1
       pixivWork.pixivUse = 1
@@ -88,7 +97,7 @@ export class AutoCollectService {
   }
 
   //每天1点调用一次，更新采集条件
-  @Cron('0 0 1 * * *')
+  @Cron("0 0 1 * * *")
   toZero() {
     console.log("toZero--------------->" + new Date())
     for (const i in this.rankList) {
@@ -99,34 +108,36 @@ export class AutoCollectService {
 
   private async listRank() {
     const rank = this.rankList[Math.floor(Math.random() * this.rankList.length)]
-    const vo = await this.httpService.get(
-      this.collectConfig.url,
-      {
+    const vo = await this.httpService
+      .get(this.collectConfig.url, {
         params: rank,
-        paramsSerializer: (params) => qs.stringify(params, {
-          arrayFormat: "repeat"
-        })
-      }
-    ).pipe(map(it => plainToClass(AutoCollectPick, it.data))).toPromise()
+        paramsSerializer: (params) =>
+          qs.stringify(params, {
+            arrayFormat: "repeat"
+          })
+      })
+      .pipe(map((it) => plainToClass(AutoCollectPick, it.data)))
+      .toPromise()
     rank.page++
     return vo
   }
 
   private async listByFollowing() {
     const following = await this.pixivFollowingService.get()
-    const vo = await this.httpService.get(
-      this.collectConfig.url,
-      {
+    const vo = await this.httpService
+      .get(this.collectConfig.url, {
         params: {
           type: "member_illust",
           id: following.userId,
           page: 1
         },
-        paramsSerializer: (params) => qs.stringify(params, {
-          arrayFormat: "repeat"
-        })
-      }
-    ).pipe(map(it => plainToClass(AutoCollectPick, it.data))).toPromise()
+        paramsSerializer: (params) =>
+          qs.stringify(params, {
+            arrayFormat: "repeat"
+          })
+      })
+      .pipe(map((it) => plainToClass(AutoCollectPick, it.data)))
+      .toPromise()
     following.page++
     this.pixivFollowingService.save(following).then()
     return vo
@@ -134,15 +145,21 @@ export class AutoCollectService {
 
   private async saveCollect(illusts: AutoCollect[]) {
     for (const item of illusts) {
-      if (item.page_count === 1 && item.x_restrict === 0 && item.total_bookmarks > 500) {
+      if (
+        item.page_count === 1 &&
+        item.x_restrict === 0 &&
+        item.total_bookmarks > 500
+      ) {
         const auto = new AutoPixivWorkEntity()
         auto.pixivId = String(item.id)
         auto.title = item.title
         auto.xRestrict = item.x_restrict
         auto.pixivRestrict = item.restrict
         auto.description = item.caption
-        auto.tags = item.tags.map(it => it.name).join("|")
-        auto.translateTags = item.tags.map(it => it.translated_name ?? it.name).join("|")
+        auto.tags = item.tags.map((it) => it.name).join("|")
+        auto.translateTags = item.tags
+          .map((it) => it.translated_name ?? it.name)
+          .join("|")
         auto.userId = String(item.user.id)
         auto.userName = item.user.name
         auto.width = item.width
@@ -157,8 +174,7 @@ export class AutoCollectService {
         auto.url = urlArray[urlArray.length - 1]
         try {
           await this.autoPixivWorkService.save(auto)
-        } catch (e) {
-        }
+        } catch (e) {}
       }
     }
   }
@@ -178,12 +194,15 @@ export class AutoCollectService {
       pixivWork.width,
       pixivWork.height,
       pixivWork.title,
-      pixivWork.description)
+      pixivWork.description
+    )
     picture.createdBy = info.id
     picture.createDate = pixivWork.pixivCreateDate
     const translateTags = pixivWork.translateTags ?? ""
     if (translateTags) {
-      picture.tagList = Array.from(new Set(translateTags.split("|"))).map(it => new TagEntity(info.id!, it))
+      picture.tagList = Array.from(new Set(translateTags.split("|"))).map(
+        (it) => new TagEntity(info.id!, it)
+      )
     }
     await this.pictureService.save(picture, true)
   }

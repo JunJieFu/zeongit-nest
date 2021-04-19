@@ -7,8 +7,8 @@ import { NsfwLevelEntity } from "../../data/entity/beauty-admin/nsfw-level.entit
 export class NsfwLevelService {
   constructor(
     @InjectBeautyAdmin(NsfwLevelEntity)
-    private readonly nsfwLevelRepository: Repository<NsfwLevelEntity>) {
-  }
+    private readonly nsfwLevelRepository: Repository<NsfwLevelEntity>
+  ) {}
 
   list() {
     return this.nsfwLevelRepository.find()

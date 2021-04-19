@@ -5,14 +5,15 @@ import { Pageable } from "../../share/model/pageable.model"
 import { PagingQuery } from "../query/picture-black-hole.query"
 import { paginate } from "nestjs-typeorm-paginate"
 import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
-import { addDay } from "../../share/uitl/date.util";
+import { addDay } from "../../share/uitl/date.util"
 
 export class PictureBlackHoleService {
   constructor(
     @InjectBeauty(PictureBlackHoleEntity)
-    private readonly pictureBlackHoleRepository: Repository<PictureBlackHoleEntity>
-  ) {
-  }
+    private readonly pictureBlackHoleRepository: Repository<
+      PictureBlackHoleEntity
+    >
+  ) {}
 
   count(userInfoId: number, targetId: number) {
     return this.pictureBlackHoleRepository.count({
@@ -21,11 +22,13 @@ export class PictureBlackHoleService {
     })
   }
 
-  save(targetId: number, {id: userInfoId}: UserInfoEntity) {
-    return this.pictureBlackHoleRepository.save(new PictureBlackHoleEntity(userInfoId!, targetId))
+  save(targetId: number, { id: userInfoId }: UserInfoEntity) {
+    return this.pictureBlackHoleRepository.save(
+      new PictureBlackHoleEntity(userInfoId!, targetId)
+    )
   }
 
-  remove(targetId: number, {id: userInfoId}: UserInfoEntity) {
+  remove(targetId: number, { id: userInfoId }: UserInfoEntity) {
     return this.pictureBlackHoleRepository.delete({
       createdBy: userInfoId,
       targetId
@@ -34,21 +37,30 @@ export class PictureBlackHoleService {
 
   paging(pageable: Pageable, query: PagingQuery) {
     return paginate(
-      this.pictureBlackHoleRepository, {
+      this.pictureBlackHoleRepository,
+      {
         page: pageable.page,
         limit: pageable.limit
-      }, {
+      },
+      {
         where: this.getQuery(query),
-        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order.toUpperCase()]))
-      })
+        order: Object.fromEntries(
+          pageable.sort.map((it) => [it.key, it.order.toUpperCase()])
+        )
+      }
+    )
   }
 
   async listBlacklist(userInfoId?: number) {
     const userBlacklist: number[] = []
     if (userInfoId) {
-      userBlacklist.push(...(await this.pictureBlackHoleRepository.find({
-        createdBy: userInfoId
-      })).map(it => it.targetId))
+      userBlacklist.push(
+        ...(
+          await this.pictureBlackHoleRepository.find({
+            createdBy: userInfoId
+          })
+        ).map((it) => it.targetId)
+      )
     }
     return userBlacklist
   }
@@ -56,7 +68,10 @@ export class PictureBlackHoleService {
   private getQuery(query: PagingQuery) {
     const where = {} as Record<keyof PictureBlackHoleEntity, any>
     where.createdBy = query.userInfoId
-    if (typeof query.startDate !== "undefined" && typeof query.endDate !== "undefined") {
+    if (
+      typeof query.startDate !== "undefined" &&
+      typeof query.endDate !== "undefined"
+    ) {
       where.createDate = Between(query.startDate, addDay(query.endDate, 1))
     } else {
       if (typeof query.startDate !== "undefined") {

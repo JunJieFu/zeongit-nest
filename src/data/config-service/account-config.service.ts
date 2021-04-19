@@ -4,13 +4,12 @@ import { ConfigType } from "@nestjs/config"
 import { accountConfigType } from "../config"
 import * as path from "path"
 
-
 @Injectable()
 export class AccountConfigService implements TypeOrmOptionsFactory {
-  constructor(@Inject(accountConfigType.KEY)
-              private accountConfig: ConfigType<typeof accountConfigType>
-  ) {
-  }
+  constructor(
+    @Inject(accountConfigType.KEY)
+    private accountConfig: ConfigType<typeof accountConfigType>
+  ) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {

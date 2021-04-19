@@ -5,10 +5,10 @@ import { TagEntity } from "../../data/entity/beauty/tag.entity"
 
 @Injectable()
 export class TagService {
-  constructor(@InjectBeauty(TagEntity)
-              private readonly pictureRepository: Repository<TagEntity>
-  ) {
-  }
+  constructor(
+    @InjectBeauty(TagEntity)
+    private readonly pictureRepository: Repository<TagEntity>
+  ) {}
 
   remove(pictureId: number) {
     return this.pictureRepository.delete({

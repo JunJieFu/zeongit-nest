@@ -42,7 +42,6 @@ class UserInfoDto {
   city?: string
 }
 
-
 @Controller("userInfo")
 export class UserInfoController {
   constructor(
@@ -51,8 +50,7 @@ export class UserInfoController {
     private readonly bucketService: BucketService,
     @Inject(qiniuConfigType.KEY)
     private qiniuConfig: ConfigType<typeof qiniuConfigType>
-  ) {
-  }
+  ) {}
 
   @JwtAuth()
   @Get("get")
@@ -62,16 +60,19 @@ export class UserInfoController {
 
   @JwtAuth()
   @Post("save")
-  save(@CurrentUser() userInfo: UserInfoEntity,
-       @Body(){
-         gender,
-         birthday,
-         nickname,
-         introduction,
-         country,
-         province,
-         city
-       }: UserInfoDto) {
+  save(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @Body()
+    {
+      gender,
+      birthday,
+      nickname,
+      introduction,
+      country,
+      province,
+      city
+    }: UserInfoDto
+  ) {
     userInfo.gender = gender ?? userInfo.gender
     userInfo.birthday = birthday ?? userInfo.birthday
     userInfo.nickname = nickname ?? userInfo.nickname
@@ -85,11 +86,21 @@ export class UserInfoController {
 
   @JwtAuth()
   @Get("updateAvatar")
-  async updateAvatar(@CurrentUser() userInfo: UserInfoEntity,
-                     @Body("url") url: string) {
-    await this.bucketService.move(url, this.qiniuConfig.avatarBucket, this.qiniuConfig.temporaryBucket)
+  async updateAvatar(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @Body("url") url: string
+  ) {
+    await this.bucketService.move(
+      url,
+      this.qiniuConfig.avatarBucket,
+      this.qiniuConfig.temporaryBucket
+    )
     if (userInfo.avatar) {
-      await this.bucketService.move(userInfo.avatar, this.qiniuConfig.temporaryBucket, this.qiniuConfig.avatarBucket)
+      await this.bucketService.move(
+        userInfo.avatar,
+        this.qiniuConfig.temporaryBucket,
+        this.qiniuConfig.avatarBucket
+      )
     }
     userInfo.avatar = url
     return this.userInfoService.save(userInfo)
@@ -97,11 +108,21 @@ export class UserInfoController {
 
   @JwtAuth()
   @Get("updateBackground")
-  async updateBackground(@CurrentUser() userInfo: UserInfoEntity,
-                         @Body("url") url: string) {
-    await this.bucketService.move(url, this.qiniuConfig.backgroundBucket, this.qiniuConfig.temporaryBucket)
+  async updateBackground(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @Body("url") url: string
+  ) {
+    await this.bucketService.move(
+      url,
+      this.qiniuConfig.backgroundBucket,
+      this.qiniuConfig.temporaryBucket
+    )
     if (userInfo.avatar) {
-      await this.bucketService.move(userInfo.avatar, this.qiniuConfig.temporaryBucket, this.qiniuConfig.backgroundBucket)
+      await this.bucketService.move(
+        userInfo.avatar,
+        this.qiniuConfig.temporaryBucket,
+        this.qiniuConfig.backgroundBucket
+      )
     }
     userInfo.avatar = url
     return this.userInfoService.save(userInfo)

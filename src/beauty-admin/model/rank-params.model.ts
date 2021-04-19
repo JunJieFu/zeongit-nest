@@ -1,4 +1,4 @@
-import { RankModeConstant } from "../constant/rank-mode.constant";
+import { RankModeConstant } from "../constant/rank-mode.constant"
 
 export class RankParamsModel {
   type = "rank"

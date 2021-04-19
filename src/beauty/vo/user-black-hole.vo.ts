@@ -6,7 +6,12 @@ export class UserBlackHoleVo {
   avatar?: string
   nickname?: string
 
-  constructor(id: number, state: BlockState, avatar?: string, nickname?: string) {
+  constructor(
+    id: number,
+    state: BlockState,
+    avatar?: string,
+    nickname?: string
+  ) {
     this.id = id
     this.state = state
     this.avatar = avatar

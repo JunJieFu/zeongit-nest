@@ -19,16 +19,20 @@ import { collectConfigType } from "./config"
 import { PictureDocumentService } from "./service/picture-document.service"
 import { PixivFollowingService } from "./service/pixiv-following.service"
 
-const configModule = ConfigModule.forRoot(
-  {
-    envFilePath: [...getEnvPaths()], load: [collectConfigType],
-    isGlobal: true
-  }
-)
+const configModule = ConfigModule.forRoot({
+  envFilePath: [...getEnvPaths()],
+  load: [collectConfigType],
+  isGlobal: true
+})
 
 @Module({
-  imports: [configModule, DataModule, QiniuModule, HttpModule,
-    ScheduleModule.forRoot()],
+  imports: [
+    configModule,
+    DataModule,
+    QiniuModule,
+    HttpModule,
+    ScheduleModule.forRoot()
+  ],
   controllers: [CollectController],
   providers: [
     NsfwLevelService,
@@ -46,5 +50,4 @@ const configModule = ConfigModule.forRoot(
   ],
   exports: []
 })
-export class BeautyAdminModule {
-}
+export class BeautyAdminModule {}

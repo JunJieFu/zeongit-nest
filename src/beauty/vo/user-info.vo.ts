@@ -1,7 +1,7 @@
 import { Gender } from "../../data/constant/gender.constant"
 import { FollowState } from "../constant/follow-state.constant"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { UserInfoDocument } from "../../data/document/beauty/user-info.document";
+import { UserInfoDocument } from "../../data/document/beauty/user-info.document"
 
 export class UserInfoVo {
   id!: number

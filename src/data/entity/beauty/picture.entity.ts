@@ -9,15 +9,15 @@ import { TagEntity } from "./tag.entity"
 @Entity("picture")
 export class PictureEntity extends AskEntity {
   //图片地址
-  @Column({name: "url"})
+  @Column({ name: "url" })
   url!: string
 
   //图片名称
-  @Column({name: "name"})
+  @Column({ name: "name" })
   name: string
 
   //图片简介
-  @Column({name: "introduction", type: "text"})
+  @Column({ name: "introduction", type: "text" })
   introduction: string
 
   //是否公开
@@ -42,19 +42,33 @@ export class PictureEntity extends AskEntity {
   life: PictureLifeState = PictureLifeState.EXIST
 
   //宽度
-  @Column({name: "width"})
+  @Column({ name: "width" })
   width: number
 
   //高度
-  @Column({name: "height"})
+  @Column({ name: "height" })
   height: number
 
-  @OneToMany(() => TagEntity, tag => tag.picture, {
-    eager: true, cascade: true, nullable: false
-  })
+  @OneToMany(
+    () => TagEntity,
+    (tag) => tag.picture,
+    {
+      eager: true,
+      cascade: true,
+      nullable: false
+    }
+  )
   tagList?: TagEntity[]
 
-  constructor(userInfoId: number, url: string, width: number, height: number, name?: string, introduction?: string, privacy: PrivacyState = PrivacyState.PUBLIC) {
+  constructor(
+    userInfoId: number,
+    url: string,
+    width: number,
+    height: number,
+    name?: string,
+    introduction?: string,
+    privacy: PrivacyState = PrivacyState.PUBLIC
+  ) {
     super(userInfoId)
     this.url = url
     this.name = name ?? "镜花水月"

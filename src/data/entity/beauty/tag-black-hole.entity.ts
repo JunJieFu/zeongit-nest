@@ -6,7 +6,6 @@ import { AskEntity } from "../../../share/entity/ask.entity"
  */
 @Entity("tag_black_hole")
 export class TagBlackHoleEntity extends AskEntity {
-
   @Column({ name: "tag" })
   tag: string
 

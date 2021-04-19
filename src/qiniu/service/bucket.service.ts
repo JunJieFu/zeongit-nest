@@ -12,21 +12,22 @@ import { plainToClass } from "class-transformer"
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
-
 @Injectable()
 export class BucketService {
   private readonly mac: Mac
   private readonly bucketManager: BucketManager
 
-  constructor(@Inject(qiniuConfigType.KEY)
-              private qiniuConfig: ConfigType<typeof qiniuConfigType>,
-              private readonly httpService: HttpService) {
+  constructor(
+    @Inject(qiniuConfigType.KEY)
+    private qiniuConfig: ConfigType<typeof qiniuConfigType>,
+    private readonly httpService: HttpService
+  ) {
     this.mac = new Mac(this.qiniuConfig.accessKey, this.qiniuConfig.secretKey)
     this.bucketManager = new BucketManager(this.mac, new Config())
   }
 
   getToken(bucket: string, expires = 7200) {
-    const putPolicy = new PutPolicy({scope: bucket, expires})
+    const putPolicy = new PutPolicy({ scope: bucket, expires })
     return putPolicy.uploadToken(this.mac)
   }
 
@@ -60,21 +61,35 @@ export class BucketService {
     //   })
     // })
 
-    return this.httpService.get(bucketUrl + "/" + url + "?imageInfo").pipe(map(it => plainToClass(ImageInfo, it.data))).toPromise()
+    return this.httpService
+      .get(bucketUrl + "/" + url + "?imageInfo")
+      .pipe(map((it) => plainToClass(ImageInfo, it.data)))
+      .toPromise()
   }
 
-  getList(bucket: string, limit = 20, marker?: string): Promise<{ marker: string, items: { key: string }[] }> {
+  getList(
+    bucket: string,
+    limit = 20,
+    marker?: string
+  ): Promise<{ marker: string; items: { key: string }[] }> {
     return new Promise((resolve, reject) => {
-      this.bucketManager.listPrefix(bucket, {
-        marker,
-        limit
-      }, (e?: Error, respBody?: { marker: string, items: { key: string }[] }) => {
-        if (e) {
-          reject(e)
-        } else {
-          resolve(respBody)
+      this.bucketManager.listPrefix(
+        bucket,
+        {
+          marker,
+          limit
+        },
+        (
+          e?: Error,
+          respBody?: { marker: string; items: { key: string }[] }
+        ) => {
+          if (e) {
+            reject(e)
+          } else {
+            resolve(respBody)
+          }
         }
-      })
+      )
     })
   }
 

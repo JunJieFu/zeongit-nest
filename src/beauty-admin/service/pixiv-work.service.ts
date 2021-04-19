@@ -10,8 +10,8 @@ import { paginate } from "nestjs-typeorm-paginate"
 export class PixivWorkService {
   constructor(
     @InjectBeautyAdmin(PixivWorkEntity)
-    private readonly pixivWorkRepository: Repository<PixivWorkEntity>) {
-  }
+    private readonly pixivWorkRepository: Repository<PixivWorkEntity>
+  ) {}
 
   save(pixivWork: PixivWorkEntity) {
     return this.pixivWorkRepository.save(pixivWork)
@@ -24,20 +24,27 @@ export class PixivWorkService {
   }
 
   getByPixivId(pixivId: string) {
-    return this.pixivWorkRepository.findOne({ pixivId }).then(nullable("图片不存在"))
+    return this.pixivWorkRepository
+      .findOne({ pixivId })
+      .then(nullable("图片不存在"))
   }
 
   pagingOriginalUrlTask(pageable: Pageable) {
     return paginate(
-      this.pixivWorkRepository, {
+      this.pixivWorkRepository,
+      {
         page: pageable.page,
         limit: pageable.limit
-      }, {
+      },
+      {
         where: {
           originalUrl: IsNull()
         },
-        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order.toUpperCase()]))
-      })
+        order: Object.fromEntries(
+          pageable.sort.map((it) => [it.key, it.order.toUpperCase()])
+        )
+      }
+    )
   }
 
   list() {

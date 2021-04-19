@@ -9,17 +9,20 @@ const GET_KEY = "user:get:"
 
 @Injectable()
 export class UserCache {
-  constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: CacheStore,
-              @InjectAccount(UserEntity) private readonly userRepository: Repository<UserEntity>
-  ) {
-  }
+  constructor(
+    @Inject(CACHE_MANAGER) private readonly cacheManager: CacheStore,
+    @InjectAccount(UserEntity)
+    private readonly userRepository: Repository<UserEntity>
+  ) {}
 
   async get(id: number) {
     const json: string | undefined = await this.cacheManager.get(GET_KEY + id)
     if (json) {
       return deserialize(UserEntity, json)
     } else {
-      const user = await this.userRepository.findOne({ id }).then(nullable("用户不存在"))
+      const user = await this.userRepository
+        .findOne({ id })
+        .then(nullable("用户不存在"))
       await this.cacheManager.set(GET_KEY + user.id!, serialize(user), {
         ttl: 360
       })

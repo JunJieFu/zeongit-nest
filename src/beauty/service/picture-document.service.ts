@@ -41,74 +41,91 @@ const TAG_LIST_AGGREGATIONS_KEY = "tag_list_count"
 
 @Injectable()
 export class PictureDocumentService {
-  constructor(private readonly pictureDocumentRepository: PictureDocumentRepository,
-              private readonly pictureBlackHoleService: PictureBlackHoleService,
-              private readonly userBlackHoleService: UserBlackHoleService,
-              private readonly tagBlackHoleService: TagBlackHoleService,
-              private readonly collectionService: CollectionService,
-              private readonly followService: FollowService
-  ) {
-  }
+  constructor(
+    private readonly pictureDocumentRepository: PictureDocumentRepository,
+    private readonly pictureBlackHoleService: PictureBlackHoleService,
+    private readonly userBlackHoleService: UserBlackHoleService,
+    private readonly tagBlackHoleService: TagBlackHoleService,
+    private readonly collectionService: CollectionService,
+    private readonly followService: FollowService
+  ) {}
 
-  paging(pageable: Pageable, {
-    userInfoId,
-    tagList = [],
-    precise = false,
-    name,
-    startDate,
-    endDate,
-    aspectRatio = [],
-    startWidth,
-    endWidth,
-    startHeight,
-    endHeight,
-    startRatio,
-    endRatio,
-    mustUserList = [],
-    userBlacklist = [],
-    pictureBlacklist = [],
-    tagBlacklist = []
-  }: Query) {
-    let privacy: PrivacyState | undefined = PrivacyState.PUBLIC
-    if (mustUserList.length && mustUserList.filter(it => it === userInfoId).length === mustUserList.length) {
-      privacy = undefined
-    }
-    return this.pictureDocumentRepository.paging(pageable, this.generateQuery({
-      tagList,
-      precise,
+  paging(
+    pageable: Pageable,
+    {
+      userInfoId,
+      tagList = [],
+      precise = false,
       name,
       startDate,
       endDate,
-      aspectRatio,
+      aspectRatio = [],
       startWidth,
       endWidth,
       startHeight,
       endHeight,
       startRatio,
       endRatio,
-      privacy,
-      mustUserList,
-      userBlacklist,
-      pictureBlacklist,
-      tagBlacklist
-    }))
+      mustUserList = [],
+      userBlacklist = [],
+      pictureBlacklist = [],
+      tagBlacklist = []
+    }: Query
+  ) {
+    let privacy: PrivacyState | undefined = PrivacyState.PUBLIC
+    if (
+      mustUserList.length &&
+      mustUserList.filter((it) => it === userInfoId).length ===
+        mustUserList.length
+    ) {
+      privacy = undefined
+    }
+    return this.pictureDocumentRepository.paging(
+      pageable,
+      this.generateQuery({
+        tagList,
+        precise,
+        name,
+        startDate,
+        endDate,
+        aspectRatio,
+        startWidth,
+        endWidth,
+        startHeight,
+        endHeight,
+        startRatio,
+        endRatio,
+        privacy,
+        mustUserList,
+        userBlacklist,
+        pictureBlacklist,
+        tagBlacklist
+      })
+    )
   }
 
-  async pagingByFollowing(pageable: Pageable, userInfoId: number, startDate?: Date, endDate?: Date) {
+  async pagingByFollowing(
+    pageable: Pageable,
+    userInfoId: number,
+    startDate?: Date,
+    endDate?: Date
+  ) {
     const followingList = await this.followService.listByFollowerId(userInfoId)
     if (followingList.length) {
-      const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(userInfoId)
-      const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
-      return this.paging(pageable,
-        {
-          pictureBlacklist,
-          tagBlacklist,
-          startDate,
-          endDate,
-          precise: true,
-          mustUserList: followingList.map(it => it.followingId)
-        }
+      const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(
+        userInfoId
       )
+      const tagBlacklist = await this.tagBlackHoleService.listBlacklist(
+        userInfoId
+      )
+      return this.paging(pageable, {
+        pictureBlacklist,
+        tagBlacklist,
+        startDate,
+        endDate,
+        precise: true,
+        mustUserList: followingList.map((it) => it.followingId)
+      })
     } else {
       return new Pagination([], {
         itemCount: 0,
@@ -120,73 +137,120 @@ export class PictureDocumentService {
     }
   }
 
-  async pagingByRecommend(pageable: Pageable, userInfoId?: number, startDate?: Date, endDate?: Date) {
+  async pagingByRecommend(
+    pageable: Pageable,
+    userInfoId?: number,
+    startDate?: Date,
+    endDate?: Date
+  ) {
     const tagList: string[] = []
-    const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(userInfoId)
-    const userBlacklist = await this.userBlackHoleService.listBlacklist(userInfoId)
-    const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
+    const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(
+      userInfoId
+    )
+    const userBlacklist = await this.userBlackHoleService.listBlacklist(
+      userInfoId
+    )
+    const tagBlacklist = await this.tagBlackHoleService.listBlacklist(
+      userInfoId
+    )
 
     if (userInfoId != null) {
-      const collectionList = await this.collectionService.paging(new Pageable({
-        page: 1,
-        limit: 5
-      }), {targetId: userInfoId})
+      const collectionList = await this.collectionService.paging(
+        new Pageable({
+          page: 1,
+          limit: 5
+        }),
+        { targetId: userInfoId }
+      )
       for (const collection of collectionList.items) {
         pictureBlacklist.push(collection.pictureId)
         try {
           tagList.push(...(await this.get(collection.pictureId)).tagList)
-        } catch (e) {
-        }
+        } catch (e) {}
       }
     }
-    return this.paging(pageable,
-      {tagList, userBlacklist, pictureBlacklist, tagBlacklist, startDate, endDate}
-    )
+    return this.paging(pageable, {
+      tagList,
+      userBlacklist,
+      pictureBlacklist,
+      tagBlacklist,
+      startDate,
+      endDate
+    })
   }
 
-  async pagingByRecommendById(pageable: Pageable, id: number, userInfoId?: number, startDate?: Date, endDate?: Date) {
+  async pagingByRecommendById(
+    pageable: Pageable,
+    id: number,
+    userInfoId?: number,
+    startDate?: Date,
+    endDate?: Date
+  ) {
     let tagList: string[] = []
     try {
       tagList = (await this.get(id)).tagList
-    } catch (e) {
-    }
-    const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(userInfoId)
-    const userBlacklist = await this.userBlackHoleService.listBlacklist(userInfoId)
-    const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
-
-    return this.paging(pageable,
-      {tagList, userBlacklist, pictureBlacklist, tagBlacklist, startDate, endDate, precise: true}
+    } catch (e) {}
+    const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(
+      userInfoId
     )
-  }
+    const userBlacklist = await this.userBlackHoleService.listBlacklist(
+      userInfoId
+    )
+    const tagBlacklist = await this.tagBlackHoleService.listBlacklist(
+      userInfoId
+    )
 
+    return this.paging(pageable, {
+      tagList,
+      userBlacklist,
+      pictureBlacklist,
+      tagBlacklist,
+      startDate,
+      endDate,
+      precise: true
+    })
+  }
 
   get(id: number) {
     return this.pictureDocumentRepository.get(id).then(nullable("图片不存在"))
   }
 
   async getFirstByTag(tag: string, userInfoId?: number) {
-    const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(userInfoId)
-    const userBlacklist = await this.userBlackHoleService.listBlacklist(userInfoId)
+    const pictureBlacklist = await this.pictureBlackHoleService.listBlacklist(
+      userInfoId
+    )
+    const userBlacklist = await this.userBlackHoleService.listBlacklist(
+      userInfoId
+    )
 
-    return (await this.paging(new Pageable({page: 1, limit: 1, sort: [new Sort("likeAmount", SortOrder.DESC)]}),
-      {
-        tagList: [tag],
-        precise: true,
-        pictureBlacklist,
-        userBlacklist
-      }
-    )).items[0]
+    return (
+      await this.paging(
+        new Pageable({
+          page: 1,
+          limit: 1,
+          sort: [new Sort("likeAmount", SortOrder.DESC)]
+        }),
+        {
+          tagList: [tag],
+          precise: true,
+          pictureBlacklist,
+          userBlacklist
+        }
+      )
+    ).items[0]
   }
 
   countByTag(tag: string) {
-    return this.pictureDocumentRepository.count(this.generateQuery({
-      tagList: [tag],
-      precise: true,
-      mustUserList: [],
-      userBlacklist: [],
-      pictureBlacklist: [],
-      tagBlacklist: []
-    }))
+    return this.pictureDocumentRepository.count(
+      this.generateQuery({
+        tagList: [tag],
+        precise: true,
+        mustUserList: [],
+        userBlacklist: [],
+        pictureBlacklist: [],
+        tagBlacklist: []
+      })
+    )
   }
 
   save(picture: PictureDocument) {
@@ -208,76 +272,106 @@ export class PictureDocumentService {
   }
 
   async listTagTop30(userInfoId?: number) {
-    const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
-    const query = this.generateQuery({tagBlacklist})
-    return this.pictureDocumentRepository.aggregations(new Pageable({
-      page: 1,
-      limit: 30,
-      sort: [new Sort("likeAmount", SortOrder.DESC)]
-    }), query, {
-      [TAG_LIST_AGGREGATIONS_KEY]: {
-        terms: {
-          field: "tagList",
-          size: 30,
+    const tagBlacklist = await this.tagBlackHoleService.listBlacklist(
+      userInfoId
+    )
+    const query = this.generateQuery({ tagBlacklist })
+    return this.pictureDocumentRepository
+      .aggregations(
+        new Pageable({
+          page: 1,
+          limit: 30,
+          sort: [new Sort("likeAmount", SortOrder.DESC)]
+        }),
+        query,
+        {
+          [TAG_LIST_AGGREGATIONS_KEY]: {
+            terms: {
+              field: "tagList",
+              size: 30
+            }
+          }
         }
-      }
-    }).then(it => it.body.aggregations[TAG_LIST_AGGREGATIONS_KEY].buckets as { key: string, doc_count: number }[])
-      .then(it => it.filter(item => item.key !== ""))
+      )
+      .then(
+        (it) =>
+          it.body.aggregations[TAG_LIST_AGGREGATIONS_KEY].buckets as {
+            key: string
+            doc_count: number
+          }[]
+      )
+      .then((it) => it.filter((item) => item.key !== ""))
   }
 
   async listTagByUserId(userInfoId: number) {
-    const tagBlacklist = await this.tagBlackHoleService.listBlacklist(userInfoId)
-    const query = this.generateQuery({tagBlacklist, mustUserList: [userInfoId]})
+    const tagBlacklist = await this.tagBlackHoleService.listBlacklist(
+      userInfoId
+    )
+    const query = this.generateQuery({
+      tagBlacklist,
+      mustUserList: [userInfoId]
+    })
 
-    return this.pictureDocumentRepository.aggregations(new Pageable({
-      page: 1,
-      limit: 30,
-      sort: [new Sort("likeAmount", SortOrder.DESC)]
-    }), query, {
-      [TAG_LIST_AGGREGATIONS_KEY]: {
-        terms: {
-          field: "tagList",
-          size: 30,
+    return this.pictureDocumentRepository
+      .aggregations(
+        new Pageable({
+          page: 1,
+          limit: 30,
+          sort: [new Sort("likeAmount", SortOrder.DESC)]
+        }),
+        query,
+        {
+          [TAG_LIST_AGGREGATIONS_KEY]: {
+            terms: {
+              field: "tagList",
+              size: 30
+            }
+          }
         }
-      }
-    }).then(it => it.body.aggregations[TAG_LIST_AGGREGATIONS_KEY].buckets as { key: string, doc_count: number }[])
-      .then(it => it.filter(item => item.key !== ""))
+      )
+      .then(
+        (it) =>
+          it.body.aggregations[TAG_LIST_AGGREGATIONS_KEY].buckets as {
+            key: string
+            doc_count: number
+          }[]
+      )
+      .then((it) => it.filter((item) => item.key !== ""))
   }
 
-  private generateQuery(
-    {
-      tagList = [],
-      precise,
-      and,
-      name,
-      startDate,
-      endDate,
-      aspectRatio,
-      startWidth,
-      endWidth,
-      startHeight,
-      endHeight,
-      startRatio,
-      endRatio,
-      privacy,
-      mustUserList = [],
-      userBlacklist = [],
-      pictureBlacklist = [],
-      tagBlacklist = []
-    }: Query
-  ) {
+  private generateQuery({
+    tagList = [],
+    precise,
+    and,
+    name,
+    startDate,
+    endDate,
+    aspectRatio,
+    startWidth,
+    endWidth,
+    startHeight,
+    endHeight,
+    startRatio,
+    endRatio,
+    privacy,
+    mustUserList = [],
+    userBlacklist = [],
+    pictureBlacklist = [],
+    tagBlacklist = []
+  }: Query) {
     const query: any = {
       bool: {
         must: [],
-        should: [],
-
+        should: []
       }
     }
-    query.bool[and ? "must" : "should"].push(...tagList.map((it) => ({
-      [precise ? "term" : "wildcard"]: {
-        tagList: precise ? it : `*${it}*`
-      }
-    })))
+    query.bool[and ? "must" : "should"].push(
+      ...tagList.map((it) => ({
+        [precise ? "term" : "wildcard"]: {
+          tagList: precise ? it : `*${it}*`
+        }
+      }))
+    )
 
     if (tagList && tagList.length) {
       query.bool.minimum_should_match = tagList.length < 3 ? tagList.length : 3
@@ -325,7 +419,7 @@ export class PictureDocumentService {
     if (typeof aspectRatio !== "undefined") {
       query.bool.must.push({
         bool: {
-          should: aspectRatio.map(it => ({term: {aspectRatio: it}})),
+          should: aspectRatio.map((it) => ({ term: { aspectRatio: it } })),
           minimum_should_match: 1
         }
       })
@@ -340,38 +434,40 @@ export class PictureDocumentService {
 
     query.bool.must.push({
       bool: {
-        should: mustUserList.map(it => ({term: {createdBy: it}})),
+        should: mustUserList.map((it) => ({ term: { createdBy: it } })),
         minimum_should_match: 1
       }
     })
 
     query.bool.must.push({
       bool: {
-        must_not: userBlacklist.map(it => ({term: {createdBy: it}}))
+        must_not: userBlacklist.map((it) => ({ term: { createdBy: it } }))
       }
     })
 
     query.bool.must.push({
       bool: {
-        must_not: userBlacklist.map(it => ({term: {createdBy: it}}))
+        must_not: userBlacklist.map((it) => ({ term: { createdBy: it } }))
       }
     })
 
     query.bool.must.push({
       bool: {
-        must_not: pictureBlacklist.map(it => ({term: {id: it}}))
+        must_not: pictureBlacklist.map((it) => ({ term: { id: it } }))
       }
     })
 
     query.bool.must.push({
       bool: {
-        must_not: tagBlacklist.map(it => ({term: {tagList: it}}))
+        must_not: tagBlacklist.map((it) => ({ term: { tagList: it } }))
       }
     })
     return query
   }
 
   synchronizationIndexPicture(pictureList: PictureEntity[]) {
-    return this.pictureDocumentRepository.synchronizationIndexPicture(pictureList)
+    return this.pictureDocumentRepository.synchronizationIndexPicture(
+      pictureList
+    )
   }
 }

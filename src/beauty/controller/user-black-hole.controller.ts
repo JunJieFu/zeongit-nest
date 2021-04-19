@@ -21,25 +21,26 @@ import { BlackHoleVo } from "../vo/black-hole.vo"
 class SaveDto {
   @IsInt()
   targetId!: number
-
 }
-
 
 @Controller("userBlackHole")
 export class UserBlackHoleController extends UserInfoVoAbstract {
-  constructor(private readonly userBlackHoleService: UserBlackHoleService,
-              private readonly tagBlackHoleService: TagBlackHoleService,
-              private readonly pictureDocumentService: PictureDocumentService,
-              readonly userInfoService: UserInfoService,
-              readonly followService: FollowService
+  constructor(
+    private readonly userBlackHoleService: UserBlackHoleService,
+    private readonly tagBlackHoleService: TagBlackHoleService,
+    private readonly pictureDocumentService: PictureDocumentService,
+    readonly userInfoService: UserInfoService,
+    readonly followService: FollowService
   ) {
     super()
   }
 
-
   @JwtAuth()
   @Post("block")
-  async block(@CurrentUser() userInfo: UserInfoEntity, @Body() { targetId }: SaveDto) {
+  async block(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @Body() { targetId }: SaveDto
+  ) {
     if (await this.userBlackHoleService.count(userInfo.id!, targetId)) {
       await this.userBlackHoleService.remove(targetId, userInfo)
       return BlockState.NORMAL
@@ -49,36 +50,58 @@ export class UserBlackHoleController extends UserInfoVoAbstract {
     }
   }
 
-
   @JwtAuth()
   @Get("get")
-  async get(@CurrentUser() { id: userInfoId }: UserInfoEntity, @Query("targetId") targetId: number) {
+  async get(
+    @CurrentUser() { id: userInfoId }: UserInfoEntity,
+    @Query("targetId") targetId: number
+  ) {
     const vo = await this.getUserInfoVoById(targetId, userInfoId)
 
-    const userBlackHoleVo = new UserBlackHoleVo(targetId,
-      (await this.userBlackHoleService.count(userInfoId!, targetId)) ? BlockState.SHIELD : BlockState.NORMAL,
-      vo.avatar, vo.nickname
+    const userBlackHoleVo = new UserBlackHoleVo(
+      targetId,
+      (await this.userBlackHoleService.count(userInfoId!, targetId))
+        ? BlockState.SHIELD
+        : BlockState.NORMAL,
+      vo.avatar,
+      vo.nickname
     )
     const tagList = await this.pictureDocumentService.listTagByUserId(targetId)
 
     const tagBlackHoleVoList = []
 
     for (const tag of tagList) {
-      tagBlackHoleVoList.push(new TagBlackHoleVo(tag.key, (await this.tagBlackHoleService.count(userInfoId!, tag.key)) ? BlockState.SHIELD : BlockState.NORMAL))
+      tagBlackHoleVoList.push(
+        new TagBlackHoleVo(
+          tag.key,
+          (await this.tagBlackHoleService.count(userInfoId!, tag.key))
+            ? BlockState.SHIELD
+            : BlockState.NORMAL
+        )
+      )
     }
     return new BlackHoleVo(userBlackHoleVo, tagBlackHoleVoList)
   }
 
   @JwtAuth()
   @Get("paging")
-  async paging(@CurrentUser() userInfo: UserInfoEntity, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
+  async paging(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @PageableDefault() pageable: Pageable,
+    @Query() query: PagingQuery
+  ) {
     query.userInfoId = userInfo.id
     const page = await this.userBlackHoleService.paging(pageable, query)
     const voList: UserBlackHoleVo[] = []
     for (const it of page.items) {
       const info = await this.getUserInfoVoById(it.targetId, userInfo.id)
       voList.push(
-        new UserBlackHoleVo(info.id, BlockState.SHIELD, info.avatar, info.nickname)
+        new UserBlackHoleVo(
+          info.id,
+          BlockState.SHIELD,
+          info.avatar,
+          info.nickname
+        )
       )
     }
     return new Pagination(voList, page.meta, page.links)

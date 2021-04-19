@@ -2,12 +2,10 @@ import { BaseEntity } from "../../../share/entity/base.entity"
 import { Column, Entity } from "typeorm"
 import { UserState } from "../../constant/user-state.constant"
 import { Gender } from "../../constant/gender.constant"
-import {
-  UserInitState
-} from "../../constant/user-info-state.constant"
+import { UserInitState } from "../../constant/user-info-state.constant"
 
 @Entity("user_info")
-export class UserInfoEntity extends BaseEntity{
+export class UserInfoEntity extends BaseEntity {
   @Column({ name: "user_id", unique: true })
   userId: number
 

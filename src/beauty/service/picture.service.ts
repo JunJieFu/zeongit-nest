@@ -16,11 +16,10 @@ export class PictureService {
     private readonly pictureRepository: Repository<PictureEntity>,
     private readonly pictureDocumentService: PictureDocumentService,
     private readonly tagService: TagService
-  ) {
-  }
+  ) {}
 
   async del(id: number) {
-    return this.pictureRepository.delete({id})
+    return this.pictureRepository.delete({ id })
   }
 
   async save(picture: PictureEntity, force = false) {
@@ -30,7 +29,9 @@ export class PictureService {
     if (picture.id) {
       await this.tagService.remove(picture.id)
     }
-    return this.pictureDocumentService.save(new PictureDocument(await this.pictureRepository.save(picture)))
+    return this.pictureDocumentService.save(
+      new PictureDocument(await this.pictureRepository.save(picture))
+    )
   }
 
   async getSelf(id: number, userInfoId: number) {
@@ -42,7 +43,9 @@ export class PictureService {
   }
 
   async getByLife(id: number, life: PictureLifeState) {
-    return this.pictureRepository.findOne({where: {id, life}}).then(nullable("图片不存在"))
+    return this.pictureRepository
+      .findOne({ where: { id, life } })
+      .then(nullable("图片不存在"))
   }
 
   get(id: number) {
@@ -51,10 +54,10 @@ export class PictureService {
 
   async hide(picture: PictureEntity) {
     switch (picture.privacy) {
-      case PrivacyState.PRIVATE :
+      case PrivacyState.PRIVATE:
         picture.privacy = PrivacyState.PUBLIC
         break
-      case PrivacyState.PUBLIC :
+      case PrivacyState.PUBLIC:
         picture.privacy = PrivacyState.PRIVATE
         break
     }
@@ -69,8 +72,10 @@ export class PictureService {
   }
 
   async synchronizationIndexPicture() {
-    return this.pictureDocumentService.synchronizationIndexPicture(await this.pictureRepository.find({
-      life: PictureLifeState.EXIST
-    }))
+    return this.pictureDocumentService.synchronizationIndexPicture(
+      await this.pictureRepository.find({
+        life: PictureLifeState.EXIST
+      })
+    )
   }
 }

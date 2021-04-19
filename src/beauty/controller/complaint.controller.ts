@@ -7,7 +7,7 @@ import { ComplaintService } from "../service/complaint.service"
 import { Type } from "class-transformer"
 
 class SaveDto {
-  @Type(()=>Number)
+  @Type(() => Number)
   @IsInt()
   pictureId!: number
 
@@ -15,16 +15,16 @@ class SaveDto {
   content!: string
 }
 
-
 @Controller("complaint")
 export class ComplaintController {
-  constructor(private readonly complaintService: ComplaintService) {
-  }
-
+  constructor(private readonly complaintService: ComplaintService) {}
 
   @JwtAuth()
   @Post("save")
-  async save(@CurrentUser() userInfo: UserInfoEntity, @Body() { pictureId, content }: SaveDto) {
+  async save(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @Body() { pictureId, content }: SaveDto
+  ) {
     return this.complaintService.save(userInfo, pictureId, content)
   }
 }

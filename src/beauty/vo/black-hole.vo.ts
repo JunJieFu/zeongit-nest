@@ -7,7 +7,11 @@ export class BlackHoleVo {
   tagList: TagBlackHoleVo[]
   picture?: PictureBlackHoleVo
 
-  constructor(user: UserBlackHoleVo, tagList: TagBlackHoleVo[], picture?: PictureBlackHoleVo) {
+  constructor(
+    user: UserBlackHoleVo,
+    tagList: TagBlackHoleVo[],
+    picture?: PictureBlackHoleVo
+  ) {
     this.user = user
     this.tagList = tagList
     this.picture = picture

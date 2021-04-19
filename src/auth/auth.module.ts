@@ -8,12 +8,11 @@ import { getEnvPaths } from "../share/fragment/env.function"
 import { authConfigType, jwtConfigType } from "./config"
 import { JwtConfigService } from "./config-service/jwt-config.service"
 
-const configModule = ConfigModule.forRoot(
-  {
-    envFilePath: [...getEnvPaths()], load: [jwtConfigType, authConfigType],
-    isGlobal: true
-  }
-)
+const configModule = ConfigModule.forRoot({
+  envFilePath: [...getEnvPaths()],
+  load: [jwtConfigType, authConfigType],
+  isGlobal: true
+})
 
 @Module({
   imports: [
@@ -32,5 +31,4 @@ const configModule = ConfigModule.forRoot(
   providers: [AuthService],
   exports: [AuthService, JwtModule]
 })
-export class AuthModule {
-}
+export class AuthModule {}

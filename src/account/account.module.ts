@@ -15,5 +15,4 @@ import { UserInfoService } from "./service/user-info.service"
   providers: [UserService, UserInfoService, VerificationCodeCache],
   exports: []
 })
-export class AccountModule {
-}
+export class AccountModule {}

@@ -28,7 +28,12 @@ export class FootprintPictureVo {
 
   updateDate?: Date
 
-  constructor(picture: PictureDocument, focus: CollectState, updateDate: Date, userInfo?: UserInfoVo) {
+  constructor(
+    picture: PictureDocument,
+    focus: CollectState,
+    updateDate: Date,
+    userInfo?: UserInfoVo
+  ) {
     this.id = picture.id
     this.url = picture.url
     this.privacy = picture.privacy ?? PrivacyState.PRIVATE
@@ -38,5 +43,4 @@ export class FootprintPictureVo {
     this.focus = focus
     this.userInfo = userInfo
   }
-
 }

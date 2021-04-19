@@ -9,10 +9,11 @@ export class FeedbackService {
   constructor(
     @InjectBeauty(FeedbackEntity)
     private readonly feedbackRepository: Repository<FeedbackEntity>
-  ) {
-  }
+  ) {}
 
   save(content: string, email?: string, userInfo?: UserInfoEntity) {
-    return this.feedbackRepository.save(new FeedbackEntity(content, email, userInfo?.id))
+    return this.feedbackRepository.save(
+      new FeedbackEntity(content, email, userInfo?.id)
+    )
   }
 }

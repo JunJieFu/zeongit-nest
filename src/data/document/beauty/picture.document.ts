@@ -21,7 +21,7 @@ export class PictureDocument {
 
   constructor(picture: PictureEntity) {
     if (picture) {
-      const {width, height} = picture
+      const { width, height } = picture
       this.id = picture.id!
       this.url = picture.url
       this.name = picture.name
@@ -30,7 +30,7 @@ export class PictureDocument {
       this.width = picture.width
       this.height = picture.height
       this.ratio = picture.width / picture.height
-      this.tagList = picture.tagList?.map(it => it.name) ?? []
+      this.tagList = picture.tagList?.map((it) => it.name) ?? []
       this.createdBy = picture.createdBy!
       this.createDate = picture.createDate!
       this.updateDate = picture.updateDate!

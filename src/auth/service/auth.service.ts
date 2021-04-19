@@ -24,8 +24,7 @@ export class AuthService {
     private readonly userRepository: Repository<UserEntity>,
     @InjectAccount(UserInfoEntity)
     private readonly userInfoRepository: Repository<UserInfoEntity>
-  ) {
-  }
+  ) {}
 
   get(id: number) {
     return this.userCache.get(id)
@@ -71,13 +70,17 @@ export class AuthService {
   }
 
   private getUserByPhone(phone: string) {
-    return this.userRepository.findOne({
-      phone: phone
-    }).then(nullable("用户不存在"))
+    return this.userRepository
+      .findOne({
+        phone: phone
+      })
+      .then(nullable("用户不存在"))
   }
 
   private getInfoByUserId(userId: number) {
-    return this.userInfoRepository.findOne({ userId }).then(nullable("用户不存在"))
+    return this.userInfoRepository
+      .findOne({ userId })
+      .then(nullable("用户不存在"))
   }
 
   private sign(id: number) {

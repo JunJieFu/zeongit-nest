@@ -8,10 +8,7 @@ export class PixivErrorEntity extends BaseEntity {
   @Column({ name: "message", nullable: true })
   message?: string
 
-  constructor(
-    pixivId: string,
-    message?: string
-  ) {
+  constructor(pixivId: string, message?: string) {
     super()
     this.pixivId = pixivId
     this.message = message

@@ -8,18 +8,20 @@ import { nullable } from "../../share/fragment/pipe.function"
 export class PixivFollowingService {
   constructor(
     @InjectBeautyAdmin(PixivFollowingEntity)
-    private readonly pixivFollowingEntity: Repository<PixivFollowingEntity>) {
-  }
+    private readonly pixivFollowingEntity: Repository<PixivFollowingEntity>
+  ) {}
 
   save(pixivFollowing: PixivFollowingEntity) {
     return this.pixivFollowingEntity.save(pixivFollowing)
   }
 
   get() {
-    return this.pixivFollowingEntity.findOne({
-      order: {
-        page: "ASC"
-      }
-    }).then(nullable("关注不存在"))
+    return this.pixivFollowingEntity
+      .findOne({
+        order: {
+          page: "ASC"
+        }
+      })
+      .then(nullable("关注不存在"))
   }
 }

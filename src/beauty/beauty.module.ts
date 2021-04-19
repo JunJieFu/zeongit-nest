@@ -28,11 +28,12 @@ import { UserInfoService } from "./service/user-info.service"
 import { TagService } from "./service/tag.service"
 import { WorksController } from "./controller/works.controller"
 import { UserBlackHoleController } from "./controller/user-black-hole.controller"
-import { UserInfoDocumentService } from "./service/user-info-document.service";
+import { UserInfoDocumentService } from "./service/user-info-document.service"
 
 @Module({
   imports: [DataModule, AuthModule, QiniuModule],
-  controllers: [CollectionController,
+  controllers: [
+    CollectionController,
     ComplaintController,
     FeedbackController,
     FollowerController,
@@ -46,8 +47,10 @@ import { UserInfoDocumentService } from "./service/user-info-document.service";
     UserBlackHoleController,
     PictureBlackHoleController,
     UserInfoController,
-    WorksController],
-  providers: [CollectionService,
+    WorksController
+  ],
+  providers: [
+    CollectionService,
     ComplaintService,
     FeedbackService,
     FollowService,
@@ -63,5 +66,4 @@ import { UserInfoDocumentService } from "./service/user-info-document.service";
   ],
   exports: []
 })
-export class BeautyModule {
-}
+export class BeautyModule {}

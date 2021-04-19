@@ -1,4 +1,4 @@
-import * as dayjs from "dayjs";
+import * as dayjs from "dayjs"
 
 type WideDate = number | string | Date
 

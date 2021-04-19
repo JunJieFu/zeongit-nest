@@ -6,7 +6,6 @@ import { AskEntity } from "../../../share/entity/ask.entity"
  */
 @Entity("user_black_hole")
 export class UserBlackHoleEntity extends AskEntity {
-
   @Column({ name: "target_id" })
   targetId: number
 

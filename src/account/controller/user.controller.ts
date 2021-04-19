@@ -10,7 +10,11 @@ import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 
 class SendCodeDto {
   @IsString()
-  @IsMobilePhone("zh-CN", { strictMode: false }, { message: "请输入正确的手机号码" })
+  @IsMobilePhone(
+    "zh-CN",
+    { strictMode: false },
+    { message: "请输入正确的手机号码" }
+  )
   phone!: string
 
   @IsEnum(CodeTypeConstant)
@@ -19,7 +23,11 @@ class SendCodeDto {
 
 class SignUpDto {
   @IsString()
-  @IsMobilePhone("zh-CN", { strictMode: false }, { message: "请输入正确的手机号码" })
+  @IsMobilePhone(
+    "zh-CN",
+    { strictMode: false },
+    { message: "请输入正确的手机号码" }
+  )
   phone!: string
   @IsString()
   code!: string
@@ -37,7 +45,11 @@ class SignInDto {
 
 class ForgotDto {
   @IsString()
-  @IsMobilePhone("zh-CN", { strictMode: false }, { message: "请输入正确的手机号码" })
+  @IsMobilePhone(
+    "zh-CN",
+    { strictMode: false },
+    { message: "请输入正确的手机号码" }
+  )
   phone!: string
   @IsString()
   code!: string
@@ -50,14 +62,13 @@ class UpdateDto {
   password!: string
 }
 
-
 @Controller("user")
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly verificationCodeCache: VerificationCodeCache,
-    private readonly authService: AuthService) {
-  }
+    private readonly authService: AuthService
+  ) {}
 
   @Post("sendCode")
   sendCode(@Body() { phone, type }: SendCodeDto) {
@@ -83,7 +94,10 @@ export class UserController {
 
   @JwtAuth()
   @Post("update")
-  async update(@CurrentUser() { userId: id }: UserInfoEntity, @Body() { password }: UpdateDto) {
+  async update(
+    @CurrentUser() { userId: id }: UserInfoEntity,
+    @Body() { password }: UpdateDto
+  ) {
     const user = await this.userService.get(id)
     user.password = password
     return this.userService.save(user)

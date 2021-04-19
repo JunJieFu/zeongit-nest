@@ -4,13 +4,12 @@ import { Repository } from "typeorm"
 import { PixivUserEntity } from "../../data/entity/beauty-admin/pixiv-user.entity"
 import { nullable } from "../../share/fragment/pipe.function"
 
-
 @Injectable()
 export class PixivUserService {
   constructor(
     @InjectBeautyAdmin(PixivUserEntity)
-    private readonly pixivUserRepository: Repository<PixivUserEntity>) {
-  }
+    private readonly pixivUserRepository: Repository<PixivUserEntity>
+  ) {}
 
   save(pixivUser: PixivUserEntity) {
     return this.pixivUserRepository.save(pixivUser)
@@ -21,6 +20,8 @@ export class PixivUserService {
   }
 
   getByPixivUserId(pixivUserId: string) {
-    return this.pixivUserRepository.findOne({ pixivUserId }).then(nullable("用户不存在"))
+    return this.pixivUserRepository
+      .findOne({ pixivUserId })
+      .then(nullable("用户不存在"))
   }
 }

@@ -13,15 +13,15 @@ class SaveDto {
   content!: string
 }
 
-
 @Controller("feedback")
 export class FeedbackController {
-  constructor(private readonly feedbackService: FeedbackService) {
-  }
-
+  constructor(private readonly feedbackService: FeedbackService) {}
 
   @Post("save")
-  async save(@CurrentUser() userInfo: UserInfoEntity | undefined, @Body() { email, content }: SaveDto) {
+  async save(
+    @CurrentUser() userInfo: UserInfoEntity | undefined,
+    @Body() { email, content }: SaveDto
+  ) {
     return this.feedbackService.save(content, email, userInfo)
   }
 }

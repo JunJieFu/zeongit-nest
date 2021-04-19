@@ -10,7 +10,9 @@ export class TagEntity extends AskEntity {
   name: string
 
   //图片简介
-  @ManyToOne(() => PictureEntity, picture => picture.tagList,
+  @ManyToOne(
+    () => PictureEntity,
+    (picture) => picture.tagList,
     { onUpdate: "CASCADE", onDelete: "CASCADE" }
   )
   @JoinColumn({ name: "picture_id" })

@@ -6,17 +6,15 @@ import { Pageable } from "../../share/model/pageable.model"
 import { paginate } from "nestjs-typeorm-paginate"
 import { Injectable } from "@nestjs/common"
 import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
-import { PagingQuery } from "../query/follow.query";
-import { addDay } from "../../share/uitl/date.util";
-
+import { PagingQuery } from "../query/follow.query"
+import { addDay } from "../../share/uitl/date.util"
 
 @Injectable()
 export class FollowService {
   constructor(
     @InjectBeauty(FollowEntity)
     private readonly followRepository: Repository<FollowEntity>
-  ) {
-  }
+  ) {}
 
   async getFollowState(followingId: number, followerId?: number) {
     if (followerId === undefined) {
@@ -28,56 +26,70 @@ export class FollowService {
     return (await this.followRepository.count({
       followingId,
       createdBy: followerId
-    })) ? FollowState.CONCERNED : FollowState.STRANGE
+    }))
+      ? FollowState.CONCERNED
+      : FollowState.STRANGE
   }
 
-  save(followingId: number, {id: followerId}: UserInfoEntity) {
-    return this.followRepository.save(new FollowEntity(followerId!, followingId))
+  save(followingId: number, { id: followerId }: UserInfoEntity) {
+    return this.followRepository.save(
+      new FollowEntity(followerId!, followingId)
+    )
   }
 
-  remove(followingId: number, {id: followerId}: UserInfoEntity) {
-    return this.followRepository.delete({createdBy: followerId!, followingId})
+  remove(followingId: number, { id: followerId }: UserInfoEntity) {
+    return this.followRepository.delete({ createdBy: followerId!, followingId })
   }
 
   pagingByFollowerId(pageable: Pageable, query: PagingQuery) {
     return paginate(
-      this.followRepository, {
+      this.followRepository,
+      {
         page: pageable.page,
         limit: pageable.limit
-      }, {
+      },
+      {
         where: this.getQuery({
           createdBy: query.targetId,
           startDate: query.startDate,
-          endDate: query.endDate,
+          endDate: query.endDate
         }),
-        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order.toUpperCase()]))
-      })
+        order: Object.fromEntries(
+          pageable.sort.map((it) => [it.key, it.order.toUpperCase()])
+        )
+      }
+    )
   }
 
   pagingByFollowingId(pageable: Pageable, query: PagingQuery) {
     return paginate(
-      this.followRepository, {
+      this.followRepository,
+      {
         page: pageable.page,
         limit: pageable.limit
-      }, {
+      },
+      {
         where: this.getQuery({
           followingId: query.targetId,
           startDate: query.startDate,
-          endDate: query.endDate,
+          endDate: query.endDate
         }),
-        order: Object.fromEntries(pageable.sort.map(it => [it.key, it.order.toUpperCase()]))
-      })
+        order: Object.fromEntries(
+          pageable.sort.map((it) => [it.key, it.order.toUpperCase()])
+        )
+      }
+    )
   }
 
   listByFollowerId(followerId: number) {
-    return this.followRepository.find({createdBy: followerId})
+    return this.followRepository.find({ createdBy: followerId })
   }
 
   private getQuery(query: {
-    createdBy?: number,
-    followingId?: number,
-    startDate?: Date,
-    endDate?: Date,
+    createdBy?: number
+    followingId?: number
+    startDate?: Date
+    endDate?: Date
   }) {
     const where = {} as Record<keyof FollowEntity, any>
     if (typeof query.createdBy !== "undefined") {
@@ -86,7 +98,10 @@ export class FollowService {
     if (typeof query.followingId !== "undefined") {
       where.followingId = query.followingId
     }
-    if (typeof query.startDate !== "undefined" && typeof query.endDate !== "undefined") {
+    if (
+      typeof query.startDate !== "undefined" &&
+      typeof query.endDate !== "undefined"
+    ) {
       where.createDate = Between(query.startDate, addDay(query.endDate, 1))
     } else {
       if (typeof query.startDate !== "undefined") {

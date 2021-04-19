@@ -1,4 +1,11 @@
-import { Body, Controller, Get, NotFoundException, Post, Query } from "@nestjs/common"
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Post,
+  Query
+} from "@nestjs/common"
 import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { UserInfoService } from "../service/user-info.service"
@@ -26,7 +33,6 @@ class FocusDto {
   pictureId!: number
 }
 
-
 @Controller("footprint")
 export class FootprintController extends PictureVoAbstract {
   constructor(
@@ -41,32 +47,43 @@ export class FootprintController extends PictureVoAbstract {
 
   @JwtAuth()
   @Post("save")
-  async save(@CurrentUser() userInfo: UserInfoEntity, @Body() { pictureId }: FocusDto) {
+  async save(
+    @CurrentUser() userInfo: UserInfoEntity,
+    @Body() { pictureId }: FocusDto
+  ) {
     const picture = await this.pictureDocumentService.get(pictureId)
     if (picture.privacy === PrivacyState.PRIVATE) {
       throw new PermissionException("操作有误")
     }
     try {
       await this.footprintService.update(pictureId, userInfo)
-
     } catch (e) {
       if (e instanceof NotFoundException) {
         await this.footprintService.save(pictureId, userInfo)
-        await this.pictureDocumentService.saveViewAmount(picture, picture.viewAmount + 1)
+        await this.pictureDocumentService.saveViewAmount(
+          picture,
+          picture.viewAmount + 1
+        )
       }
     }
     return picture.viewAmount
   }
 
   @Get("paging")
-  async paging(@CurrentUser() userInfo: UserInfoEntity | undefined, @PageableDefault() pageable: Pageable, @Query() query: PagingQuery) {
+  async paging(
+    @CurrentUser() userInfo: UserInfoEntity | undefined,
+    @PageableDefault() pageable: Pageable,
+    @Query() query: PagingQuery
+  ) {
     if (query.targetId) {
       const page = await this.footprintService.paging(pageable, query)
       const footprintPictureVoList: FootprintPictureVo[] = []
       for (const footprint of page.items) {
         let footprintPictureVo: FootprintPictureVo
         try {
-          const picture = await this.pictureDocumentService.get(footprint.pictureId)
+          const picture = await this.pictureDocumentService.get(
+            footprint.pictureId
+          )
           //图片被隐藏
           if (picture.privacy === PrivacyState.PRIVATE) {
             picture.url = ""
@@ -75,11 +92,15 @@ export class FootprintController extends PictureVoAbstract {
             picture,
             (await this.getPictureVo(picture, userInfo?.id)).focus,
             footprint.updateDate!,
-            await this.getUserInfoVoById(picture.createdBy, userInfo?.id))
+            await this.getUserInfoVoById(picture.createdBy, userInfo?.id)
+          )
         } catch (e) {
           footprintPictureVo = new FootprintPictureVo(
             { id: footprint.pictureId } as PictureDocument,
-            await this.footprintService.getCollectState(query.targetId, footprint.pictureId),
+            await this.footprintService.getCollectState(
+              query.targetId,
+              footprint.pictureId
+            ),
             footprint.updateDate!
           )
         }
@@ -92,12 +113,18 @@ export class FootprintController extends PictureVoAbstract {
   }
 
   @Get("pagingUser")
-  async pagingUser(@PageableDefault() pageable: Pageable, @Query() query: PagingQuery, @CurrentUser() userInfo?: UserInfoEntity) {
+  async pagingUser(
+    @PageableDefault() pageable: Pageable,
+    @Query() query: PagingQuery,
+    @CurrentUser() userInfo?: UserInfoEntity
+  ) {
     if (query.pictureId) {
       const page = await this.footprintService.paging(pageable, query)
       const followingList = []
       for (const it of page.items) {
-        followingList.push(await this.getUserInfoVoById(it.createdBy!, userInfo?.id))
+        followingList.push(
+          await this.getUserInfoVoById(it.createdBy!, userInfo?.id)
+        )
       }
       return new Pagination(followingList, page.meta, page.links)
     } else {
