@@ -1,5 +1,5 @@
+import { AuthException } from "@/share/exception/auth.exception"
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common"
-import { AuthException } from "../../share/exception/auth.exception"
 
 @Injectable()
 export class AuthGuard implements CanActivate {

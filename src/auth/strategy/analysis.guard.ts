@@ -4,11 +4,11 @@ import {
   Inject,
   Injectable
 } from "@nestjs/common"
-import { AuthService } from "../service/auth.service"
-import { jwtConfigType } from "../config"
 import { ConfigType } from "@nestjs/config"
-import { Payload } from "../model/payload.model"
 import { JwtService } from "@nestjs/jwt"
+import { jwtConfigType } from "../config"
+import { Payload } from "../model/payload.model"
+import { AuthService } from "../service/auth.service"
 
 @Injectable()
 export class AnalysisGuard implements CanActivate {

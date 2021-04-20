@@ -1,12 +1,12 @@
+import { CurrentUser } from "@/auth/decorator/current-user.decorator"
+import { JwtAuth } from "@/auth/decorator/jwt-auth.decorator"
+import { AuthService } from "@/auth/service/auth.service"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
 import { Body, Controller, Post } from "@nestjs/common"
-import { AuthService } from "../../auth/service/auth.service"
 import { IsEnum, IsMobilePhone, IsString } from "class-validator"
+import { VerificationCodeCache } from "../cache/verification-code.cache"
 import { CodeTypeConstant } from "../constant/code-type.constant"
 import { UserService } from "../service/user.service"
-import { VerificationCodeCache } from "../cache/verification-code.cache"
-import { CurrentUser } from "../../auth/decorator/current-user.decorator"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 
 class SendCodeDto {
   @IsString()

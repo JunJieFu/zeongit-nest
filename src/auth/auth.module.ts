@@ -1,12 +1,12 @@
+import { DataModule } from "@/data/data.module"
+import { getEnvPaths } from "@/share/fragment/env.function"
 import { Module } from "@nestjs/common"
-import { PassportModule } from "@nestjs/passport"
-import { JwtModule } from "@nestjs/jwt"
-import { AuthService } from "./service/auth.service"
-import { DataModule } from "../data/data.module"
 import { ConfigModule } from "@nestjs/config"
-import { getEnvPaths } from "../share/fragment/env.function"
+import { JwtModule } from "@nestjs/jwt"
+import { PassportModule } from "@nestjs/passport"
 import { authConfigType, jwtConfigType } from "./config"
 import { JwtConfigService } from "./config-service/jwt-config.service"
+import { AuthService } from "./service/auth.service"
 
 const configModule = ConfigModule.forRoot({
   envFilePath: [...getEnvPaths()],

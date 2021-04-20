@@ -1,8 +1,8 @@
+import { UserInfoCache } from "@/data/cache/user-info.cache"
+import { InjectAccount } from "@/data/decorator/inject-account.decorator"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
 import { Injectable } from "@nestjs/common"
 import { Repository } from "typeorm"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { UserInfoCache } from "../../data/cache/user-info.cache"
-import { InjectAccount } from "../../data/decorator/inject-account.decorator"
 
 @Injectable()
 export class UserInfoService {

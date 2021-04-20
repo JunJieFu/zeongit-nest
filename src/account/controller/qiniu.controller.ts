@@ -1,8 +1,8 @@
+import { JwtAuth } from "@/auth/decorator/jwt-auth.decorator"
+import { qiniuConfigType } from "@/qiniu/config"
+import { BucketService } from "@/qiniu/service/bucket.service"
 import { Controller, Get, Inject } from "@nestjs/common"
-import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
 import { ConfigType } from "@nestjs/config"
-import { qiniuConfigType } from "../../qiniu/config"
-import { BucketService } from "../../qiniu/service/bucket.service"
 
 @Controller("qiniu")
 export class QiniuController {

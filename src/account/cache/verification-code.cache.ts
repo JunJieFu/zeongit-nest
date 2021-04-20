@@ -1,5 +1,5 @@
-import { CACHE_MANAGER, CacheStore, Inject, Injectable } from "@nestjs/common"
-import { nullable } from "../../share/fragment/pipe.function"
+import { nullable } from "@/share/fragment/pipe.function"
+import { CacheStore, CACHE_MANAGER, Inject, Injectable } from "@nestjs/common"
 import { CodeTypeConstant } from "../constant/code-type.constant"
 
 const GET_KEY = "verification_code:get:"
