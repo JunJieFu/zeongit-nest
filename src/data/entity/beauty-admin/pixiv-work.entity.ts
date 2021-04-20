@@ -1,5 +1,5 @@
+import { BaseEntity } from "@/share/entity/base.entity"
 import { Column, Entity } from "typeorm"
-import { BaseEntity } from "../../../share/entity/base.entity"
 
 @Entity("pixiv_work")
 export class PixivWorkEntity extends BaseEntity {

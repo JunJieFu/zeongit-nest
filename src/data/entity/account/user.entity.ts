@@ -1,7 +1,6 @@
+import { UserState } from "@/data/constant/user-state.constant"
+import { BaseEntity } from "@/share/entity/base.entity"
 import { Column, Entity } from "typeorm"
-import { BaseEntity } from "../../../share/entity/base.entity"
-import { UserState } from "../../constant/user-state.constant"
-
 @Entity("user")
 export class UserEntity extends BaseEntity {
   @Column({ name: "phone", type: "varchar", length: 20, unique: true })

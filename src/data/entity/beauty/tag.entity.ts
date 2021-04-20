@@ -1,5 +1,5 @@
+import { AskEntity } from "@/share/entity/ask.entity"
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm"
-import { AskEntity } from "../../../share/entity/ask.entity"
 import { PictureEntity } from "./picture.entity"
 
 @Entity("tag")

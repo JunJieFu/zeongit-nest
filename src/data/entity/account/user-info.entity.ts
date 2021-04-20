@@ -1,8 +1,9 @@
-import { BaseEntity } from "../../../share/entity/base.entity"
+
+import { Gender } from "@/data/constant/gender.constant"
+import { UserInitState } from "@/data/constant/user-info-state.constant"
+import { UserState } from "@/data/constant/user-state.constant"
+import { BaseEntity } from "@/share/entity/base.entity"
 import { Column, Entity } from "typeorm"
-import { UserState } from "../../constant/user-state.constant"
-import { Gender } from "../../constant/gender.constant"
-import { UserInitState } from "../../constant/user-info-state.constant"
 
 @Entity("user_info")
 export class UserInfoEntity extends BaseEntity {

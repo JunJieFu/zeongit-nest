@@ -4,8 +4,8 @@ import {
   Inject,
   Injectable
 } from "@nestjs/common"
-import { cacheConfigType } from "../config"
 import { ConfigType } from "@nestjs/config"
+import { cacheConfigType } from "../config"
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const redisStore = require("cache-manager-redis-store")
 

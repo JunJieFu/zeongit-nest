@@ -1,5 +1,5 @@
+import { AskEntity } from "@/share/entity/ask.entity"
 import { Column, Entity } from "typeorm"
-import { AskEntity } from "../../../share/entity/ask.entity"
 
 /**
  * @author fjj

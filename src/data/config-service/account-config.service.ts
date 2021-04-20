@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common"
-import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm"
 import { ConfigType } from "@nestjs/config"
-import { accountConfigType } from "../config"
+import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm"
 import * as path from "path"
+import { accountConfigType } from "../config"
 
 @Injectable()
 export class AccountConfigService implements TypeOrmOptionsFactory {

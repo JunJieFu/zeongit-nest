@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common"
-import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm"
 import { ConfigType } from "@nestjs/config"
+import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm"
 import * as path from "path"
 import { blogConfigType } from "../config"
 

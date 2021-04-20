@@ -1,8 +1,8 @@
+import { getEnvPaths } from "@/share/fragment/env.function"
 import { CacheModule, Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
 import { ElasticsearchModule } from "@nestjs/elasticsearch"
 import { TypeOrmModule } from "@nestjs/typeorm"
-import { getEnvPaths } from "../share/fragment/env.function"
 import { UserInfoCache } from "./cache/user-info.cache"
 import { UserCache } from "./cache/user.cache"
 import {

@@ -1,6 +1,6 @@
+import { ReadState } from "@/data/constant/read-state.conatnat"
+import { AskEntity } from "@/share/entity/ask.entity"
 import { Column, Entity } from "typeorm"
-import { AskEntity } from "../../../share/entity/ask.entity"
-import { ReadState } from "../../constant/read-state.conatnat"
 
 /**
  * @author fjj

@@ -1,10 +1,10 @@
+import { PictureLifeState } from "@/data/constant/picture-life-state.constant"
+import { PictureState } from "@/data/constant/picture-state.constant"
+import { PrivacyState } from "@/data/constant/privacy-state.constant"
+import { AskEntity } from "@/share/entity/ask.entity"
 import { Column, Entity, OneToMany } from "typeorm"
-import { AskEntity } from "../../../share/entity/ask.entity"
-import { PrivacyState } from "../../constant/privacy-state.constant"
-import { PictureState } from "../../constant/picture-state.constant"
-import { PictureLifeState } from "../../constant/picture-life-state.constant"
-import { AspectRatio } from "../../constant/aspect-ratio.constant"
 import { TagEntity } from "./tag.entity"
+
 
 @Entity("picture")
 export class PictureEntity extends AskEntity {
