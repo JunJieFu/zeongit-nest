@@ -1,14 +1,14 @@
 import { HttpService, Inject, Injectable } from "@nestjs/common"
-import { ImageInfo } from "../model/image-info.model"
 import { ConfigType } from "@nestjs/config"
-import { qiniuConfigType } from "../config"
+import { plainToClass } from "class-transformer"
 import { auth, conf, rs } from "qiniu"
+import { map } from "rxjs/operators"
+import { qiniuConfigType } from "../config"
+import { ImageInfo } from "../model/image-info.model"
 import Mac = auth.digest.Mac
 import PutPolicy = rs.PutPolicy
 import Config = conf.Config
 import BucketManager = rs.BucketManager
-import { map } from "rxjs/operators"
-import { plainToClass } from "class-transformer"
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
@@ -43,7 +43,7 @@ export class BucketService {
         if (e) {
           reject()
         } else {
-          resolve()
+          resolve(url)
         }
       })
     })
@@ -86,7 +86,7 @@ export class BucketService {
           if (e) {
             reject(e)
           } else {
-            resolve(respBody)
+            resolve(respBody!)
           }
         }
       )
