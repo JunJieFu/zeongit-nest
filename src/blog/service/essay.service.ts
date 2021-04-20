@@ -1,7 +1,7 @@
+import { InjectBlog } from "@/data/decorator/inject-blog.decorator"
+import { EssayEntity } from "@/data/entity/blog/essay.entity"
 import { Injectable } from "@nestjs/common"
 import { Between, Repository } from "typeorm"
-import { EssayEntity } from "../../data/entity/blog/essay.entity"
-import { InjectBlog } from "../../data/decorator/inject-blog.decorator"
 
 @Injectable()
 export class EssayService {

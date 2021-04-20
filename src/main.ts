@@ -1,16 +1,16 @@
-import { NestFactory } from "@nestjs/core"
-import { AllExceptionsFilter } from "./share/filter/http-exception.filter"
-import { AdviceInterceptor } from "./share/interceptor/advice.interceptor"
 import { ValidationPipe } from "@nestjs/common"
+import { NestFactory } from "@nestjs/core"
+import { JwtService } from "@nestjs/jwt"
 import { NestExpressApplication } from "@nestjs/platform-express"
 import { AccountModule } from "./account/account.module"
-import { BeautyModule } from "./beauty/beauty.module"
-import { AnalysisGuard } from "./auth/strategy/analysis.guard"
 import { jwtConfigType } from "./auth/config"
 import { AuthService } from "./auth/service/auth.service"
-import { JwtService } from "@nestjs/jwt"
+import { AnalysisGuard } from "./auth/strategy/analysis.guard"
 import { BeautyAdminModule } from "./beauty-admin/beauty-admin.module"
+import { BeautyModule } from "./beauty/beauty.module"
 import { BlogModule } from "./blog/blog.module"
+import { AllExceptionsFilter } from "./share/filter/http-exception.filter"
+import { AdviceInterceptor } from "./share/interceptor/advice.interceptor"
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cookieParser = require("cookie-parser")
 
@@ -96,7 +96,7 @@ async function blogBootstrap() {
   await app.listen(9000)
 }
 
-accountBootstrap()
-beautyBootstrap()
-beautyAdminBootstrap()
+// accountBootstrap()
+// beautyBootstrap()
+// beautyAdminBootstrap()
 blogBootstrap()

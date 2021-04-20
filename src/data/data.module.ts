@@ -1,49 +1,49 @@
 import { CacheModule, Module } from "@nestjs/common"
-import { TypeOrmModule } from "@nestjs/typeorm"
-import { UserEntity } from "./entity/account/user.entity"
-import { UserInfoEntity } from "./entity/account/user-info.entity"
 import { ConfigModule } from "@nestjs/config"
+import { ElasticsearchModule } from "@nestjs/elasticsearch"
+import { TypeOrmModule } from "@nestjs/typeorm"
 import { getEnvPaths } from "../share/fragment/env.function"
+import { UserInfoCache } from "./cache/user-info.cache"
+import { UserCache } from "./cache/user.cache"
 import {
-  ACCOUNT_CONNECTION_NAME,
   accountConfigType,
-  BEAUTY_ADMIN_CONNECTION_NAME,
-  BEAUTY_CONNECTION_NAME,
+  ACCOUNT_CONNECTION_NAME,
   beautyAdminConfigType,
   beautyConfigType,
-  BLOG_CONNECTION_NAME,
+  BEAUTY_ADMIN_CONNECTION_NAME,
+  BEAUTY_CONNECTION_NAME,
   blogConfigType,
+  BLOG_CONNECTION_NAME,
   cacheConfigType
 } from "./config"
 import { AccountConfigService } from "./config-service/account-config.service"
-import { CacheConfigService } from "./config-service/cache-config.service"
-import { UserInfoCache } from "./cache/user-info.cache"
-import { UserCache } from "./cache/user.cache"
+import { BeautyAdminConfigService } from "./config-service/beauty-admin-config.service"
 import { BeautyConfigService } from "./config-service/beauty-config.service"
-import { PictureDocumentRepository } from "./repository/picture-document.repository"
-import { ElasticsearchModule } from "@nestjs/elasticsearch"
+import { BlogConfigService } from "./config-service/blog-config.service"
+import { CacheConfigService } from "./config-service/cache-config.service"
+import { UserInfoEntity } from "./entity/account/user-info.entity"
+import { UserEntity } from "./entity/account/user.entity"
+import { AutoPixivWorkEntity } from "./entity/beauty-admin/auto-pixiv-work.entity"
+import { NsfwLevelEntity } from "./entity/beauty-admin/nsfw-level.entity"
+import { PixivErrorEntity } from "./entity/beauty-admin/pixiv-error.entity"
+import { PixivFollowingEntity } from "./entity/beauty-admin/pixiv-following.entity"
+import { PixivUserEntity } from "./entity/beauty-admin/pixiv-user.entity"
+import { PixivWorkDetailEntity } from "./entity/beauty-admin/pixiv-work-detail.entity"
+import { PixivWorkEntity } from "./entity/beauty-admin/pixiv-work.entity"
 import { CollectionEntity } from "./entity/beauty/collection.entity"
 import { ComplaintEntity } from "./entity/beauty/complaint.entity"
 import { FeedbackEntity } from "./entity/beauty/feedback.entity"
 import { FollowEntity } from "./entity/beauty/follow.entity"
 import { FootprintEntity } from "./entity/beauty/footprint.entity"
-import { PictureEntity } from "./entity/beauty/picture.entity"
 import { PictureBlackHoleEntity } from "./entity/beauty/picture-black-hole.entity"
-import { TagEntity } from "./entity/beauty/tag.entity"
+import { PictureEntity } from "./entity/beauty/picture.entity"
 import { TagBlackHoleEntity } from "./entity/beauty/tag-black-hole.entity"
+import { TagEntity } from "./entity/beauty/tag.entity"
 import { UserBlackHoleEntity } from "./entity/beauty/user-black-hole.entity"
-import { PixivUserEntity } from "./entity/beauty-admin/pixiv-user.entity"
-import { BeautyAdminConfigService } from "./config-service/beauty-admin-config.service"
-import { PixivWorkDetailEntity } from "./entity/beauty-admin/pixiv-work-detail.entity"
-import { PixivWorkEntity } from "./entity/beauty-admin/pixiv-work.entity"
-import { PixivErrorEntity } from "./entity/beauty-admin/pixiv-error.entity"
-import { NsfwLevelEntity } from "./entity/beauty-admin/nsfw-level.entity"
-import { UserInfoDocumentRepository } from "./repository/user-info-document.repository"
-import { AutoPixivWorkEntity } from "./entity/beauty-admin/auto-pixiv-work.entity"
-import { PixivFollowingEntity } from "./entity/beauty-admin/pixiv-following.entity"
-import { BlogConfigService } from "./config-service/blog-config.service"
 import { EssayEntity } from "./entity/blog/essay.entity"
 import { MessageEntity } from "./entity/blog/message.entity"
+import { PictureDocumentRepository } from "./repository/picture-document.repository"
+import { UserInfoDocumentRepository } from "./repository/user-info-document.repository"
 
 const configModule = ConfigModule.forRoot({
   envFilePath: [...getEnvPaths()],
@@ -119,7 +119,7 @@ const configModule = ConfigModule.forRoot({
       BLOG_CONNECTION_NAME
     ),
     ElasticsearchModule.register({
-      node: "http://localhost:9200"
+      node: "http://47.107.181.201:9200"
     })
   ],
   controllers: [],
