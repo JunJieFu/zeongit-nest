@@ -1,8 +1,8 @@
+import { UserInfoDocument } from "@/data/document/beauty/user-info.document"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
 import { FollowService } from "../service/follow.service"
 import { UserInfoService } from "../service/user-info.service"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
 import { UserInfoVo } from "../vo/user-info.vo"
-import { UserInfoDocument } from "../../data/document/beauty/user-info.document"
 
 export abstract class UserInfoVoAbstract {
   abstract userInfoService: UserInfoService

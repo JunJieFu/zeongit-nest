@@ -1,10 +1,10 @@
+import { CurrentUser } from "@/auth/decorator/current-user.decorator"
+import { JwtAuth } from "@/auth/decorator/jwt-auth.decorator"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
 import { Body, Controller, Post } from "@nestjs/common"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { CurrentUser } from "../../auth/decorator/current-user.decorator"
-import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
+import { Type } from "class-transformer"
 import { IsInt, IsString } from "class-validator"
 import { ComplaintService } from "../service/complaint.service"
-import { Type } from "class-transformer"
 
 class SaveDto {
   @Type(() => Number)

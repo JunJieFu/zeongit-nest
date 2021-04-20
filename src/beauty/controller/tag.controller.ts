@@ -1,6 +1,6 @@
+import { CurrentUser } from "@/auth/decorator/current-user.decorator"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
 import { Controller, Get, ParseIntPipe, Query } from "@nestjs/common"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { PictureDocumentService } from "../service/picture-document.service"
 import { TagFrequencyVo } from "../vo/tag-frequency.vo"
 import { TagPictureVo } from "../vo/tag-picture.vo"

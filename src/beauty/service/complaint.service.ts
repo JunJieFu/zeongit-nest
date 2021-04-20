@@ -1,8 +1,8 @@
-import { Repository } from "typeorm"
+import { InjectBeauty } from "@/data/decorator/inject-beauty.decorator"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
+import { ComplaintEntity } from "@/data/entity/beauty/complaint.entity"
 import { Injectable } from "@nestjs/common"
-import { ComplaintEntity } from "../../data/entity/beauty/complaint.entity"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
+import { Repository } from "typeorm"
 
 @Injectable()
 export class ComplaintService {

@@ -1,11 +1,11 @@
-import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm"
-import { TagBlackHoleEntity } from "../../data/entity/beauty/tag-black-hole.entity"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { Pageable } from "../../share/model/pageable.model"
+import { InjectBeauty } from "@/data/decorator/inject-beauty.decorator"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
+import { TagBlackHoleEntity } from "@/data/entity/beauty/tag-black-hole.entity"
+import { Pageable } from "@/share/model/pageable.model"
+import { addDay } from "@/share/uitl/date.util"
 import { paginate } from "nestjs-typeorm-paginate"
+import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm"
 import { PagingQuery } from "../query/tag-black-hole.query"
-import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
-import { addDay } from "../../share/uitl/date.util"
 
 export class TagBlackHoleService {
   constructor(

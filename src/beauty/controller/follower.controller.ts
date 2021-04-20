@@ -1,13 +1,13 @@
+import { CurrentUser } from "@/auth/decorator/current-user.decorator"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
+import { PageableDefault } from "@/share/decorator/pageable-default.decorator"
+import { Pageable } from "@/share/model/pageable.model"
 import { Controller, Get, Query } from "@nestjs/common"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { CurrentUser } from "../../auth/decorator/current-user.decorator"
-import { FollowService } from "../service/follow.service"
-import { PageableDefault } from "../../share/decorator/pageable-default.decorator"
-import { Pageable } from "../../share/model/pageable.model"
-import { UserInfoVoAbstract } from "../communal/user-info-vo.abstract"
-import { UserInfoService } from "../service/user-info.service"
 import { Pagination } from "nestjs-typeorm-paginate"
+import { UserInfoVoAbstract } from "../communal/user-info-vo.abstract"
 import { PagingQuery } from "../query/follow.query"
+import { FollowService } from "../service/follow.service"
+import { UserInfoService } from "../service/user-info.service"
 
 @Controller("follower")
 export class FollowerController extends UserInfoVoAbstract {

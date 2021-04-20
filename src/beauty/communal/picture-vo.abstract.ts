@@ -1,10 +1,10 @@
-import { UserInfoVoAbstract } from "./user-info-vo.abstract"
-import { PictureDocumentService } from "../service/picture-document.service"
+import { PrivacyState } from "@/data/constant/privacy-state.constant"
+import { PictureDocument } from "@/data/document/beauty/picture.document"
+import { PermissionException } from "@/share/exception/permission.exception"
 import { CollectionService } from "../service/collection.service"
-import { PictureDocument } from "../../data/document/beauty/picture.document"
+import { PictureDocumentService } from "../service/picture-document.service"
 import { PictureVo } from "../vo/picture.vo"
-import { PrivacyState } from "../../data/constant/privacy-state.constant"
-import { PermissionException } from "../../share/exception/permission.exception"
+import { UserInfoVoAbstract } from "./user-info-vo.abstract"
 
 export abstract class PictureVoAbstract extends UserInfoVoAbstract {
   abstract pictureDocumentService: PictureDocumentService

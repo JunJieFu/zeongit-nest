@@ -1,8 +1,8 @@
+import { InjectAccount } from "@/data/decorator/inject-account.decorator"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
+import { UserInfoDocumentRepository } from "@/data/repository/user-info-document.repository"
+import { nullable } from "@/share/fragment/pipe.function"
 import { Repository } from "typeorm"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { nullable } from "../../share/fragment/pipe.function"
-import { InjectAccount } from "../../data/decorator/inject-account.decorator"
-import { UserInfoDocumentRepository } from "../../data/repository/user-info-document.repository"
 
 export class UserInfoService {
   constructor(

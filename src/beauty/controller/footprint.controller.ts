@@ -1,3 +1,12 @@
+import { CurrentUser } from "@/auth/decorator/current-user.decorator"
+import { JwtAuth } from "@/auth/decorator/jwt-auth.decorator"
+import { PrivacyState } from "@/data/constant/privacy-state.constant"
+import { PictureDocument } from "@/data/document/beauty/picture.document"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
+import { PageableDefault } from "@/share/decorator/pageable-default.decorator"
+import { PermissionException } from "@/share/exception/permission.exception"
+import { ProgramException } from "@/share/exception/program.exception"
+import { Pageable } from "@/share/model/pageable.model"
 import {
   Body,
   Controller,
@@ -6,26 +15,17 @@ import {
   Post,
   Query
 } from "@nestjs/common"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { CurrentUser } from "../../auth/decorator/current-user.decorator"
-import { UserInfoService } from "../service/user-info.service"
-import { FollowService } from "../service/follow.service"
-import { PictureDocumentService } from "../service/picture-document.service"
-import { PictureVoAbstract } from "../communal/picture-vo.abstract"
-import { FootprintService } from "../service/footprint.service"
-import { JwtAuth } from "../../auth/decorator/jwt-auth.decorator"
-import { IsInt } from "class-validator"
-import { PictureDocument } from "../../data/document/beauty/picture.document"
-import { PermissionException } from "../../share/exception/permission.exception"
-import { ProgramException } from "../../share/exception/program.exception"
-import { PrivacyState } from "../../data/constant/privacy-state.constant"
-import { PageableDefault } from "../../share/decorator/pageable-default.decorator"
-import { Pageable } from "../../share/model/pageable.model"
-import { PagingQuery } from "../query/footprint.query"
-import { Pagination } from "nestjs-typeorm-paginate"
-import { FootprintPictureVo } from "../vo/footprint.vo"
-import { CollectionService } from "../service/collection.service"
 import { Type } from "class-transformer"
+import { IsInt } from "class-validator"
+import { Pagination } from "nestjs-typeorm-paginate"
+import { PictureVoAbstract } from "../communal/picture-vo.abstract"
+import { PagingQuery } from "../query/footprint.query"
+import { CollectionService } from "../service/collection.service"
+import { FollowService } from "../service/follow.service"
+import { FootprintService } from "../service/footprint.service"
+import { PictureDocumentService } from "../service/picture-document.service"
+import { UserInfoService } from "../service/user-info.service"
+import { FootprintPictureVo } from "../vo/footprint.vo"
 
 class FocusDto {
   @Type(() => Number)

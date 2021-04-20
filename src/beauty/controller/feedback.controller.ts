@@ -1,6 +1,6 @@
+import { CurrentUser } from "@/auth/decorator/current-user.decorator"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
 import { Body, Controller, Post } from "@nestjs/common"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { CurrentUser } from "../../auth/decorator/current-user.decorator"
 import { IsEmail, IsOptional, IsString } from "class-validator"
 import { FeedbackService } from "../service/feedback.service"
 

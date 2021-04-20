@@ -1,7 +1,7 @@
+import { InjectBeauty } from "@/data/decorator/inject-beauty.decorator"
+import { TagEntity } from "@/data/entity/beauty/tag.entity"
 import { Injectable } from "@nestjs/common"
-import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
 import { Repository } from "typeorm"
-import { TagEntity } from "../../data/entity/beauty/tag.entity"
 
 @Injectable()
 export class TagService {

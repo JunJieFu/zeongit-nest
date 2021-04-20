@@ -1,21 +1,21 @@
-import { Controller, Get, Query } from "@nestjs/common"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { CurrentUser } from "../../auth/decorator/current-user.decorator"
-import { UserInfoService } from "../service/user-info.service"
-import { UserInfoVoAbstract } from "../communal/user-info-vo.abstract"
-import { FollowService } from "../service/follow.service"
-import { ProgramException } from "../../share/exception/program.exception"
-import { Transform, Type } from "class-transformer"
-import { IsBoolean, IsDate, IsOptional, IsString } from "class-validator"
-import { UserInfoDocumentService } from "../service/user-info-document.service"
+import { CurrentUser } from "@/auth/decorator/current-user.decorator"
+import { UserInfoDocument } from "@/data/document/beauty/user-info.document"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
+import { PageableDefault } from "@/share/decorator/pageable-default.decorator"
+import { ProgramException } from "@/share/exception/program.exception"
 import {
   parseArrayTransformFn,
   parseBooleanTransformFn
-} from "../../share/fragment/transform.function"
-import { PageableDefault } from "../../share/decorator/pageable-default.decorator"
-import { Pageable } from "../../share/model/pageable.model"
+} from "@/share/fragment/transform.function"
+import { Pageable } from "@/share/model/pageable.model"
+import { Controller, Get, Query } from "@nestjs/common"
+import { Transform, Type } from "class-transformer"
+import { IsBoolean, IsDate, IsOptional, IsString } from "class-validator"
 import { Pagination } from "nestjs-typeorm-paginate"
-import { UserInfoDocument } from "../../data/document/beauty/user-info.document"
+import { UserInfoVoAbstract } from "../communal/user-info-vo.abstract"
+import { FollowService } from "../service/follow.service"
+import { UserInfoDocumentService } from "../service/user-info-document.service"
+import { UserInfoService } from "../service/user-info.service"
 
 class GetDto {
   @Type(() => Number)

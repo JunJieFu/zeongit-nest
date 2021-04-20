@@ -1,8 +1,8 @@
-import { PictureDocument } from "../../data/document/beauty/picture.document"
+import { AspectRatio } from "@/data/constant/aspect-ratio.constant"
+import { CollectState } from "@/data/constant/collect-state.constant"
+import { PrivacyState } from "@/data/constant/privacy-state.constant"
+import { PictureDocument } from "@/data/document/beauty/picture.document"
 import { UserInfoVo } from "./user-info.vo"
-import { CollectState } from "../../data/constant/collect-state.constant"
-import { PrivacyState } from "../../data/constant/privacy-state.constant"
-import { AspectRatio } from "../../data/constant/aspect-ratio.constant"
 
 export class PictureVo {
   id: number

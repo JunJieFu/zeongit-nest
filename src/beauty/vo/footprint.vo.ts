@@ -1,8 +1,8 @@
-import { PictureLifeState } from "../../data/constant/picture-life-state.constant"
-import { PrivacyState } from "../../data/constant/privacy-state.constant"
-import { CollectState } from "../../data/constant/collect-state.constant"
+import { CollectState } from "@/data/constant/collect-state.constant"
+import { PictureLifeState } from "@/data/constant/picture-life-state.constant"
+import { PrivacyState } from "@/data/constant/privacy-state.constant"
+import { PictureDocument } from "@/data/document/beauty/picture.document"
 import { UserInfoVo } from "./user-info.vo"
-import { PictureDocument } from "../../data/document/beauty/picture.document"
 
 /**
  * 足迹图片的vo

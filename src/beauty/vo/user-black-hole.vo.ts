@@ -1,4 +1,4 @@
-import { BlockState } from "../../data/constant/block-state.constant"
+import { BlockState } from "@/data/constant/block-state.constant"
 
 export class UserBlackHoleVo {
   id: number
