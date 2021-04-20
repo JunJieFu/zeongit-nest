@@ -1,10 +1,10 @@
 import { Observable } from "rxjs"
 
-type NestResponse<T> = T | Promise<T> | Observable<T>
+export type NestResponse<T> = T | Promise<T> | Observable<T>
 
-type NodeEnv = "development" | "production"
+export type NodeEnv = "development" | "production"
 
-interface PaginationMeta {
+export interface PaginationMeta {
   itemCount: number
   totalItems: number
   itemsPerPage: number

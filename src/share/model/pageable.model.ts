@@ -1,6 +1,6 @@
-import { SortOrder } from "../constant/sort-order.constant"
-import { IsEnum, IsString } from "class-validator"
 import { plainToClass } from "class-transformer"
+import { IsEnum, IsString } from "class-validator"
+import { SortOrder } from "../constant/sort-order.constant"
 import { PaginationMeta } from "../types"
 
 export class Sort {

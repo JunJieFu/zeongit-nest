@@ -7,7 +7,6 @@ import {
   HttpStatus
 } from "@nestjs/common"
 import { Result } from "../model/result.model"
-
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
