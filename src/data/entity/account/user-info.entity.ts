@@ -1,4 +1,3 @@
-
 import { Gender } from "@/data/constant/gender.constant"
 import { UserInitState } from "@/data/constant/user-info-state.constant"
 import { UserState } from "@/data/constant/user-state.constant"

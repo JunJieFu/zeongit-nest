@@ -2,7 +2,6 @@ import { AspectRatio } from "@/data/constant/aspect-ratio.constant"
 import { PrivacyState } from "@/data/constant/privacy-state.constant"
 import { PictureEntity } from "@/data/entity/beauty/picture.entity"
 
-
 export class PictureDocument {
   id!: number
   url!: string

@@ -5,7 +5,6 @@ import { AskEntity } from "@/share/entity/ask.entity"
 import { Column, Entity, OneToMany } from "typeorm"
 import { TagEntity } from "./tag.entity"
 
-
 @Entity("picture")
 export class PictureEntity extends AskEntity {
   //图片地址
