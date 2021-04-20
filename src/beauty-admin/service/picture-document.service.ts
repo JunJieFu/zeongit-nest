@@ -1,6 +1,6 @@
+import { PictureDocument } from "@/data/document/beauty/picture.document"
+import { PictureDocumentRepository } from "@/data/repository/picture-document.repository"
 import { Injectable } from "@nestjs/common"
-import { PictureDocumentRepository } from "../../data/repository/picture-document.repository"
-import { PictureDocument } from "../../data/document/beauty/picture.document"
 
 @Injectable()
 export class PictureDocumentService {

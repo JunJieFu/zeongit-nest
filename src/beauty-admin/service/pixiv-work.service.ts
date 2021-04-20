@@ -1,10 +1,10 @@
+import { InjectBeautyAdmin } from "@/data/decorator/inject-beauty-admin.decorator"
+import { PixivWorkEntity } from "@/data/entity/beauty-admin/pixiv-work.entity"
+import { nullable } from "@/share/fragment/pipe.function"
+import { Pageable } from "@/share/model/pageable.model"
 import { Injectable } from "@nestjs/common"
-import { InjectBeautyAdmin } from "../../data/decorator/inject-beauty-admin.decorator"
-import { PixivWorkEntity } from "../../data/entity/beauty-admin/pixiv-work.entity"
-import { IsNull, Not, Repository } from "typeorm"
-import { nullable } from "../../share/fragment/pipe.function"
-import { Pageable } from "../../share/model/pageable.model"
 import { paginate } from "nestjs-typeorm-paginate"
+import { IsNull, Not, Repository } from "typeorm"
 
 @Injectable()
 export class PixivWorkService {

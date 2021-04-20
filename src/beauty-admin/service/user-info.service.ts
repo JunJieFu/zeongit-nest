@@ -1,9 +1,9 @@
+import { UserInfoCache } from "@/data/cache/user-info.cache"
+import { InjectAccount } from "@/data/decorator/inject-account.decorator"
+import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
+import { nullable } from "@/share/fragment/pipe.function"
 import { Injectable } from "@nestjs/common"
 import { Repository } from "typeorm"
-import { UserInfoEntity } from "../../data/entity/account/user-info.entity"
-import { nullable } from "../../share/fragment/pipe.function"
-import { InjectAccount } from "../../data/decorator/inject-account.decorator"
-import { UserInfoCache } from "../../data/cache/user-info.cache"
 
 @Injectable()
 export class UserInfoService {

@@ -96,7 +96,7 @@ async function blogBootstrap() {
   await app.listen(9000)
 }
 
-// accountBootstrap()
+accountBootstrap()
 beautyBootstrap()
-// beautyAdminBootstrap()
-// blogBootstrap()
+beautyAdminBootstrap()
+blogBootstrap()

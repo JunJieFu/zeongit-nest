@@ -1,8 +1,8 @@
+import { InjectBeautyAdmin } from "@/data/decorator/inject-beauty-admin.decorator"
+import { PixivUserEntity } from "@/data/entity/beauty-admin/pixiv-user.entity"
+import { nullable } from "@/share/fragment/pipe.function"
 import { Injectable } from "@nestjs/common"
-import { InjectBeautyAdmin } from "../../data/decorator/inject-beauty-admin.decorator"
 import { Repository } from "typeorm"
-import { PixivUserEntity } from "../../data/entity/beauty-admin/pixiv-user.entity"
-import { nullable } from "../../share/fragment/pipe.function"
 
 @Injectable()
 export class PixivUserService {

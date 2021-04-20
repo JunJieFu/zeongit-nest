@@ -1,10 +1,10 @@
+import { PictureLifeState } from "@/data/constant/picture-life-state.constant"
+import { InjectBeauty } from "@/data/decorator/inject-beauty.decorator"
+import { PictureDocument } from "@/data/document/beauty/picture.document"
+import { PictureEntity } from "@/data/entity/beauty/picture.entity"
+import { nullable } from "@/share/fragment/pipe.function"
 import { Injectable, NotFoundException } from "@nestjs/common"
 import { Repository } from "typeorm"
-import { PictureEntity } from "../../data/entity/beauty/picture.entity"
-import { nullable } from "../../share/fragment/pipe.function"
-import { PictureLifeState } from "../../data/constant/picture-life-state.constant"
-import { InjectBeauty } from "../../data/decorator/inject-beauty.decorator"
-import { PictureDocument } from "../../data/document/beauty/picture.document"
 import { PictureDocumentService } from "./picture-document.service"
 
 @Injectable()
