@@ -335,9 +335,9 @@ export class PictureController extends PictureVoAbstract {
     return this.pictureService.remove(picture)
   }
 
-  @Get("synchronizationIndexPicture")
-  synchronizationIndexPicture() {
-    return this.pictureService.synchronizationIndexPicture()
+  @Post("synchronizationIndex")
+  synchronizationIndex() {
+    return this.pictureService.synchronizationIndex()
   }
 
   private async getPageVo(

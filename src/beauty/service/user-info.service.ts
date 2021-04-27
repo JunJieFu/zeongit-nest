@@ -15,8 +15,8 @@ export class UserInfoService {
     return this.userInfoRepository.findOne({ id }).then(nullable("用户不存在"))
   }
 
-  async synchronizationIndexPicture() {
-    return this.userInfoDocumentRepository.synchronizationIndexUserInfo(
+  async synchronizationIndex() {
+    return this.userInfoDocumentRepository.synchronizationIndex(
       await this.userInfoRepository.find()
     )
   }

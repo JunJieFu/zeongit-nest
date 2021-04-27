@@ -465,8 +465,8 @@ export class PictureDocumentService {
     return query
   }
 
-  synchronizationIndexPicture(pictureList: PictureEntity[]) {
-    return this.pictureDocumentRepository.synchronizationIndexPicture(
+  synchronizationIndex(pictureList: PictureEntity[]) {
+    return this.pictureDocumentRepository.synchronizationIndex(
       pictureList
     )
   }

@@ -91,7 +91,7 @@ export class PictureDocumentRepository {
     })
   }
 
-  async synchronizationIndexPicture(pictureList: PictureEntity[]) {
+  async synchronizationIndex(pictureList: PictureEntity[]) {
     const list = []
     for (const picture of pictureList) {
       try {

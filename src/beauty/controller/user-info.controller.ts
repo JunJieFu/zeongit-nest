@@ -8,7 +8,7 @@ import {
   parseBooleanTransformFn
 } from "@/share/fragment/transform.function"
 import { Pageable } from "@/share/model/pageable.model"
-import { Controller, Get, Query } from "@nestjs/common"
+import { Controller, Get, Post, Query } from "@nestjs/common"
 import { Transform, Type } from "class-transformer"
 import { IsBoolean, IsDate, IsOptional, IsString } from "class-validator"
 import { Pagination } from "nestjs-typeorm-paginate"
@@ -77,9 +77,9 @@ export class UserInfoController extends UserInfoVoAbstract {
     return this.getPageVo(page, userInfo?.id)
   }
 
-  @Get("synchronizationIndexPicture")
-  synchronizationIndexPicture() {
-    return this.userInfoService.synchronizationIndexPicture()
+  @Post("synchronizationIndex")
+  synchronizationIndex() {
+    return this.userInfoService.synchronizationIndex()
   }
 
   private async getPageVo(

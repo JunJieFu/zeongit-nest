@@ -91,7 +91,7 @@ export class UserInfoDocumentRepository {
     })
   }
 
-  async synchronizationIndexUserInfo(userInfoList: UserInfoEntity[]) {
+  async synchronizationIndex(userInfoList: UserInfoEntity[]) {
     const list = []
     for (const userInfo of userInfoList) {
       try {

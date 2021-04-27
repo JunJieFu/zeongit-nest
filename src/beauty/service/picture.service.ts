@@ -71,8 +71,8 @@ export class PictureService {
     await this.pictureDocumentService.remove(picture.id!)
   }
 
-  async synchronizationIndexPicture() {
-    return this.pictureDocumentService.synchronizationIndexPicture(
+  async synchronizationIndex() {
+    return this.pictureDocumentService.synchronizationIndex(
       await this.pictureRepository.find({
         life: PictureLifeState.EXIST
       })
