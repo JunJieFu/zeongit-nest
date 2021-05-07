@@ -37,6 +37,7 @@ export class AutoPixivWorkEntity extends BaseEntity {
   totalBookmarks = 0
   @Column({ name: "sl", nullable: true })
   sl?: number
+  //0-未下载 1-已下载 2-放弃下载
   @Column({ name: "download", type: "int" })
   download = 0
   @Column({ name: "pixiv_use", type: "int" })

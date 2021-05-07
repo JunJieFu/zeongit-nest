@@ -19,7 +19,6 @@ import { AutoCollect, AutoCollectPick } from "../vo"
 import { AutoPixivWorkService } from "./auto-pixiv-work.service"
 import { PictureService } from "./picture.service"
 import { PixivFollowingService } from "./pixiv-following.service"
-import { PixivUserService } from "./pixiv-user.service"
 import { UserInfoService } from "./user-info.service"
 import { UserService } from "./user.service"
 
@@ -33,7 +32,6 @@ export class AutoCollectService {
     private readonly autoPixivWorkService: AutoPixivWorkService,
     private readonly httpService: HttpService,
     private readonly bucketService: BucketService,
-    private readonly pixivUserService: PixivUserService,
     private readonly userService: UserService,
     private readonly userInfoService: UserInfoService,
     private readonly pictureService: PictureService,
@@ -51,6 +49,8 @@ export class AutoCollectService {
       format(addDay(new Date(), -2))
     )
   ]
+
+  private NO_COLLECTION_TAG_LIST = ["四格漫画", "漫画", "manga"]
 
   //整点和30分钟时调用一次，调用采集排行榜
   @Cron("0 0,30 * * * *")
@@ -75,24 +75,30 @@ export class AutoCollectService {
   @Cron("0 */4 * * * *")
   async putQiniu() {
     console.log("putQiniu--------------->" + new Date())
-    let pixivWork = await this.autoPixivWorkService.getTypeByDownload(0)
-    pixivWork.collectAmount++
-    pixivWork = await this.autoPixivWorkService.save(pixivWork)
-    const originalUrlArray = pixivWork.originalUrl.split("/")
-    const pictureName = originalUrlArray[originalUrlArray.length - 1]
-    const model: any = await this.bucketService.putUrl(
-      pixivWork.originalUrl.replace(
-        this.collectConfig.pixivHost,
-        this.collectConfig.proxy
-      ),
-      this.qiniuConfig.pictureBucket,
-      pictureName
-    )
-    if (model.fsize) {
-      pixivWork.download = 1
-      pixivWork.pixivUse = 1
-      await this.use(pixivWork, pictureName)
-      this.autoPixivWorkService.save(pixivWork).then()
+    //获取未下载到七牛的图片
+    let pixivWork = await this.getWaitDownloadPixivWork()
+    if (pixivWork) {
+      console.log("putQiniu--------------->" + pixivWork.id)
+      pixivWork.collectAmount++
+      pixivWork = await this.autoPixivWorkService.save(pixivWork)
+      const originalUrlArray = pixivWork.originalUrl.split("/")
+      const pictureName = originalUrlArray[originalUrlArray.length - 1]
+      const model: any = await this.bucketService.putUrl(
+        pixivWork.originalUrl.replace(
+          this.collectConfig.pixivHost,
+          this.collectConfig.proxy
+        ),
+        this.qiniuConfig.pictureBucket,
+        pictureName
+      )
+      if (model.fsize) {
+        pixivWork.download = 1
+        pixivWork.pixivUse = 1
+        await this.use(pixivWork, pictureName)
+        this.autoPixivWorkService.save(pixivWork).then()
+      }
+    }else{
+      console.log("putQiniu---------------> not picture")
     }
   }
 
@@ -143,39 +149,57 @@ export class AutoCollectService {
     return vo
   }
 
+  private async getWaitDownloadPixivWork() {
+    for (let i = 0; i < 20; i++) {
+      const pixivWork = await this.autoPixivWorkService.getByDownload(0)
+      if (pixivWork.collectAmount > 50) return
+      const tagList = pixivWork.translateTags?.split("|") ?? []
+      //获取两个集合的交集
+      const intersection = tagList.filter((it) =>
+        this.NO_COLLECTION_TAG_LIST.includes(it)
+      )
+      //非限制图片并收藏数大于并套图数为1并跟设定的非采集标签交集为空（即不存在非采集标签）
+      if (
+        pixivWork.xRestrict === 0 &&
+        pixivWork.totalBookmarks >= 500 &&
+        pixivWork.pageCount === 1 &&
+        !intersection.length
+      ) {
+        return pixivWork
+      } else {
+        pixivWork.download = 3
+        this.autoPixivWorkService.save(pixivWork).then()
+      }
+    }
+  }
+
   private async saveCollect(illusts: AutoCollect[]) {
     for (const item of illusts) {
-      if (
-        item.page_count === 1 &&
-        item.x_restrict === 0 &&
-        item.total_bookmarks > 500
-      ) {
-        const auto = new AutoPixivWorkEntity()
-        auto.pixivId = String(item.id)
-        auto.title = item.title
-        auto.xRestrict = item.x_restrict
-        auto.pixivRestrict = item.restrict
-        auto.description = item.caption
-        auto.tags = item.tags.map((it) => it.name).join("|")
-        auto.translateTags = item.tags
-          .map((it) => it.translated_name ?? it.name)
-          .join("|")
-        auto.userId = String(item.user.id)
-        auto.userName = item.user.name
-        auto.width = item.width
-        auto.height = item.height
-        auto.pageCount = item.page_count
-        auto.pixivCreateDate = item.create_date
-        auto.originalUrl = item.meta_single_page.original_image_url
-        auto.totalView = item.total_view
-        auto.totalBookmarks = item.total_bookmarks
-        auto.sl = item.sanity_level
-        const urlArray = auto.originalUrl.split("/")
-        auto.url = urlArray[urlArray.length - 1]
-        try {
-          await this.autoPixivWorkService.save(auto)
-        } catch (e) {}
-      }
+      const auto = new AutoPixivWorkEntity()
+      auto.pixivId = String(item.id)
+      auto.title = item.title
+      auto.xRestrict = item.x_restrict
+      auto.pixivRestrict = item.restrict
+      auto.description = item.caption
+      auto.tags = item.tags.map((it) => it.name).join("|")
+      auto.translateTags = item.tags
+        .map((it) => it.translated_name ?? it.name)
+        .join("|")
+      auto.userId = String(item.user.id)
+      auto.userName = item.user.name
+      auto.width = item.width
+      auto.height = item.height
+      auto.pageCount = item.page_count
+      auto.pixivCreateDate = item.create_date
+      auto.originalUrl = item.meta_single_page.original_image_url
+      auto.totalView = item.total_view
+      auto.totalBookmarks = item.total_bookmarks
+      auto.sl = item.sanity_level
+      const urlArray = auto.originalUrl.split("/")
+      auto.url = urlArray[urlArray.length - 1]
+      try {
+        await this.autoPixivWorkService.save(auto)
+      } catch (e) {}
     }
   }
 

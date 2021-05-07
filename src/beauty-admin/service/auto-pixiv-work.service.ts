@@ -20,7 +20,7 @@ export class AutoPixivWorkService {
     return this.autoPixivWorkRepository.find()
   }
 
-  getTypeByDownload(download: number) {
+  getByDownload(download: number) {
     return this.autoPixivWorkRepository
       .findOne({
         where: {
