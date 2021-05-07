@@ -12,7 +12,19 @@ export class AutoCollectTag {
 }
 
 export class AutoCollectSingle {
-  original_image_url!: string
+  original_image_url?: string
+}
+
+export class AutoImageUrl {
+  square_medium!: string
+  medium!: string
+  large!: string
+  original!: string
+}
+
+export class AutoMetaPage {
+  @Type(() => AutoImageUrl)
+  image_urls!: AutoImageUrl
 }
 
 export class AutoCollectPick {
@@ -39,6 +51,8 @@ export class AutoCollect {
   x_restrict!: number
   @Type(() => AutoCollectSingle)
   meta_single_page!: AutoCollectSingle
+  @Type(() => AutoMetaPage)
+  meta_pages!: AutoMetaPage[]
   total_view!: number
   total_bookmarks!: number
 }

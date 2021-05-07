@@ -12,6 +12,7 @@ import { Cron } from "@nestjs/schedule"
 import { plainToClass } from "class-transformer"
 import * as qs from "qs"
 import { map } from "rxjs/operators"
+import { QueryFailedError } from "typeorm"
 import { collectConfigType } from "../config"
 import { RankModeConstant } from "../constant/rank-mode.constant"
 import { RankParamsModel } from "../model/rank-params.model"
@@ -57,6 +58,7 @@ export class AutoCollectService {
   async collectRank() {
     console.log("collect rank--------------->" + new Date())
     const vo = await this.listRank()
+    console.log("collect rank--------------->count: " + vo.illusts.length)
     await this.saveCollect(vo.illusts)
   }
 
@@ -65,6 +67,7 @@ export class AutoCollectService {
   async collectByFollowing() {
     console.log("collect by following--------------->" + new Date())
     const vo = await this.listByFollowing()
+    console.log("collect rank--------------->count: " + vo.illusts.length)
     await this.saveCollect(vo.illusts)
   }
 
@@ -97,7 +100,7 @@ export class AutoCollectService {
         await this.use(pixivWork, pictureName)
         this.autoPixivWorkService.save(pixivWork).then()
       }
-    }else{
+    } else {
       console.log("putQiniu---------------> not picture")
     }
   }
@@ -174,33 +177,43 @@ export class AutoCollectService {
   }
 
   private async saveCollect(illusts: AutoCollect[]) {
+    const repeatIdList = []
     for (const item of illusts) {
-      const auto = new AutoPixivWorkEntity()
-      auto.pixivId = String(item.id)
-      auto.title = item.title
-      auto.xRestrict = item.x_restrict
-      auto.pixivRestrict = item.restrict
-      auto.description = item.caption
-      auto.tags = item.tags.map((it) => it.name).join("|")
-      auto.translateTags = item.tags
-        .map((it) => it.translated_name ?? it.name)
-        .join("|")
-      auto.userId = String(item.user.id)
-      auto.userName = item.user.name
-      auto.width = item.width
-      auto.height = item.height
-      auto.pageCount = item.page_count
-      auto.pixivCreateDate = item.create_date
-      auto.originalUrl = item.meta_single_page.original_image_url
-      auto.totalView = item.total_view
-      auto.totalBookmarks = item.total_bookmarks
-      auto.sl = item.sanity_level
-      const urlArray = auto.originalUrl.split("/")
-      auto.url = urlArray[urlArray.length - 1]
       try {
+        const auto = new AutoPixivWorkEntity()
+        auto.pixivId = String(item.id)
+        auto.title = item.title
+        auto.xRestrict = item.x_restrict
+        auto.pixivRestrict = item.restrict
+        auto.description = item.caption
+        auto.tags = item.tags.map((it) => it.name).join("|")
+        auto.translateTags = item.tags
+          .map((it) => it.translated_name ?? it.name)
+          .join("|")
+        auto.userId = String(item.user.id)
+        auto.userName = item.user.name
+        auto.width = item.width
+        auto.height = item.height
+        auto.pageCount = item.page_count
+        auto.pixivCreateDate = item.create_date
+        auto.originalUrl =
+          item.meta_single_page.original_image_url ??
+          item.meta_pages[0].image_urls.original
+        auto.totalView = item.total_view
+        auto.totalBookmarks = item.total_bookmarks
+        auto.sl = item.sanity_level
+        const urlArray = auto.originalUrl.split("/")
+        auto.url = urlArray[urlArray.length - 1]
         await this.autoPixivWorkService.save(auto)
-      } catch (e) {}
+      } catch (e) {
+        if (e instanceof QueryFailedError) {
+          repeatIdList.push(item.id)
+        } else {
+          console.log(e)
+        }
+      }
     }
+    console.log("repeat id---------------> " + repeatIdList.join(","))
   }
 
   private async use(pixivWork: AutoPixivWorkEntity, url: string) {
