@@ -1,46 +1,34 @@
 import { CollectState } from "@/data/constant/collect-state.constant"
-import { PictureLifeState } from "@/data/constant/picture-life-state.constant"
-import { PrivacyState } from "@/data/constant/privacy-state.constant"
-import { PictureDocument } from "@/data/document/beauty/picture.document"
-import { UserInfoVo } from "./user-info.vo"
+import { CollectionEntity } from "@/data/entity/beauty/collection.entity"
+import { PictureVo } from "./picture.vo"
 
 /**
  * 收藏图片的vo
  * @author fjj
- * 这里的id是图片的id，创建时间为收藏的创建时间
  */
 export class CollectionPictureVo {
-  id!: number
+  id: number
 
-  url?: string
+  createDate: Date
 
-  life!: PictureLifeState
+  updateDate: Date
 
-  privacy!: PrivacyState
+  pictureId: number
 
-  focus!: CollectState
+  focus: CollectState
 
-  width!: number
-
-  height!: number
-
-  userInfo?: UserInfoVo
-
-  updateDate?: Date
+  picture?: PictureVo
 
   constructor(
-    picture: PictureDocument,
+    collection: CollectionEntity,
     focus: CollectState,
-    updateDate: Date,
-    userInfo?: UserInfoVo
+    picture?: PictureVo
   ) {
-    this.id = picture.id
-    this.url = picture.url
-    this.privacy = picture.privacy ?? PrivacyState.PRIVATE
-    this.width = picture.width ?? 0
-    this.height = picture.height ?? 0
-    this.updateDate = updateDate
+    this.id = collection.id!
+    this.createDate = collection.createDate!
+    this.updateDate = collection.updateDate!
+    this.pictureId = collection.pictureId!
     this.focus = focus
-    this.userInfo = userInfo
+    this.picture = picture
   }
 }

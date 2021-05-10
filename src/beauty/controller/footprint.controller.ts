@@ -1,7 +1,7 @@
 import { CurrentUser } from "@/auth/decorator/current-user.decorator"
 import { JwtAuth } from "@/auth/decorator/jwt-auth.decorator"
+import { CollectState } from "@/data/constant/collect-state.constant"
 import { PrivacyState } from "@/data/constant/privacy-state.constant"
-import { PictureDocument } from "@/data/document/beauty/picture.document"
 import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
 import { PageableDefault } from "@/share/decorator/pageable-default.decorator"
 import { PermissionException } from "@/share/exception/permission.exception"
@@ -81,27 +81,26 @@ export class FootprintController extends PictureVoAbstract {
       for (const footprint of page.items) {
         let footprintPictureVo: FootprintPictureVo
         try {
-          const picture = await this.pictureDocumentService.get(
-            footprint.pictureId
+          const pictureVo = await this.getPictureVoById(
+            footprint.pictureId,
+            userInfo?.id
           )
-          //图片被隐藏
-          if (picture.privacy === PrivacyState.PRIVATE) {
-            picture.url = ""
-          }
           footprintPictureVo = new FootprintPictureVo(
-            picture,
-            (await this.getPictureVo(picture, userInfo?.id)).focus,
-            footprint.updateDate!,
-            await this.getUserInfoVoById(picture.createdBy, userInfo?.id)
+            footprint,
+            pictureVo.focus,
+            //如果为屏蔽状态则吧picture设置为空
+            pictureVo.privacy === PrivacyState.PRIVATE ? undefined : pictureVo
           )
         } catch (e) {
           footprintPictureVo = new FootprintPictureVo(
-            { id: footprint.pictureId } as PictureDocument,
-            await this.footprintService.getCollectState(
-              query.targetId,
-              footprint.pictureId
-            ),
-            footprint.updateDate!
+            footprint,
+            //如果是自己就肯定是收藏状态
+            query.targetId === userInfo?.id
+              ? CollectState.CONCERNED
+              : await this.collectionService.getCollectState(
+                  footprint.pictureId,
+                  userInfo?.id
+                )
           )
         }
         footprintPictureVoList.push(footprintPictureVo)

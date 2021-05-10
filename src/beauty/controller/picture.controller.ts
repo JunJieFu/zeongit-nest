@@ -189,19 +189,31 @@ export class PictureController extends PictureVoAbstract {
 
   @JwtAuth()
   @Get("pagingByFollowing")
-  pagingByFollowing(
+  async pagingByFollowing(
     @CurrentUser() userInfo: UserInfoEntity,
     @PageableDefault() pageable: Pageable
   ) {
-    return this.pictureDocumentService.pagingByFollowing(pageable, userInfo.id!)
+    return this.getPageVo(
+      await this.pictureDocumentService.pagingByFollowing(
+        pageable,
+        userInfo.id!
+      ),
+      userInfo?.id
+    )
   }
 
   @Get("pagingByRecommend")
-  pagingByRecommend(
+  async pagingByRecommend(
     @CurrentUser() userInfo: UserInfoEntity | undefined,
     @PageableDefault() pageable: Pageable
   ) {
-    return this.pictureDocumentService.pagingByRecommend(pageable, userInfo?.id)
+    return await this.getPageVo(
+      await this.pictureDocumentService.pagingByRecommend(
+        pageable,
+        userInfo?.id
+      ),
+      userInfo?.id
+    )
   }
 
   @Get("pagingByRecommendById")

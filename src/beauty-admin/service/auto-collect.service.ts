@@ -51,7 +51,7 @@ export class AutoCollectService {
     )
   ]
 
-  private NO_COLLECTION_TAG_LIST = ["四格漫画", "漫画", "manga"]
+  private NO_COLLECTION_TAG_LIST = ["四格", "四格漫画", "漫画", "manga"]
 
   //整点和30分钟时调用一次，调用采集排行榜
   @Cron("0 0,30 * * * *")

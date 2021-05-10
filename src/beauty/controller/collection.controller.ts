@@ -100,27 +100,26 @@ export class CollectionController extends PictureVoAbstract {
       for (const collection of page.items) {
         let collectionPictureVo: CollectionPictureVo
         try {
-          const picture = await this.pictureDocumentService.get(
-            collection.pictureId
+          const pictureVo = await this.getPictureVoById(
+            collection.pictureId,
+            userInfo?.id
           )
-          //图片被隐藏
-          if (picture.privacy === PrivacyState.PRIVATE) {
-            picture.url = ""
-          }
           collectionPictureVo = new CollectionPictureVo(
-            picture,
-            (await this.getPictureVo(picture, userInfo?.id)).focus,
-            collection.updateDate!,
-            await this.getUserInfoVoById(picture.createdBy, userInfo?.id)
+            collection,
+            pictureVo.focus,
+            //如果为屏蔽状态则吧picture设置为空
+            pictureVo.privacy === PrivacyState.PRIVATE ? undefined : pictureVo
           )
         } catch (e) {
           collectionPictureVo = new CollectionPictureVo(
-            { id: collection.pictureId } as PictureDocument,
-            await this.collectionService.getCollectState(
-              query.targetId,
-              collection.pictureId
-            ),
-            collection.updateDate!
+            collection,
+            //如果是自己就肯定是收藏状态
+            query.targetId === userInfo?.id
+              ? CollectState.CONCERNED
+              : await this.collectionService.getCollectState(
+                  collection.pictureId,
+                  userInfo?.id
+                )
           )
         }
         collectionPictureVoList.push(collectionPictureVo)
