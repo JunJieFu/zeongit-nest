@@ -1,6 +1,5 @@
 import { CurrentUser } from "@/auth/decorator/current-user.decorator"
 import { JwtAuth } from "@/auth/decorator/jwt-auth.decorator"
-import { CollectState } from "@/data/constant/collect-state.constant"
 import { PrivacyState } from "@/data/constant/privacy-state.constant"
 import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
 import { PageableDefault } from "@/share/decorator/pageable-default.decorator"
@@ -94,13 +93,10 @@ export class FootprintController extends PictureVoAbstract {
         } catch (e) {
           footprintPictureVo = new FootprintPictureVo(
             footprint,
-            //如果是自己就肯定是收藏状态
-            query.targetId === userInfo?.id
-              ? CollectState.CONCERNED
-              : await this.collectionService.getCollectState(
-                  footprint.pictureId,
-                  userInfo?.id
-                )
+            await this.collectionService.getCollectState(
+              footprint.pictureId,
+              userInfo?.id
+            )
           )
         }
         footprintPictureVoList.push(footprintPictureVo)
