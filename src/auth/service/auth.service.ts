@@ -4,19 +4,15 @@ import { InjectAccount } from "@/data/decorator/inject-account.decorator"
 import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
 import { UserEntity } from "@/data/entity/account/user.entity"
 import { nullable } from "@/share/fragment/pipe.function"
-import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common"
-import { ConfigType } from "@nestjs/config"
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
 import { classToPlain } from "class-transformer"
 import { Repository } from "typeorm"
-import { jwtConfigType } from "../config"
 import { Payload } from "../model/payload.model"
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(jwtConfigType.KEY)
-    private jwtConfig: ConfigType<typeof jwtConfigType>,
     private readonly jwtService: JwtService,
     private readonly userCache: UserCache,
     private readonly userInfoCache: UserInfoCache,
