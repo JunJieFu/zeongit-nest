@@ -52,3 +52,5 @@ export const BLOG_CONNECTION_NAME = "blog"
 export const ZEONGIT_BEAUTY_PICTURE = "zeongit_beauty_picture"
 
 export const ZEONGIT_BEAUTY_USER_INFO = "zeongit_beauty_user_info"
+
+export const ZEONGIT_BEAUTY_PICTURE_SUGGEST = "zeongit_beauty_picture_suggest"

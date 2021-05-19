@@ -43,6 +43,7 @@ import { UserBlackHoleEntity } from "./entity/beauty/user-black-hole.entity"
 import { EssayEntity } from "./entity/blog/essay.entity"
 import { MessageEntity } from "./entity/blog/message.entity"
 import { PictureDocumentRepository } from "./repository/picture-document.repository"
+import { PictureSuggestDocumentRepository } from "./repository/picture-suggest-document.repository"
 import { UserInfoDocumentRepository } from "./repository/user-info-document.repository"
 
 const configModule = ConfigModule.forRoot({
@@ -127,7 +128,8 @@ const configModule = ConfigModule.forRoot({
     UserCache,
     UserInfoCache,
     PictureDocumentRepository,
-    UserInfoDocumentRepository
+    UserInfoDocumentRepository,
+    PictureSuggestDocumentRepository
   ],
   exports: [
     TypeOrmModule,
@@ -135,7 +137,8 @@ const configModule = ConfigModule.forRoot({
     UserCache,
     UserInfoCache,
     PictureDocumentRepository,
-    UserInfoDocumentRepository
+    UserInfoDocumentRepository,
+    PictureSuggestDocumentRepository
   ]
 })
 export class DataModule {}

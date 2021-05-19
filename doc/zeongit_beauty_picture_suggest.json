@@ -1,0 +1,15 @@
+{
+  "settings": {
+    "number_of_shards": 5,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "_doc": {
+      "properties": {
+        "tag": {
+          "type": "completion"
+        }
+      }
+    }
+  }
+}

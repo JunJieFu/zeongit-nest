@@ -98,5 +98,5 @@ async function blogBootstrap() {
 
 accountBootstrap()
 beautyBootstrap()
-beautyAdminBootstrap()
+// beautyAdminBootstrap()
 blogBootstrap()

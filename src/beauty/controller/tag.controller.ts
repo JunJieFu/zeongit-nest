@@ -1,14 +1,16 @@
 import { CurrentUser } from "@/auth/decorator/current-user.decorator"
 import { UserInfoEntity } from "@/data/entity/account/user-info.entity"
-import { Controller, Get, ParseIntPipe, Query } from "@nestjs/common"
+import { Controller, Get, ParseIntPipe, Post, Query } from "@nestjs/common"
 import { PictureDocumentService } from "../service/picture-document.service"
+import { TagService } from "../service/tag.service"
 import { TagFrequencyVo } from "../vo/tag-frequency.vo"
 import { TagPictureVo } from "../vo/tag-picture.vo"
 
 @Controller("tag")
 export class TagController {
   constructor(
-    private readonly pictureDocumentService: PictureDocumentService
+    private readonly pictureDocumentService: PictureDocumentService,
+    private readonly tagService: TagService
   ) {}
 
   @Get("listTagTop30")
@@ -26,7 +28,7 @@ export class TagController {
         bucket.key,
         userInfo?.id
       )
-      voList.push(new TagPictureVo(bucket.key, bucket.doc_count, picture.url))
+      voList.push(new TagPictureVo(bucket.key, bucket.doc_count, picture?.url))
     }
     return voList
   }
@@ -38,5 +40,10 @@ export class TagController {
   ) {
     const buckets = await this.pictureDocumentService.listTagByUserId(targetId)
     return buckets.map((it) => new TagFrequencyVo(it.key, it.doc_count))
+  }
+
+  @Post("generateSuggest")
+  generateSuggest() {
+    return this.tagService.generateSuggest()
   }
 }

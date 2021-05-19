@@ -259,12 +259,12 @@ export class PictureDocumentService {
 
   saveLikeAmount(picture: PictureDocument, count: number) {
     picture.likeAmount = count
-    return this.pictureDocumentRepository.save(picture)
+    return this.save(picture)
   }
 
   saveViewAmount(picture: PictureDocument, count: number) {
     picture.viewAmount = count
-    return this.pictureDocumentRepository.save(picture)
+    return this.save(picture)
   }
 
   remove(id: number) {

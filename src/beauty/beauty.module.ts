@@ -11,6 +11,7 @@ import { FootprintController } from "./controller/footprint.controller"
 import { PictureBlackHoleController } from "./controller/picture-black-hole.controller"
 import { PictureController } from "./controller/picture.controller"
 import { QiniuController } from "./controller/qiniu.controller"
+import { SuggestController } from "./controller/suggest.controller"
 import { TagBlackHoleController } from "./controller/tag-black-hole.controller"
 import { TagController } from "./controller/tag.controller"
 import { UserBlackHoleController } from "./controller/user-black-hole.controller"
@@ -23,6 +24,7 @@ import { FollowService } from "./service/follow.service"
 import { FootprintService } from "./service/footprint.service"
 import { PictureBlackHoleService } from "./service/picture-black-hole.service"
 import { PictureDocumentService } from "./service/picture-document.service"
+import { PictureSuggestDocumentService } from "./service/picture-suggest-document.service"
 import { PictureService } from "./service/picture.service"
 import { TagBlackHoleService } from "./service/tag-black-hole.service"
 import { TagService } from "./service/tag.service"
@@ -47,7 +49,8 @@ import { UserInfoService } from "./service/user-info.service"
     UserBlackHoleController,
     PictureBlackHoleController,
     UserInfoController,
-    WorksController
+    WorksController,
+    SuggestController
   ],
   providers: [
     CollectionService,
@@ -62,7 +65,8 @@ import { UserInfoService } from "./service/user-info.service"
     TagBlackHoleService,
     UserBlackHoleService,
     UserInfoService,
-    UserInfoDocumentService
+    UserInfoDocumentService,
+    PictureSuggestDocumentService
   ],
   exports: []
 })
