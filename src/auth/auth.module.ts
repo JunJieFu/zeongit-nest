@@ -1,5 +1,4 @@
 import { DataModule } from "@/data/data.module"
-import { getEnvPaths } from "@/share/fragment/env.function"
 import { Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
 import { JwtModule } from "@nestjs/jwt"
@@ -9,7 +8,7 @@ import { JwtConfigService } from "./config-service/jwt-config.service"
 import { AuthService } from "./service/auth.service"
 
 const configModule = ConfigModule.forRoot({
-  envFilePath: [...getEnvPaths()],
+  envFilePath: [`.env`, `.env.${process.env.NODE_ENV!.trim()}`],
   load: [jwtConfigType, authConfigType],
   isGlobal: true
 })

@@ -1,0 +1,1 @@
+pm2 restart npm --name zeongit -- run start:prod

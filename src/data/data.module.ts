@@ -1,4 +1,3 @@
-import { getEnvPaths } from "@/share/fragment/env.function"
 import { CacheModule, Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
 import { ElasticsearchModule } from "@nestjs/elasticsearch"
@@ -47,7 +46,7 @@ import { PictureSuggestDocumentRepository } from "./repository/picture-suggest-d
 import { UserInfoDocumentRepository } from "./repository/user-info-document.repository"
 
 const configModule = ConfigModule.forRoot({
-  envFilePath: [...getEnvPaths()],
+  envFilePath: [`.env`, `.env.${process.env.NODE_ENV!.trim()}`],
   load: [
     accountConfigType,
     beautyConfigType,

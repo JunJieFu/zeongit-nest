@@ -1,6 +1,5 @@
 import { DataModule } from "@/data/data.module"
 import { QiniuModule } from "@/qiniu/qiniu.module"
-import { getEnvPaths } from "@/share/fragment/env.function"
 import { HttpModule, Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
 import { ScheduleModule } from "@nestjs/schedule"
@@ -20,9 +19,8 @@ import { UserInfoService } from "./service/user-info.service"
 import { UserService } from "./service/user.service"
 
 const configModule = ConfigModule.forRoot({
-  envFilePath: [...getEnvPaths()],
-  load: [collectConfigType],
-  isGlobal: true
+  envFilePath: [`.env`, `.env.${process.env.NODE_ENV!.trim()}`],
+  load: [collectConfigType]
 })
 
 @Module({
